@@ -1,0 +1,97 @@
+@page
+@model BinaryConversionModel
+@{
+    ViewData["Title"] = "进制转换";
+}
+<div class="text-left">
+    <h3>@ViewData["Title"]</h3>
+    <ul>
+        <li class="li_BConversion">
+            <span>2进制</span>
+            <input type="text" id="convert2" data-type="2" oninput="BinaryConvert2()">
+        </li>
+        <li class="li_BConversion">
+            <span>4进制</span>
+            <input type="text" id="convert4" data-type="4" oninput="BinaryConvert4()">
+        </li>
+        <li class="li_BConversion">
+            <span>8进制</span>
+            <input type="text" id="convert8" data-type="8" oninput="BinaryConvert8()">
+        </li>
+        <li class="li_BConversion">
+            <span>10进制</span>
+            <input type="text" id="convert10" data-type="8" oninput="BinaryConvert10()">
+        </li>
+        <li class="li_BConversion">
+            <span>16进制</span>
+            <input type="text" id="convert16" data-type="16" oninput="BinaryConvert16()">
+        </li>
+        <li>
+            <button type="button" onclick="ClearAll()">清空</button>
+        </li>
+    </ul>
+    <div>
+        <strong>使用说明</strong>
+        <p>
+            在对应的输入框中输入值，即可进行转换。
+        </p>
+        <strong>相关知识</strong>
+        <p>
+            进制也就是进位计数制，是人为定义的带进位的计数方法（有不带进位的计数方法，比如原始的结绳计数法，唱票时常用的“正”字计数法，以及类似的tally mark计数）。 对于任何一种进制---X进制，就表示每一位置上的数运算时都是逢X进一位。 十进制是逢十进一，十六进制是逢十六进一，二进制就是逢二进一，以此类推，x进制就是逢x进位。
+        </p>
+    </div>
+</div>
+
+<script>
+    $obj_convert2=document.getElementById("convert2");
+    $obj_convert4=document.getElementById("convert4");
+    $obj_convert8=document.getElementById("convert8");
+    $obj_convert10=document.getElementById("convert10");
+    $obj_convert16=document.getElementById("convert16");
+
+    function BinaryConvert2()
+    {
+        $obj_convert4.value=parseInt($obj_convert2.value,2).toString(4);  
+        $obj_convert8.value=parseInt($obj_convert2.value,2).toString(8);  
+        $obj_convert10.value=parseInt($obj_convert2.value,2).toString(10);  
+        $obj_convert16.value=parseInt($obj_convert2.value,2).toString(16);     
+    }
+
+    function BinaryConvert4(){
+        $obj_convert2.value=parseInt($obj_convert4.value,4).toString(2);  
+        $obj_convert8.value=parseInt($obj_convert4.value,4).toString(8);  
+        $obj_convert10.value=parseInt($obj_convert4.value,4).toString(10);  
+        $obj_convert16.value=parseInt($obj_convert4.value,4).toString(16);     
+    }
+
+    function BinaryConvert8(){
+        $obj_convert2.value=parseInt($obj_convert8.value,8).toString(2);  
+        $obj_convert4.value=parseInt($obj_convert8.value,8).toString(4);  
+        $obj_convert10.value=parseInt($obj_convert8.value,8).toString(10);  
+        $obj_convert16.value=parseInt($obj_convert8.value,8).toString(16);  
+    }
+
+    function BinaryConvert10(){
+        $obj_convert2.value=parseInt($obj_convert10.value,10).toString(2);  
+        $obj_convert4.value=parseInt($obj_convert10.value,10).toString(4);  
+        $obj_convert8.value=parseInt($obj_convert10.value,10).toString(8);  
+        $obj_convert16.value=parseInt($obj_convert10.value,10).toString(16);
+    }
+
+    function BinaryConvert16(){
+        $obj_convert2.value=parseInt($obj_convert16.value,16).toString(2);  
+        $obj_convert4.value=parseInt($obj_convert16.value,16).toString(4);  
+        $obj_convert8.value=parseInt($obj_convert16.value,16).toString(8);  
+        $obj_convert10.value=parseInt($obj_convert16.value,16).toString(10);       
+    }
+
+    function ClearAll()
+    {
+        $obj_convert2.value="";
+        $obj_convert4.value="";
+        $obj_convert8.value="";
+        $obj_convert10.value="";
+        $obj_convert16.value=""; 
+    }
+
+</script>

@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ToolApp</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link href="~/lib/MarkDown/css/editormd.css" rel="stylesheet" />
+    <link href="~/lib/MarkDown/css/editormd.preview.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/lib/jsoneditor/jsoneditor.min.css" rel="stylesheet" type="text/css"/>
+    <script src="~/lib/jsoneditor/jsoneditor.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/qrcode/qrcode.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-page="/Index">ToolApp</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">首页</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy;2021 - ToolApp - <a asp-page="./Article" asp-route-filename="小程序.md">小程序</a> - <a asp-page="./Article" asp-route-filename="关于.md">关于</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    <script src="//at.alicdn.com/t/font_2344911_mzi8n5afjpf.js"></script>
+    <script src="//at.alicdn.com/t/font_2344911_oig4om1t41.js"></script>
+    <script src="//at.alicdn.com/t/font_2344911_em1wiwgnmbv.js"></script>
+    <script src="//at.alicdn.com/t/font_2344911_qfri54p4art.js"></script>
+    <script src="//at.alicdn.com/t/font_2344911_w53qesxzeye.js"></script>
+    <script src="//at.alicdn.com/t/font_2344911_g55auo9llw.js"></script>
+    
+    <script src="~/lib/MarkDown/js/editormd.js"></script>
+    <script src="~/lib/MarkDown/lib/marked.min.js"></script>
+    <script src="~/lib/MarkDown/lib/prettify.min.js"></script>
+    <script src="~/lib/MarkDown/lib/raphael.min.js"></script>
+    <script src="~/lib/MarkDown/lib/underscore.min.js"></script>
+    <script src="~/lib/MarkDown/lib/sequence-diagram.min.js"></script>
+    <script src="~/lib/MarkDown/lib/flowchart.min.js"></script>
+    <script src="~/lib/MarkDown/lib/jquery.flowchart.min.js"></script>
+    
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

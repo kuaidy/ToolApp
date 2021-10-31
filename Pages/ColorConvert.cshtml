@@ -1,0 +1,78 @@
+@page
+@model EncodeDecodeModel
+@{
+    ViewData["Title"] = "颜色值转换";
+}
+<div class="text-left">
+    <h3>@ViewData["Title"]</h3>
+    <div class="color-content">
+        <strong>输入颜色值</strong>
+        <div class="div-input">
+            <input type="text" name="" id="ip-colorvalue" class="ip-colorvalue">
+            <button onclick="ColorConvert()">转换</button>
+        </div>
+        <strong>转换结果</strong>
+        <div class="div-output">
+            <span class="div-outspan" >十六进制</span>
+            <input type="text" class="ip-colorvalue" id="ip-coloroutput16" readonly="readonly">
+            <span class="div-outspan" >RGB颜色值</span>
+            <input type="text" class="ip-colorvalue" id="ip-coloroutputrgb" readonly="readonly">
+            <span>颜色预览</span>
+            <input type="color" class="ip-colorvalue" id="ip-colorview" readonly="readonly">
+        </div>
+    </div>
+</div>
+
+<script>
+    function ColorConvert(){
+        var inputColor=$("#ip-colorvalue").val();
+
+        inputColor=inputColor.replace("#","");
+        if(inputColor.length==6){
+            var colorr=inputColor.substring(0,2);
+            var colorg=inputColor.substring(2,4);
+            var colorb=inputColor.substring(4,6);
+            console.log(colorr);
+            console.log(colorg);
+            console.log(colorb);
+            $("#ip-coloroutput16").val("#"+colorr+colorg+colorb);
+            $("#ip-colorview").val("#"+colorr+colorg+colorb);
+            colorr=parseInt(colorr,16).toString(10);
+            colorg=parseInt(colorg,16).toString(10);
+            colorb=parseInt(colorb,16).toString(10);
+            $("#ip-coloroutputrgb").val("rgb("+colorr+","+colorg+","+colorb+")");
+        }else if(inputColor.length==3)
+        {
+            var colorr=inputColor.substring(0,1);
+            var colorg=inputColor.substring(1,2);
+            var colorb=inputColor.substring(2,3);
+            var relcolorr=colorr+colorr;
+            var relcolorg=colorg+colorg;
+            var relcolorb=colorb+colorb;
+            $("#ip-coloroutput16").val("#"+relcolorr+relcolorg+relcolorb);
+            $("#ip-colorview").val("#"+relcolorr+relcolorg+relcolorb);
+            relcolorr=parseInt(relcolorr,16).toString(10);    
+            relcolorg=parseInt(relcolorg,16).toString(10);
+            relcolorb=parseInt(relcolorb,16).toString(10);
+            $("#ip-coloroutputrgb").val("rgb("+relcolorr+","+relcolorg+","+relcolorb+")");
+        }else if(inputColor.indexOf("rgb")!=-1){
+            inputColor=inputColor.replace("rgb","").replace("(","").replace(")","").replace("，",",");
+            var colorArr=inputColor.split(",");
+            $("#ip-coloroutputrgb").val("rgb("+colorArr[0]+","+colorArr[1]+","+colorArr[2]+")");
+            var relcolorr=parseInt(colorArr[0],10).toString(16);
+            if(relcolorr.length==1){
+                relcolorr="0"+relcolorr;
+            }
+            var relcolorg=parseInt(colorArr[1],10).toString(16);
+            if(relcolorg.length==1){
+                relcolorg="0"+relcolorg;
+            } 
+            var relcolorb=parseInt(colorArr[2],10).toString(16);
+            if(relcolorb.length==1){
+                relcolorb="0"+relcolorb;
+            } 
+            $("#ip-coloroutput16").val("#"+relcolorr+relcolorg+relcolorb);
+            $("#ip-colorview").val("#"+relcolorr+relcolorg+relcolorb);
+        }
+    }
+</script>

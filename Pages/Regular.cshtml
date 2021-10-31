@@ -1,0 +1,39 @@
+@page
+@model RegularModel
+@{
+    ViewData["Title"] = "正则表达式测试";
+}
+<div class="text-left">
+    <h3>@ViewData["Title"]</h3>
+    <div class="RegularContent">
+        <div class="RegularInput">
+            <textarea id="RegularInputValue" placeholder="请输入需要匹配的内容" style="height:250px;width:100%;"></textarea>
+        </div>
+        <div class="RegularOption" style="margin-top:10px;width:100%;">
+            <input id="RegularPattern" placeholder="请输入表达式"></input>
+            <button onclick="OnMatch()">点击测试</button>
+        </div>
+        <div class="RegularOutput" style="margin-top:10px;">      
+            <textarea id="RegularOutputValue" style="height:250px;width:100%;"></textarea>
+        </div>
+    </div>
+    <div id="content_view">      
+        <textarea id="content_editor" style="display:none;">@ViewData["Content"]</textarea>
+    </div>
+</div>
+<script>
+function OnMatch() {
+    var pattern=document.getElementById("RegularPattern").value;
+	var str = document.getElementById('RegularInputValue').value;
+    var regex=new RegExp(pattern,"g");
+    var result=str.match(regex);
+    console.log(result);
+	if (null==result || 0==result.length) {
+		$("#RegularOutputValue").value = "（没有匹配）";
+		return false;
+	}
+    var strResult = "共找到 " + result.length + " 处匹配：\r\n";
+    for (var i=0;i < result.length;++i)strResult = strResult + result[i] + "\r\n";
+    document.getElementById("RegularOutputValue").value = strResult;
+}
+</script>

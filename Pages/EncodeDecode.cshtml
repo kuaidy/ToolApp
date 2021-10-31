@@ -1,0 +1,48 @@
+@page
+@model EncodeDecodeModel
+@{
+    ViewData["Title"] = "编码解码";
+}
+<div class="text-left">
+    <h3>@ViewData["Title"]</h3>
+    <div class="Code_Option">
+        <strong>输入</strong>
+        <textarea name="CodeInput" id="CodeInput" cols="30" rows="10"></textarea>
+        <ul class="Code_OptionButton">
+            <li>
+                <button onclick="BtnClear()">清空内容</button>
+            </li>
+            <li>
+                <button onclick="UrlEncode()">URL编码</button>
+            </li>
+            <li>
+                <button onclick="UrlDecode()">URL解码</button>
+            </li>
+            @* <li>
+                <button onclick="Base64Encode()">BASE64编码</button>
+            </li>
+            <li>
+                <button onclick="Base64Decode()">BASE64解码</button>
+            </li> *@
+        </ul>
+        <strong>输出</strong>
+        <textarea name="CodeOutput" id="CodeOutput" cols="30" rows="10"></textarea>
+    </div>
+    <div id="content_view">      
+        <textarea id="content_editor" style="display:none;">@ViewData["Content"]</textarea>
+    </div>
+</div>
+<script>
+    $inputObj=document.getElementById("CodeInput");
+    $outputObj=document.getElementById("CodeOutput");
+    function UrlEncode(){
+        $outputObj.value=encodeURI($inputObj.value);
+    }
+    function UrlDecode(){
+        $outputObj.value=decodeURI($inputObj.value);
+    }
+    function BtnClear(){
+        $inputObj.value="";
+        $outputObj.value="";
+    }
+</script>

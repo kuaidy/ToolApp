@@ -1,0 +1,32 @@
+@page
+@model JsonFormatModel
+@{
+    ViewData["Title"] = "Json格式化";
+}
+<div class="text-left">
+    <h3>@ViewData["Title"]</h3>
+    <div class="JsonConvert">
+        <textarea name="" id="jsoninput" cols="50" rows="10" oninput="JsonFormat()"></textarea>
+        <div id="jsonview" cols="50"></div>
+    </div>
+</div>
+
+<div id="content_view">      
+    <textarea id="content_editor" style="display:none;">@ViewData["Content"]</textarea>
+</div>
+
+<script>
+    // create the editor
+    const container = document.getElementById("jsonview");
+    const options = {
+        mode: 'view'
+    };
+    const editor = new JSONEditor(container, options);
+    
+    function JsonFormat()
+    {
+        editor.set(JSON.parse($("#jsoninput").val()));
+        // get json
+        const updatedJson = editor.get();
+    }
+    </script>

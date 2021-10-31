@@ -1,0 +1,103 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "在线工具";
+}
+
+<div class="text-center">
+    <div>
+        <div class="TypeTitle">转换工具</div>
+        <ul class="ul_tools">
+            <li class="li_tool">
+                <a href="/BinaryConversion" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-binarycode"></use>
+                    </svg>
+                    <span class="sp_toolname">进制转换</span>
+               </a>
+            </li>
+            <li class="li_tool">
+                <a href="/ColorConvert" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-dixiayanse"></use>
+                    </svg>
+                    <span class="sp_toolname">颜色值转换</span>
+                </a>
+            </li> 
+        </ul>
+    </div>
+    
+    <div>
+        <div class="TypeTitle">文本工具</div>
+        <ul class="ul_tools">
+            <li class="li_tool">
+                <a href="/JsonFormat" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-json"></use>
+                    </svg>
+                    <span class="sp_toolname">Json格式化</span>
+                </a>
+            </li>
+            <li class="li_tool">
+                <a href="/MarkdownEdit" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-md"></use>
+                    </svg>
+                    <span class="sp_toolname">Markdown编辑</span>
+                </a>
+            </li>
+            <li class="li_tool">
+                <a href="/Regular" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-a-regex1x"></use>
+                    </svg>
+                    <span class="sp_toolname">正则表达式</span>
+                </a>
+            </li>     
+        </ul>
+    </div>
+
+    <div>
+        <div class="TypeTitle">编码转换</div>
+        <ul class="ul_tools">
+            <li class="li_tool">
+                <a href="/EncodeDecode" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-bianma"></use>
+                    </svg>
+                    <span class="sp_toolname">编码解码</span>
+               </a>
+            </li>
+        </ul>
+    </div>
+
+    <div>
+        <div class="TypeTitle">生成工具</div>
+        <ul class="ul_tools">
+            <li class="li_tool">
+                <a href="/GuidCreate" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-g"></use>
+                    </svg>
+                    <span class="sp_toolname">Guid生成</span>
+               </a>
+            </li>
+            <li class="li_tool">
+                <a href="/QrCodeCreate" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-erweima"></use>
+                    </svg>
+                    <span class="sp_toolname">二维码生成</span>
+               </a>
+            </li>
+            <li class="li_tool">
+                <a href="http://backimg.cn/" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-tupian"></use>
+                    </svg>
+                    <span class="sp_toolname">简单主图生成</span>
+               </a>
+            </li>
+        </ul>
+    </div>
+</div>

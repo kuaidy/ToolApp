@@ -1,0 +1,14 @@
+@page
+@model GuidCreateModel
+@{
+    ViewData["Title"] = "Guid生成";
+}
+<div class="text-left">
+    <h3>@ViewData["Title"]</h3>
+    <div>
+        <form action="" method="post">
+            <input style="width:350px;" type="text" readonly="readonly" value='@ViewData["Guid"]'>
+            <button>生成</button>
+        </form>
+    </div>
+</div>
