@@ -10,6 +10,7 @@ namespace ToolApp.Pages
 {
     public class RegularModel : PageModel
     {
+        
         private readonly ILogger<IndexModel> _logger;
 
         public RegularModel(ILogger<IndexModel> logger)

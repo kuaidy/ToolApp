@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Program Files\\Git\\myproject\\ToolApp\\ToolApp.csproj",
+      "projectUniqueName": "C:\\Myproject\\ToolApp\\ToolApp.csproj",
       "projectName": "ToolApp",
-      "projectPath": "C:\\Program Files\\Git\\myproject\\ToolApp\\ToolApp.csproj",
+      "projectPath": "C:\\Myproject\\ToolApp\\ToolApp.csproj",
       "packagesPath": "C:\\Users\\kuai\\.nuget\\packages\\",
-      "outputPath": "C:\\Program Files\\Git\\myproject\\ToolApp\\obj\\",
+      "outputPath": "C:\\Myproject\\ToolApp\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\kuai\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -63,7 +63,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.401\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.404\\RuntimeIdentifierGraph.json"
       }
     }
   }

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ugJOB+AV8EZ0Gl4P8j580pCSAaa+omlhRMxorTsa/WJ4tU7UmJobLvrIwFtMf2G47S2RZUXKEzo32Uu9UMEu1w==",
+  "dgSpecHash": "3fxJt1VNz89HLIP/pK91WTEsnVsrgIdxENltZ5hS4b1lFMYvLUuROdtXre7gv7iYD9tifvJ+MGa4cT9xCVdilQ==",
   "success": true,
-  "projectFilePath": "C:\\Program Files\\Git\\myproject\\ToolApp\\ToolApp.csproj",
+  "projectFilePath": "C:\\Myproject\\ToolApp\\ToolApp.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
