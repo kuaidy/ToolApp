@@ -100,3 +100,4 @@ C:\Myproject\ToolApp\obj\Debug\net5.0\ref\ToolApp.dll
 C:\Myproject\ToolApp\obj\Debug\net5.0\ToolApp.pdb
 C:\Myproject\ToolApp\obj\Debug\net5.0\ToolApp.genruntimeconfig.cache
 C:\Myproject\ToolApp\obj\Debug\net5.0\ToolApp.csproj.CopyComplete
+C:\Myproject\ToolApp\obj\Debug\net5.0\Razor\Pages\CodeGeneration.cshtml.g.cs

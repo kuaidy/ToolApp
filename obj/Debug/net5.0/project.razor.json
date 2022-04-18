@@ -1,5 +1,5 @@
 {
-  "FilePath": "c:\\myproject\\ToolApp\\ToolApp.csproj",
+  "FilePath": "c:\\Myproject\\ToolApp\\ToolApp.csproj",
   "Configuration": {
     "ConfigurationName": "MVC-3.0",
     "LanguageVersion": "5.0",
@@ -15619,92 +15619,97 @@
   "RootNamespace": "ToolApp",
   "Documents": [
     {
-      "FilePath": "c:\\myproject\\ToolApp\\Pages\\_ViewImports.cshtml",
+      "FilePath": "c:\\Myproject\\ToolApp\\Pages\\_ViewImports.cshtml",
       "TargetPath": "Pages\\_ViewImports.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\myproject\\ToolApp\\Pages\\Regular.cshtml",
+      "FilePath": "c:\\Myproject\\ToolApp\\Pages\\Regular.cshtml",
       "TargetPath": "Pages\\Regular.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\myproject\\ToolApp\\Pages\\ColorConvert.cshtml",
+      "FilePath": "c:\\Myproject\\ToolApp\\Pages\\ColorConvert.cshtml",
       "TargetPath": "Pages\\ColorConvert.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\myproject\\ToolApp\\Pages\\Shared\\_Layout.cshtml",
+      "FilePath": "c:\\Myproject\\ToolApp\\Pages\\Shared\\_Layout.cshtml",
       "TargetPath": "Pages\\Shared\\_Layout.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\myproject\\ToolApp\\Pages\\Index.cshtml",
+      "FilePath": "c:\\Myproject\\ToolApp\\Pages\\Index.cshtml",
       "TargetPath": "Pages\\Index.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\myproject\\ToolApp\\Pages\\LengthConvert.cshtml",
+      "FilePath": "c:\\Myproject\\ToolApp\\Pages\\LengthConvert.cshtml",
       "TargetPath": "Pages\\LengthConvert.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\myproject\\ToolApp\\Pages\\Error.cshtml",
+      "FilePath": "c:\\Myproject\\ToolApp\\Pages\\Error.cshtml",
       "TargetPath": "Pages\\Error.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\myproject\\ToolApp\\Pages\\QrCodeCreate.cshtml",
+      "FilePath": "c:\\Myproject\\ToolApp\\Pages\\QrCodeCreate.cshtml",
       "TargetPath": "Pages\\QrCodeCreate.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\myproject\\ToolApp\\Pages\\MarkdownEdit.cshtml",
+      "FilePath": "c:\\Myproject\\ToolApp\\Pages\\MarkdownEdit.cshtml",
       "TargetPath": "Pages\\MarkdownEdit.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\myproject\\ToolApp\\Pages\\SpecialSymbols.cshtml",
+      "FilePath": "c:\\Myproject\\ToolApp\\Pages\\SpecialSymbols.cshtml",
       "TargetPath": "Pages\\SpecialSymbols.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\myproject\\ToolApp\\Pages\\EncodeDecode.cshtml",
+      "FilePath": "c:\\Myproject\\ToolApp\\Pages\\CodeGeneration.cshtml",
+      "TargetPath": "Pages\\CodeGeneration.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "c:\\Myproject\\ToolApp\\Pages\\EncodeDecode.cshtml",
       "TargetPath": "Pages\\EncodeDecode.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\myproject\\ToolApp\\Pages\\BinaryConversion.cshtml",
+      "FilePath": "c:\\Myproject\\ToolApp\\Pages\\BinaryConversion.cshtml",
       "TargetPath": "Pages\\BinaryConversion.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\myproject\\ToolApp\\Pages\\Shared\\_ValidationScriptsPartial.cshtml",
+      "FilePath": "c:\\Myproject\\ToolApp\\Pages\\Shared\\_ValidationScriptsPartial.cshtml",
       "TargetPath": "Pages\\Shared\\_ValidationScriptsPartial.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\myproject\\ToolApp\\Pages\\ShowIp.cshtml",
+      "FilePath": "c:\\Myproject\\ToolApp\\Pages\\ShowIp.cshtml",
       "TargetPath": "Pages\\ShowIp.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\myproject\\ToolApp\\Pages\\Article.cshtml",
+      "FilePath": "c:\\Myproject\\ToolApp\\Pages\\Article.cshtml",
       "TargetPath": "Pages\\Article.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\myproject\\ToolApp\\Pages\\_ViewStart.cshtml",
+      "FilePath": "c:\\Myproject\\ToolApp\\Pages\\_ViewStart.cshtml",
       "TargetPath": "Pages\\_ViewStart.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\myproject\\ToolApp\\Pages\\GuidCreate.cshtml",
+      "FilePath": "c:\\Myproject\\ToolApp\\Pages\\GuidCreate.cshtml",
       "TargetPath": "Pages\\GuidCreate.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\myproject\\ToolApp\\Pages\\JsonFormat.cshtml",
+      "FilePath": "c:\\Myproject\\ToolApp\\Pages\\JsonFormat.cshtml",
       "TargetPath": "Pages\\JsonFormat.cshtml",
       "FileKind": "mvc"
     }
