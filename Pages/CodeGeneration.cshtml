@@ -1,20 +1,20 @@
 @page
 @model CodeGenerationModel
 @{
-    ViewData["Title"] = "代码生成";
+    ViewData["Title"] = "视频嵌入代码";
 }
 <div class="text-left">
     <h3>@ViewData["Title"]</h3>
     <div class="color-content">
         <strong>生成网页嵌套代码</strong>
-        <div class="div-input">
+        <div class="div-input" style="display:flex;flex-direction: column;width: 200px;">
             <span>视频地址</span>
             <input type="text" name="" placeholder="视频地址" id="VideoUrl">
             <span>宽度</span>
             <input type="text" name="" placeholder="宽度" id="Width" value="100%">
             <span>高度</span>
             <input type="text" name="" placeholder="高度" id="Height" value="500">
-            <button onclick="CodeGeneration()">生成</button>
+            <button onclick="CodeGeneration()" style="width:50px;margin-top:10px;">生成</button>
         </div>
         <strong>生成结果</strong>
         <div class="div-output">
