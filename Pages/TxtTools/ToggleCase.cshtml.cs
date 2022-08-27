@@ -8,19 +8,17 @@ using Microsoft.Extensions.Logging;
 
 namespace ToolApp.Pages
 {
-    public class ArticleModel : PageModel
+    public class ToggleCaseModel : PageModel
     {
-        private readonly ILogger<ArticleModel> _logger;
+        private readonly ILogger<ToggleCaseModel> _logger;
 
-        public ArticleModel(ILogger<ArticleModel> logger)
+        public ToggleCaseModel(ILogger<ToggleCaseModel> logger)
         {
             _logger = logger;
         }
 
-        public void OnGet(string filename)
+        public void OnGet()
         {
-            string apppath=System.IO.Directory.GetCurrentDirectory();
-            ViewData["Content"]=apppath;
         }
     }
 }

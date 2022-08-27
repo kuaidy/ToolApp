@@ -1,0 +1,86 @@
+﻿@page
+@model ToolApp.Pages.QueryTools.GetImagesModel
+
+<div id="app">
+    <el-row>
+        <el-col :span="24">
+            <h2>一键下载网页图片</h2>
+            <el-form :model="formData">
+                <el-form-item label="链接">
+                    <el-input v-model="formData.inputUrl" />
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @@click="GetImages()">获取图片</el-button>
+                    <el-button type="primary" @@click="DownImages()">下载</el-button>
+                </el-form-item>
+            </el-form>
+            <div class="demo-image" style="display: flex;flex-wrap: wrap;justify-content: space-between;">
+                <div v-for="image in images" :key="fit" style="width:49%;">
+                    <el-image :src="image" :fit="fit" />
+                </div>
+            </div>
+        </el-col>
+    </el-row>
+</div>
+<script>
+    var service = "http://localhost:16524/Spider/GetImagesFromUrl";
+    const App = {
+        data() {
+            return {
+                formData: {
+                    inputUrl: ""
+                },
+                images: []
+            }
+        },
+        created: function() {
+        },
+        methods: {
+            GetImages() {
+                var self = this;
+                axios({
+                    method: 'get',
+                    url: service,
+                    params:
+                    {
+                        url: self.formData.inputUrl
+                    }
+                })
+                    .then(function(response) {
+                        console.log(response);
+                        self.images = response.data;
+                    }).
+                    catch(function(error) {
+                        console.log(error);
+                    });;
+            },
+            DownImages() {
+                var self = this;
+                for (var i in self.images) {
+                    var image = new Image()
+                    // 解决跨域 Canvas 污染问题
+                    image.crossOrigin = "Anonymous";
+                    image.addEventListener("load", self.imageReceived, false);
+                    image.onload = function() {
+                        var canvas = document.createElement('canvas');
+                        canvas.width = image.width;
+                        canvas.height = image.height;
+                        var context = canvas.getContext('2d');
+                        context.drawImage(image, 0, 0, image.width, image.height);
+                        var url = canvas.toDataURL('image/png'); // 得到图片的base64编码数据
+                        console.log(url);
+                        var a = document.createElement('a'); // 生成一个a元素
+                        var event = new MouseEvent('click'); // 创建一个单击事件
+                        a.download = "123"; // 设置图片名称
+                        a.href = url; // 将生成的URL设置为a.href属性
+                        a.dispatchEvent(event); // 触发a的单击事件
+                    }
+                    image.src = self.images[i];
+                }
+            }
+        }
+    };
+    const app = Vue.createApp(App);
+    app.use(ElementPlus);
+    app.mount("#app");
+</script>

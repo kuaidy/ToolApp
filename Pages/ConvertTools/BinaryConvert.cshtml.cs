@@ -8,11 +8,11 @@ using Microsoft.Extensions.Logging;
 
 namespace ToolApp.Pages
 {
-    public class BinaryConversionModel : PageModel
+    public class BinaryConvertModel : PageModel
     {
-        private readonly ILogger<BinaryConversionModel> _logger;
+        private readonly ILogger<BinaryConvertModel> _logger;
 
-        public BinaryConversionModel(ILogger<BinaryConversionModel> logger)
+        public BinaryConvertModel(ILogger<BinaryConvertModel> logger)
         {
             _logger = logger;
         }

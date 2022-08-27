@@ -1,0 +1,104 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = ToolApp
+build_property.RootNamespace = ToolApp
+build_property.ProjectDir = C:\Myproject\ToolApp\
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Myproject\ToolApp
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Myproject/ToolApp/Pages/Article.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXJ0aWNsZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/CodeTools/EncodeDecode.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29kZVRvb2xzXEVuY29kZURlY29kZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/ConvertTools/BinaryConvert.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29udmVydFRvb2xzXEJpbmFyeUNvbnZlcnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/ConvertTools/ColorConvert.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29udmVydFRvb2xzXENvbG9yQ29udmVydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/ConvertTools/LengthConvert.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29udmVydFRvb2xzXExlbmd0aENvbnZlcnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/CreateTools/CodeGeneration.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3JlYXRlVG9vbHNcQ29kZUdlbmVyYXRpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/CreateTools/GuidCreate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3JlYXRlVG9vbHNcR3VpZENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/CreateTools/QrCodeCreate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3JlYXRlVG9vbHNcUXJDb2RlQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/QueryTools/GetImages.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlcnlUb29sc1xHZXRJbWFnZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/QueryTools/ShowIp.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlcnlUb29sc1xTaG93SXAuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/QueryTools/SpecialSymbols.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlcnlUb29sc1xTcGVjaWFsU3ltYm9scy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/TxtTools/JsonFormat.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVHh0VG9vbHNcSnNvbkZvcm1hdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/TxtTools/MarkdownEdit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVHh0VG9vbHNcTWFya2Rvd25FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/TxtTools/Regular.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVHh0VG9vbHNcUmVndWxhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/TxtTools/ToggleCase.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVHh0VG9vbHNcVG9nZ2xlQ2FzZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/TxtTools/WordCount.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVHh0VG9vbHNcV29yZENvdW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Myproject/ToolApp/Pages/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
