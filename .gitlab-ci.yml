@@ -23,4 +23,4 @@ build-job:       # This job runs in the build stage, which runs first.
   tags:
     - toolapp
   script:
-    - wget "https://www.rdonly.com/wp-content/uploads/2022/08/2022-8-26-1661526061588-1.png"
+    - wget https://www.rdonly.com/wp-content/uploads/2022/08/2022-8-26-1661526061588-1.png
