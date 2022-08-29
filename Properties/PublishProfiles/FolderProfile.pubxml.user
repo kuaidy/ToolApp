@@ -5,6 +5,6 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project>
   <PropertyGroup>
     <_PublishTargetUrl>C:\Myproject\ToolApp\bin\Release\net6.0\publish\</_PublishTargetUrl>
-    <History>True|2022-08-29T14:44:40.1036595Z;True|2022-08-29T22:21:47.7652342+08:00;True|2022-08-29T21:32:09.6248492+08:00;True|2022-08-28T22:26:55.5179366+08:00;True|2022-08-28T12:22:04.8266509+08:00;</History>
+    <History>True|2022-08-29T14:53:34.2196718Z;True|2022-08-29T22:44:40.1036595+08:00;True|2022-08-29T22:21:47.7652342+08:00;True|2022-08-29T21:32:09.6248492+08:00;True|2022-08-28T22:26:55.5179366+08:00;True|2022-08-28T12:22:04.8266509+08:00;</History>
   </PropertyGroup>
 </Project>
