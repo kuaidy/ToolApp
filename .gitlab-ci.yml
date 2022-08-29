@@ -17,10 +17,12 @@
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
 stages:          # List of stages for jobs, and their order of execution
-  - build
-build-job:       # This job runs in the build stage, which runs first.
-  stage: build
+  - publish
+publish-job:       # This job runs in the build stage, which runs first.
+  stage: publish
   tags:
     - toolapp
   script:
-    - wget "https://www.rdonly.com/wp-content/uploads/2022/08/2022-8-26-1661526061588-1.png"
+    - cd /home/ToolApp/
+    - sudo git pull gitlab master
+    - sudo systemctl restart toolapp
