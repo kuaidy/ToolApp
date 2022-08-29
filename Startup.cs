@@ -35,7 +35,6 @@ namespace ToolApp
             }
             else
             {
-                app.UseHttpsRedirection();
                 app.UseExceptionHandler("/Error");
             }
 
