@@ -23,6 +23,6 @@ publish-job:       # This job runs in the build stage, which runs first.
   tags:
     - toolapp
   script:
-    - sudo cd /home/ToolApp/
-    - sudo git pull gitlab master
+    - cd /home/ToolApp/
+    - git pull gitlab master
     - sudo systemctl restart toolapp
