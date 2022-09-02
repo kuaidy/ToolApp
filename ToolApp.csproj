@@ -4,4 +4,65 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\BackImg\backimage.html" />
+    <None Include="wwwroot\BackImg\css\bgstyle.css" />
+    <None Include="wwwroot\BackImg\css\style.css" />
+    <None Include="wwwroot\BackImg\editor.html" />
+    <None Include="wwwroot\BackImg\image\icon\bgimage.png" />
+    <None Include="wwwroot\BackImg\image\icon\cssauthor.png" />
+    <None Include="wwwroot\BackImg\image\icon\easyicon.png" />
+    <None Include="wwwroot\BackImg\image\icon\iconfont.png" />
+    <None Include="wwwroot\BackImg\image\icon\icons8.png" />
+    <None Include="wwwroot\BackImg\image\icon\logo.png" />
+    <None Include="wwwroot\BackImg\image\icon\pixeden.png" />
+    <None Include="wwwroot\BackImg\image\pattern\anchors.svg" />
+    <None Include="wwwroot\BackImg\image\pattern\brickwall.svg" />
+    <None Include="wwwroot\BackImg\image\pattern\bubbles.svg" />
+    <None Include="wwwroot\BackImg\image\pattern\circuit-board.svg" />
+    <None Include="wwwroot\BackImg\image\pattern\dots.svg" />
+    <None Include="wwwroot\BackImg\image\pattern\explorer.svg" />
+    <None Include="wwwroot\BackImg\image\pattern\falling-triangles.svg" />
+    <None Include="wwwroot\BackImg\image\pattern\graph-paper.svg" />
+    <None Include="wwwroot\BackImg\image\pattern\hide.svg" />
+    <None Include="wwwroot\BackImg\image\pattern\hideout.svg" />
+    <None Include="wwwroot\BackImg\image\pattern\jigsaw.svg" />
+    <None Include="wwwroot\BackImg\image\pattern\jupiter.svg" />
+    <None Include="wwwroot\BackImg\image\pattern\leaf.svg" />
+    <None Include="wwwroot\BackImg\image\pattern\overlapping-circles.svg" />
+    <None Include="wwwroot\BackImg\image\pattern\squares.svg" />
+    <None Include="wwwroot\BackImg\image\pattern\sun.svg" />
+    <None Include="wwwroot\BackImg\image\pattern\temple.svg" />
+    <None Include="wwwroot\BackImg\image\pattern\tic-tac-toe.svg" />
+    <None Include="wwwroot\BackImg\image\pattern\wiggle.svg" />
+    <None Include="wwwroot\BackImg\image\Programmer\Linux.png" />
+    <None Include="wwwroot\BackImg\image\Programmer\python.png" />
+    <None Include="wwwroot\BackImg\image\Programmer\vscode.png" />
+    <None Include="wwwroot\BackImg\image\Programmer\Vue.png" />
+    <None Include="wwwroot\BackImg\index.html" />
+    <None Include="wwwroot\BackImg\index2021-08-12.html" />
+    <None Include="wwwroot\BackImg\index2021-11-19.html" />
+    <None Include="wwwroot\BackImg\indexbak.html" />
+    <None Include="wwwroot\BackImg\js\background.js" />
+    <None Include="wwwroot\BackImg\js\backimage.js" />
+    <None Include="wwwroot\BackImg\js\backimage2021-08-12.js" />
+    <None Include="wwwroot\BackImg\js\dom-to-image.min.js" />
+    <None Include="wwwroot\BackImg\js\download.js" />
+    <None Include="wwwroot\BackImg\js\init.js" />
+    <None Include="wwwroot\BackImg\js\jquery.min.js" />
+    <None Include="wwwroot\BackImg\LICENSE" />
+    <None Include="wwwroot\BackImg\plugs\domtoimage\canvas2svg.js" />
+    <None Include="wwwroot\BackImg\plugs\domtoimage\dom-to-image.min.js" />
+    <None Include="wwwroot\BackImg\plugs\domtoimage\html2canvas.js" />
+    <None Include="wwwroot\BackImg\plugs\domtoimage\test.html" />
+    <None Include="wwwroot\BackImg\plugs\evol\evol-colorpicker.css" />
+    <None Include="wwwroot\BackImg\plugs\evol\evol-colorpicker.js" />
+    <None Include="wwwroot\BackImg\plugs\minicolor\colorpicker.js" />
+    <None Include="wwwroot\BackImg\README.md" />
+    <None Include="wwwroot\BackImg\selectcolor.html" />
+    <None Include="wwwroot\BackImg\selecticon.html" />
+    <None Include="wwwroot\BackImg\sogousiteverification.txt" />
+    <None Include="wwwroot\BackImg\todo.md" />
+  </ItemGroup>
+
 </Project>
