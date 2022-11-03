@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Pages\Shared\_ValidationScriptsPartial.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\BackImg\backimage.html" />
     <None Include="wwwroot\BackImg\css\bgstyle.css" />
     <None Include="wwwroot\BackImg\css\style.css" />
