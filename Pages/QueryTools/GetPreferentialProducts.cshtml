@@ -1,0 +1,87 @@
+﻿@page
+@model ToolApp.Pages.QueryTools.GetPreferentialProductsModel
+@{
+}
+<div id="app">
+    <el-row>
+        <el-col :span="24">
+            <h2>商品搜索</h2>
+            <p>购物先领券</p>
+            <el-form :model="formData">
+                <el-form-item label="">
+                    <el-input v-model="formData.keyword" placeholder="商品关键字" />
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @@click="GetTaobaoGoods()">搜索</el-button>
+                </el-form-item>
+            </el-form>
+            <div class="demo-image" style="display: flex;flex-wrap: wrap;justify-content: space-between;">
+                <el-col :span="6" v-for="shop in shops" style="margin-top:10px;">
+                    <el-space :size="10">
+                        <el-card shadow="nerver">
+                            <el-image :src="shop.pict_url" :fit="fit"></el-image>
+                            <el-link :href="shop.url" target="_blank">{{shop.title}}</el-link>
+                            <div style="display:flex;justify-content: space-between;">
+                                <div>
+                                    <span style="color:red;font-size:15px;">￥{{shop.zk_final_price-shop.coupon_amount}}</span>
+                                    <span style="font-size:12px;text-decoration:line-through;">￥{{shop.zk_final_price}}</span>
+                                </div>
+                                <div>
+                                    <span style="font-size:12px;">已售{{shop.volume}}件</span>
+                                </div>
+                            </div>
+                            <div style="display:flex;justify-content: space-between;align-items: center;">
+                                <el-tag type="danger">优惠券{{shop.coupon_amount}}元</el-tag>
+                                <el-button type="danger">
+                                    <el-link :href="shop.coupon_share_url" target="_blank" style="color:white;">领劵购买</el-link>
+                                </el-button>
+                            </div>
+                        </el-card>
+                    </el-space>
+
+                </el-col>
+            </div>
+        </el-col>
+    </el-row>
+</div>
+<script>
+    var GetTaobaoGoodsUrl = '@ViewData["GetTaobaoGoods"]';
+    const App = {
+        data() {
+            return {
+                formData: {
+                    keyword: ""
+                },
+                shops: []
+            }
+        },
+        created: function () {
+        },
+        methods: {
+            GetTaobaoGoods() {
+                var self = this;
+                axios({
+                    method: 'get',
+                    url: GetTaobaoGoodsUrl,
+                    params:
+                    {
+                        keyword: self.formData.keyword
+                    }
+                })
+                    .then(function (response) {
+                        console.log(response);
+                        self.shops = response.data.tbk_dg_material_optional_response.result_list.map_data;
+                        console.log(self.shops);
+                    }).
+                    catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            DownImages() {
+            }
+        }
+    };
+    const app = Vue.createApp(App);
+    app.use(ElementPlus);
+    app.mount("#app");
+</script>
