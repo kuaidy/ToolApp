@@ -5,7 +5,7 @@
 }
 <div class="text-left">
     <h3>@ViewData["Title"]</h3>
-    <ul>
+    @* <ul>
         <li class="li_BConversion">
             <span>2进制</span>
             <input type="text" id="convert2" data-type="2" oninput="BinaryConvert2()">
@@ -29,7 +29,29 @@
         <li>
             <button type="button" onclick="ClearAll()">清空</button>
         </li>
-    </ul>
+    </ul> *@
+    <div class="form-group">
+        <label>2进制</label>
+        <input type="text" class="form-control" id="convert2" data-type="2" oninput="BinaryConvert2()">
+    </div>
+    <div class="form-group">
+        <label >4进制</label>
+        <input type="text" class="form-control" id="convert4" data-type="4" oninput="BinaryConvert4()">
+    </div>
+    <div class="form-group">
+        <label >8进制</label>
+        <input type="text" class="form-control" id="convert8" data-type="8" oninput="BinaryConvert8()">
+    </div>
+    <div class="form-group">
+        <label >10进制</label>
+        <input type="text" class="form-control" id="convert10" data-type="8" oninput="BinaryConvert10()">
+    </div>
+    <div class="form-group">
+        <label>16进制</label>
+        <input type="text" class="form-control" id="convert16" data-type="16" oninput="BinaryConvert16()">
+    </div>
+    <button type="submit" class="btn btn-primary" onclick="ClearAll()">清空</button>
+
     <div>
         <strong>使用说明</strong>
         <p>

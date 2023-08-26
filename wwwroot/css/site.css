@@ -69,10 +69,10 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
-ul{
+/*ul{
   text-decoration: none;
   padding: 0;
-}
+}*/
 .icon {
   width: 30px;
   height: 30px;
@@ -86,24 +86,25 @@ ul{
   font-weight: bold;
   margin: 0.5%;
 }
-li {
+/*li {
   display: flex;
   align-items: center;
   margin: 10px 0px;
-}
+}*/
 .ul_tools {
   padding: 0px;
   display: flex;
+  flex-wrap:wrap;
 }
 .sp_toolname {
   margin-left: 10px;
 }
 li.li_tool {
   display: flex;
-  width: 25%;
+  width: 24%;
   margin: 0.5%;
   border: 1px solid #ccc;
-  padding: 10px;
+  padding: 10px 20px;
   border-radius: 3px;
 }
 a.a_tool {

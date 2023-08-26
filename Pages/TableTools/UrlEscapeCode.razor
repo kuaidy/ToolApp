@@ -1,0 +1,20 @@
+﻿@page "/TableTools/UrlEscapeCode"
+@using Markdig;
+
+<article class="markdown-body">
+    @(new MarkupString(Result))
+</article>
+
+@code {
+    public string Result;
+
+    protected override async Task OnInitializedAsync()
+    {
+        string appPath = System.IO.Directory.GetCurrentDirectory();
+        string strContent = await FileHelp.GetFile(appPath + @"\Content\TableTools\UrlEscapeCode.md");
+        var pipeline = new MarkdownPipelineBuilder()
+                        .UseAdvancedExtensions()
+                        .Build();
+        Result = Markdig.Markdown.ToHtml(strContent, pipeline);
+    }
+}
