@@ -10,3 +10,7 @@
 bin/Debug/
 obj/
 .vs/
+.config/
+.vscode/
+.workfow/
+/bin/Release
