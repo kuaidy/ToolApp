@@ -23,6 +23,8 @@ namespace ToolApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //注入blazor服务
+            services.AddServerSideBlazor();
             services.AddRazorPages();
         }
 
@@ -47,6 +49,9 @@ namespace ToolApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                // 映射Blazor路由
+                endpoints.MapBlazorHub();
+                endpoints.MapFallbackToPage("/_Host");
             });
         }
     }

@@ -1,10 +1,12 @@
 @page
+@using ToolApp.Pages.Common;
 @model RegularModel
 @{
     ViewData["Title"] = "正则表达式测试";
 }
 <div class="text-left">
     <h3>@ViewData["Title"]</h3>
+    <p>正则表达式测试工具，是检验正则模式和给定文本之间是否匹配的工具，它能够把匹配到的结果高亮显示，是在线验证正则表达式的必备工具。本工具使用原生 JS 实现，具有极高的正则解析和匹配效率。另外，本工具还提供了各种常用正则表达式的写法，可以作为日常书写正则表达式时的参考。</p>
     <div class="RegularContent">
         <div class="RegularInput">
             <textarea id="RegularInputValue" placeholder="请输入需要匹配的内容" style="height:250px;width:100%;"></textarea>
@@ -21,6 +23,8 @@
         <textarea id="content_editor" style="display:none;">@ViewData["Content"]</textarea>
     </div>
 </div>
+<component type="typeof(Description)" param-DescFileName='"RegexTest.md"' render-mode="ServerPrerendered" />
+
 <script>
 function OnMatch() {
     var pattern=document.getElementById("RegularPattern").value;

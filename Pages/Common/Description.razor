@@ -1,0 +1,19 @@
+﻿@using Markdig;
+<article class="markdown-body">
+    @(new MarkupString(Result))
+</article>
+
+@code {
+    [Parameter]
+    public string DescFileName{ get; set; }
+    public string Result{ get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        string filePath = $"{System.IO.Directory.GetCurrentDirectory()}\\Content\\{DescFileName}";
+        string strContent = await FileHelp.GetFile(filePath);
+        var pipeline = new MarkdownPipelineBuilder()
+                        .UseAdvancedExtensions()
+                        .Build();
+        Result = Markdig.Markdown.ToHtml(strContent, pipeline);
+    }
+}
