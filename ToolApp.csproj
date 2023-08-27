@@ -82,8 +82,4 @@
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.21" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Content\新文件夹\" />
-  </ItemGroup>
-
 </Project>
