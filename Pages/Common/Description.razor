@@ -9,7 +9,7 @@
     public string Result{ get; set; }
     protected override async Task OnInitializedAsync()
     {
-        string filePath = $"{System.IO.Directory.GetCurrentDirectory()}\\Content\\{DescFileName}";
+        string filePath = $"{System.IO.Directory.GetCurrentDirectory()}/Content/{DescFileName}";
         string strContent = await FileHelp.GetFile(filePath);
         var pipeline = new MarkdownPipelineBuilder()
                         .UseAdvancedExtensions()

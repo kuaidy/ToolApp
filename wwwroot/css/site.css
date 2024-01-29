@@ -137,8 +137,10 @@ table {
   flex-direction: column;
 }
 ul.Code_OptionButton {
-  display: flex;
-  margin: 0px;
+    list-style: none;
+    display: flex;
+    margin: 10px 0px;
+    padding: 0;
 }
 ul.Code_OptionButton li{
   margin-right: 10px;

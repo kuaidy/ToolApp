@@ -1,43 +1,53 @@
 @page "/TxtTools/WordCount"
 
-<div class="row">
-    <div class="col">
-        <h3>字数统计</h3>
-        <p>文章字数统计工具，是一款快速计算一篇文章中字符数的工具；本工具支持计算文章总字符数、英文单词个数、标点符号个数以及中文字数等实用功能，是网站编辑、博客作者、文章作家、论文写作者、自媒体人等文字工作者的必备辅助工具之一。</p>
+<div class="container">
+
+    <div class="row">
+        <div class="col">
+            <h3>字数统计</h3>
+            <p>文章字数统计工具，是一款快速计算一篇文章中字符数的工具；本工具支持计算文章总字符数、英文单词个数、标点符号个数以及中文字数等实用功能，是网站编辑、博客作者、文章作家、论文写作者、自媒体人等文字工作者的必备辅助工具之一。</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <textarea class="form-control" rows="20" placeholder="请在这里输入文章内容" @bind="Result" @bind:event="oninput"></textarea>
+        </div>
+        <div class="col-md-4">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <span>总字数</span>
+                    <span>@AllCount</span>
+                </li>
+                <li class="list-group-item">
+                    <span>英文</span>
+                    <span>@ECount</span>
+                </li>
+                <li class="list-group-item">
+                    <span>标点符号</span>
+                    <span>@SCount</span>
+                </li>
+                <li class="list-group-item">
+                    <span>数字</span>
+                    <span>@NCount</span>
+                </li>
+                <li class="list-group-item">
+                    <span>中文</span>
+                    <span>@CCount</span>
+                </li>
+
+                
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-primary" @onclick="Clear">清空</button>
+        </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-8">
-        <textarea class="form-control" rows="20" placeholder="请在这里输入文章内容" @bind="Result"></textarea>
-    </div>
-    <div class="col-md-4">
-        <ul class="list-group">
-            <li class="list-group-item">
-                <span>总字数</span>
-            </li>
-            <li class="list-group-item">
-                <span>英文</span>
-            </li>
-            <li class="list-group-item">
-                <span>标点符号</span>
-            </li>
-            <li class="list-group-item">
-                <span>数字</span>
-            </li>
-            <li class="list-group-item">
-                <span>中文</span>
-            </li>
-        </ul>
-    </div>
-</div>
-<div class="row">
-    <div class="col">
-        <button type="button" class="btn btn-primary" @onclick="Test">清空</button>
-        <button class="btn btn-primary" @onclick="SayMeow">点我</button>
-    </div>
-</div>
+
 @code {
-    private string m_Result = "123";
+    private string m_Result = "";
     public string Result
     {
         get
@@ -50,26 +60,45 @@
             Count(value);
         }
     }
+    public int AllCount;
     public int ECount;
+    public int CCount;
     public int NCount;
     public int SCount;
     protected override async Task OnInitializedAsync()
     {
 
     }
-    private void Count(string content)
+    private void Count(string value)
     {
-        foreach (char item in content)
+        AllCount = 0;
+        ECount = 0;
+        NCount = 0;
+        SCount = 0;
+        CCount = 0;
+        foreach (char item in value)
         {
-            NCount++;
+            AllCount++;
+            if (char.IsDigit(item))
+            {
+                NCount++;
+            }
+            if (char.IsLetter(item) && !(item >= 0x4e00 && item <= 0x9fbb))
+            {
+                ECount++;
+            }
+            if (char.IsPunctuation(item))
+            {
+                SCount++;
+            }
+            if (item >= 0x4e00 && item <= 0x9fbb)
+            {
+                CCount++;
+            }
         }
     }
-    private void Test()
+    private void Clear()
     {
         Result = "";
-    }
-    private void SayMeow()
-    {
-        ECount++;
     }
 }
