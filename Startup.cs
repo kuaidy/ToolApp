@@ -26,6 +26,7 @@ namespace ToolApp
             //×¢Èëblazor·þÎñ
             services.AddServerSideBlazor();
             services.AddRazorPages();
+            services.AddMasaBlazor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

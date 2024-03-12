@@ -129,9 +129,6 @@ li.symbol_items {
   flex-direction: column;
   align-items: flex-start;
 }
-table {
-  border-collapse: unset !important;
-}
 .Code_Option {
   display: flex;
   flex-direction: column;

@@ -1,0 +1,25 @@
+﻿@page "/QueryTools/CheckUrl"
+<div class="div-input">
+    <strong>请输入网址</strong>
+    <input type="text" name="" id="ip-colorvalue" class="ip-colorvalue" @bind-value="url">
+    <button @onclick="BeginCheck">开始检测</button>
+    <table class="table table-bordered border-primary">
+        <thead>
+            <tr>
+                <th>链接</th>
+                <th>状态</th>
+                <th>结果</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+@code {
+    private string url;
+    private void BeginCheck()
+    {
+        if (!string.IsNullOrEmpty(url))
+        {
+                
+        }
+    }
+}
