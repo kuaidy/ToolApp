@@ -1,11 +1,11 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "在线工具";
+    ViewData["Title"]=ViewData["ToolOnline"];
 }
 <div class="text-center">
     <div>
-        <div class="TypeTitle">常用对照表</div>
+        <div class="TypeTitle">@ViewData["CommonComparisonTable"]</div>
         <ul class="ul_tools">
             <li class="li_tool">
                 <a href="./TableTools/MimiType" class="a_tool">

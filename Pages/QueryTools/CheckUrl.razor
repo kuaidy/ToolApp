@@ -1,8 +1,11 @@
 ﻿@page "/QueryTools/CheckUrl"
+@using System.Text.RegularExpressions
+@using ToolApp.Models
 <div class="div-input">
     <strong>请输入网址</strong>
     <input type="text" name="" id="ip-colorvalue" class="ip-colorvalue" @bind-value="url">
     <button @onclick="BeginCheck">开始检测</button>
+    <span>@message</span>
     <table class="table table-bordered border-primary">
         <thead>
             <tr>
@@ -11,15 +14,94 @@
                 <th>结果</th>
             </tr>
         </thead>
+        <tbody>
+            @foreach (CheckUrlModel checkUrl in checkUrls)
+            {
+                <tr>
+                    <td>@checkUrl.Url</td>
+                    @if (@checkUrl.Status == "OK")
+                    {
+                        <td style="color:green;">
+                            @checkUrl.Status
+                        </td>
+                    }
+                    else{
+                        <td style="color:red;">
+                            @checkUrl.Status
+                        </td>
+                    }
+                        <td>@checkUrl.Result</td>
+                </tr>
+            }
+        </tbody>
     </table>
 </div>
 @code {
     private string url;
-    private void BeginCheck()
+    private List<CheckUrlModel> checkUrls = new List<CheckUrlModel>();
+    private string message;
+    private async void BeginCheck()
     {
+        checkUrls.Clear();
         if (!string.IsNullOrEmpty(url))
         {
-                
+            HttpClient httpClient = new HttpClient();
+            httpClient.Timeout = TimeSpan.FromSeconds(5);
+            HttpResponseMessage httpResponseMessage = await httpClient.GetAsync(url);
+            if (httpResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                CheckUrlModel checkUrl = new CheckUrlModel();
+                checkUrl.Url = url;
+                checkUrl.Status = httpResponseMessage.StatusCode.ToString();
+                checkUrl.Result = "正常";
+                checkUrls.Add(checkUrl);
+                StateHasChanged();
+                string content = await httpClient.GetStringAsync(url);
+                if (!string.IsNullOrEmpty(content))
+                {
+                    string pattern = $"href=\"([http://|https://].*?)\"";
+                    MatchCollection matchCollection = Regex.Matches(content, pattern);
+                    foreach (Match match in matchCollection)
+                    {
+                        message = $"正在检测，已检测{checkUrls.Count}条。";
+                        if (!match.Groups[1].Value.Contains(url))
+                        {
+                            string tmpUrl = match.Groups[1].Value;
+                            try
+                            {
+                                HttpResponseMessage tmpHttpResponseMessage = await httpClient.GetAsync(tmpUrl);
+                                if (tmpHttpResponseMessage != null)
+                                {
+                                    CheckUrlModel tmpCheckUrl = new CheckUrlModel();
+                                    tmpCheckUrl.Url = tmpUrl;
+                                    tmpCheckUrl.Status = tmpHttpResponseMessage.StatusCode.ToString();
+                                    checkUrls.Add(tmpCheckUrl);
+                                    StateHasChanged();
+                                }
+                                else
+                                {
+                                    CheckUrlModel tmpCheckUrl = new CheckUrlModel();
+                                    tmpCheckUrl.Url = tmpUrl;
+                                    tmpCheckUrl.Status = "-1";
+                                    checkUrls.Add(tmpCheckUrl);
+                                    StateHasChanged();
+                                }
+                            }
+                            catch(Exception ex)
+                            {
+                                CheckUrlModel tmpCheckUrl = new CheckUrlModel();
+                                tmpCheckUrl.Url = tmpUrl;
+                                tmpCheckUrl.Status = "-1";
+                                checkUrls.Add(tmpCheckUrl);
+                                StateHasChanged();
+                                continue;
+                            }
+                        }
+                    }
+                }
+            }
         }
+        message = $"检测完毕，共检测{checkUrls.Count}条。";
+        StateHasChanged();
     }
 }
