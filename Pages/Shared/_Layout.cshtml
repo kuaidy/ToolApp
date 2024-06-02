@@ -4,14 +4,6 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.Extensions.Options
 
-@inject IOptions<RequestLocalizationOptions> LocOptions;
-@{
-    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
-    var cultureItems = LocOptions.Value.SupportedUICultures
-                        .Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName })
-                        .ToList();
-}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,8 +44,8 @@
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">ToolApp</a>
             </div>
-            <div title="@requestCulture?.Provider?.GetType().Name">
-                <select onchange="HandleChange" asp-for="@requestCulture.RequestCulture.UICulture.Name" asp-items="cultureItems"></select>
+            <div>
+                @await Html.PartialAsync("_SelectLanguagePartial")
             </div>
         </nav>
     </header>

@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace ToolApp
 {
@@ -32,16 +34,17 @@ namespace ToolApp
             services.AddLocalization(t => {
                 t.ResourcesPath = "Resources";
             });
+            services.AddMvc().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization();
             services.Configure<RequestLocalizationOptions>(options =>
             {
                 var supportedCultures = new[]
                 {
-                    new CultureInfo("zh-CN"),
-                    new CultureInfo("en-US")
+                    "en",
+                    "zh"
                 };
-                options.DefaultRequestCulture = new RequestCulture(culture: "zh-CN", uiCulture: "zh-CN");
-                options.SupportedCultures = supportedCultures;
-                options.SupportedUICultures = supportedCultures;
+                options.SetDefaultCulture(supportedCultures[0])
+                .AddSupportedCultures(supportedCultures)
+                .AddSupportedUICultures(supportedCultures);
             });
         }
 
@@ -57,7 +60,8 @@ namespace ToolApp
                 app.UseExceptionHandler("/Error");
             }
             //启用国际化中间件
-            app.UseRequestLocalization();
+            var localizationOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+            app.UseRequestLocalization(localizationOptions.Value);
 
             app.UseStaticFiles();
             app.UseRouting();
@@ -68,6 +72,7 @@ namespace ToolApp
                 // 映射Blazor路由
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
+                endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

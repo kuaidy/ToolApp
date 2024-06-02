@@ -1,18 +1,24 @@
 ﻿@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Localization
 @model IndexModel
+
+@inject IViewLocalizer ViewLocalizer;
+
 @{
-    ViewData["Title"]=ViewData["ToolOnline"];
+    ViewData["Title"] = ViewLocalizer["ToolOnline"];
 }
+
 <div class="text-center">
     <div>
-        <div class="TypeTitle">@ViewData["CommonComparisonTable"]</div>
+        <div class="TypeTitle">@ViewLocalizer["CommonComparisonTable"]</div>
         <ul class="ul_tools">
             <li class="li_tool">
                 <a href="./TableTools/MimiType" class="a_tool">
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-fenlei"></use>
                     </svg>
-                    <span class="sp_toolname">常见 MimeType 参考表</span>
+                    <span class="sp_toolname">@ViewLocalizer["Common Mime Type Reference Table"]</span>
                 </a>
             </li>
             <li class="li_tool">
@@ -20,7 +26,7 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-css"></use>
                     </svg>
-                    <span class="sp_toolname">CSS 选择器参考表</span>
+                    <span class="sp_toolname">@ViewLocalizer["CSS Selector reference table"]</span>
                 </a>
             </li>
             <li class="li_tool">
@@ -28,7 +34,7 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-vim"></use>
                     </svg>
-                    <span class="sp_toolname">Vim命令参考表</span>
+                    <span class="sp_toolname">@ViewLocalizer["Vim Command Reference Table"]</span>
                 </a>
             </li>
             <li class="li_tool">
@@ -36,7 +42,7 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-git1"></use>
                     </svg>
-                    <span class="sp_toolname">Git命令参考表</span>
+                    <span class="sp_toolname">@ViewLocalizer["Git Command Reference Table"]</span>
                 </a>
             </li>
             <li class="li_tool">
@@ -44,7 +50,7 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-EMOJI-"></use>
                     </svg>
-                    <span class="sp_toolname">Emoji表情符号</span>
+                    <span class="sp_toolname">@ViewLocalizer["Emoji"]</span>
                 </a>
             </li>
             <li class="li_tool">
@@ -52,7 +58,7 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-linux"></use>
                     </svg>
-                    <span class="sp_toolname">Linux常用命令</span>
+                    <span class="sp_toolname">@ViewLocalizer["Common Linux commands"]</span>
                 </a>
             </li>
             <li class="li_tool">
@@ -60,7 +66,7 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-teshufuhao"></use>
                     </svg>
-                    <span class="sp_toolname">特殊符号大全</span>
+                    <span class="sp_toolname">@ViewLocalizer["Special Symbols"]</span>
                 </a>
             </li>
             <li class="li_tool">
@@ -68,7 +74,7 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-10httpshujujiaohumoban"></use>
                     </svg>
-                    <span class="sp_toolname">HTTP状态码对照表</span>
+                    <span class="sp_toolname">@ViewLocalizer["HTTP status code"]</span>
                 </a>
             </li>
             <li class="li_tool">
@@ -76,7 +82,7 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-url"></use>
                     </svg>
-                    <span class="sp_toolname">Url转义字符参考表</span>
+                    <span class="sp_toolname">@ViewLocalizer["Url Escape Character"]</span>
                 </a>
             </li>
             <li class="li_tool">
@@ -84,7 +90,7 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-dianhua"></use>
                     </svg>
-                    <span class="sp_toolname">常用电话列表</span>
+                    <span class="sp_toolname">@ViewLocalizer["Frequently Used Phone List"]</span>
                 </a>
             </li>
             <li class="li_tool">
@@ -92,20 +98,20 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-dianhua"></use>
                     </svg>
-                    <span class="sp_toolname">ASCII字符参考</span>
+                    <span class="sp_toolname">@ViewLocalizer["ASCII Character Reference"]</span>
                 </a>
             </li>
         </ul>
     </div>
     <div>
-        <div class="TypeTitle">转换工具</div>
+        <div class="TypeTitle">@ViewLocalizer["Conversion Tool"]</div>
         <ul class="ul_tools">
             <li class="li_tool">
                 <a href="./ConvertTools/BinaryConvert" class="a_tool">
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-binarycode"></use>
                     </svg>
-                    <span class="sp_toolname">进制转换</span>
+                    <span class="sp_toolname">@ViewLocalizer["Base conversion"]</span>
                </a>
             </li>
             <li class="li_tool">
@@ -113,21 +119,21 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-dixiayanse"></use>
                     </svg>
-                    <span class="sp_toolname">颜色值转换</span>
+                    <span class="sp_toolname">@ViewLocalizer["Color value conversion"]</span>
                 </a>
             </li> 
         </ul>
     </div>
     
     <div>
-        <div class="TypeTitle">文本工具</div>
+        <div class="TypeTitle">@ViewLocalizer["Text Tool"]</div>
         <ul class="ul_tools">
             <li class="li_tool">
                 <a href="./TxtTools/WordCount" class="a_tool">
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-shuliangtongji"></use>
                     </svg>
-                    <span class="sp_toolname">字数统计</span>
+                    <span class="sp_toolname">@ViewLocalizer["Word count"]</span>
                 </a>
             </li>
             <li class="li_tool">
@@ -135,7 +141,7 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-json"></use>
                     </svg>
-                    <span class="sp_toolname">Json格式化</span>
+                    <span class="sp_toolname">@ViewLocalizer["Json formatting"]</span>
                 </a>
             </li>
             <li class="li_tool">
@@ -143,7 +149,7 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-md"></use>
                     </svg>
-                    <span class="sp_toolname">Markdown编辑</span>
+                    <span class="sp_toolname">@ViewLocalizer["Markdown Editor"]</span>
                 </a>
             </li>
             <li class="li_tool">
@@ -151,35 +157,35 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-a-regex1x"></use>
                     </svg>
-                    <span class="sp_toolname">正则表达式</span>
+                    <span class="sp_toolname">@ViewLocalizer["Regular Expression"]</span>
                 </a>
             </li>
         </ul>
     </div>
 
     <div>
-        <div class="TypeTitle">编码转换</div>
+        <div class="TypeTitle">@ViewLocalizer["Encoding Conversion"]</div>
         <ul class="ul_tools">
             <li class="li_tool">
                 <a href="./CodeTools/EncodeDecode" class="a_tool">
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-bianma"></use>
                     </svg>
-                    <span class="sp_toolname">编码解码</span>
+                    <span class="sp_toolname">@ViewLocalizer["Encoding And Decoding"]</span>
                </a>
             </li>
         </ul>
     </div>
 
     <div>
-        <div class="TypeTitle">生成工具</div>
+        <div class="TypeTitle">@ViewLocalizer["Generating tools"]</div>
         <ul class="ul_tools">
             <li class="li_tool">
                 <a href="./CreateTools/GuidCreate" class="a_tool">
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-g"></use>
                     </svg>
-                    <span class="sp_toolname">Guid生成</span>
+                    <span class="sp_toolname">@ViewLocalizer["Guid Generation"]</span>
                </a>
             </li>
             <li class="li_tool">
@@ -187,7 +193,7 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-erweima"></use>
                     </svg>
-                    <span class="sp_toolname">二维码生成</span>
+                    <span class="sp_toolname">@ViewLocalizer["QRCode Generation"]</span>
                </a>
             </li>
             <li class="li_tool">
@@ -195,7 +201,9 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-tupian"></use>
                     </svg>
-                    <span class="sp_toolname">简单主图生成</span>
+                    <span class="sp_toolname">
+                        @ViewLocalizer["Simple Main Image Generation"]
+                    </span>
                </a>
             </li>
             <li class="li_tool">
@@ -203,7 +211,7 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-shipin"></use>
                     </svg>
-                    <span class="sp_toolname">视频嵌入代码生成</span>
+                    <span class="sp_toolname">@ViewLocalizer["Video Embedding Code Generation"]</span>
                </a>
             </li>
             <li class="li_tool">
@@ -211,20 +219,20 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-gouwu"></use>
                     </svg>
-                    <span class="sp_toolname">商品卡片生成</span>
+                    <span class="sp_toolname">@ViewLocalizer["Product Card Generation"]</span>
                 </a>
             </li>
         </ul>
     </div>
     <div>
-        <div class="TypeTitle">查询工具</div>
+        <div class="TypeTitle">@ViewLocalizer["Query tools"]</div>
         <ul class="ul_tools">
             <li class="li_tool">
                 <a href="./QueryTools/ShowIp" class="a_tool">
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-bangong"></use>
                     </svg>
-                    <span class="sp_toolname">Ip查询</span>
+                    <span class="sp_toolname">@ViewLocalizer["Ip Query"]</span>
                </a>
             </li>
             <li class="li_tool">
@@ -232,7 +240,7 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-tupian"></use>
                     </svg>
-                    <span class="sp_toolname">一键下载图片</span>
+                    <span class="sp_toolname">@ViewLocalizer["One Click Download Of Images"]</span>
                </a>
             </li>
             <li class="li_tool">
@@ -240,7 +248,7 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-bianxian"></use>
                     </svg>
-                    <span class="sp_toolname">优惠券查询</span>
+                    <span class="sp_toolname">@ViewLocalizer["Coupon Inquiry"]</span>
                </a>
             </li>
             <li class="li_tool">
@@ -248,7 +256,7 @@
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-bianxian"></use>
                     </svg>
-                    <span class="sp_toolname">网站链接检测工具</span>
+                    <span class="sp_toolname">@ViewLocalizer["Website Link Detection Tool"]</span>
                 </a>
             </li>
         </ul>
