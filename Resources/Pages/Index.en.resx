@@ -118,112 +118,111 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ASCII Character Reference" xml:space="preserve">
-    <value>ASCII字符参考</value>
+    <value>ASCII Character Reference</value>
   </data>
   <data name="Base conversion" xml:space="preserve">
-    <value>进制转换</value>
+    <value>Base conversion</value>
   </data>
   <data name="Color value conversion" xml:space="preserve">
-    <value>颜色值转换</value>
+    <value>Color value conversion</value>
   </data>
   <data name="Common Linux commands" xml:space="preserve">
-    <value>Linux常用命令</value>
+    <value>Common Linux commands</value>
   </data>
   <data name="Common Mime Type Reference Table" xml:space="preserve">
-    <value>常见 MimeType 参考表</value>
+    <value>Common Mime Type Reference Table</value>
   </data>
   <data name="CommonComparisonTable" xml:space="preserve">
-    <value>常用对照表</value>
+    <value>Common Comparison Table</value>
   </data>
   <data name="Conversion Tool" xml:space="preserve">
-    <value>转换工具</value>
+    <value>Conversion Tool</value>
   </data>
   <data name="Coupon Inquiry" xml:space="preserve">
-    <value>优惠券查询</value>
+    <value>Coupon Inquiry</value>
   </data>
   <data name="CSS Selector reference table" xml:space="preserve">
-    <value>CSS 选择器参考表</value>
+    <value>CSS Selector reference table</value>
   </data>
   <data name="Emoji" xml:space="preserve">
-    <value>Emoji表情符号</value>
+    <value>Emoji</value>
   </data>
   <data name="Encoding And Decoding" xml:space="preserve">
-    <value>编码解码</value>
+    <value>Encoding And Decoding</value>
   </data>
   <data name="Encoding Conversion" xml:space="preserve">
-    <value>编码转换</value>
+    <value>Encoding Conversion</value>
   </data>
   <data name="Frequently Used Phone List" xml:space="preserve">
-    <value>常用电话列表</value>
+    <value>Frequently Used Phone List</value>
   </data>
   <data name="Generating tools" xml:space="preserve">
-    <value>生成工具</value>
+    <value>Generating tools</value>
   </data>
   <data name="Git Command Reference Table" xml:space="preserve">
-    <value>Git命令参考表</value>
+    <value>Git Command Reference Table</value>
   </data>
   <data name="Guid Generation" xml:space="preserve">
-    <value>Guid生成</value>
+    <value>Guid Generation</value>
   </data>
   <data name="HTTP status code" xml:space="preserve">
-    <value>HTTP状态码对照表</value>
+    <value>HTTP status code</value>
   </data>
   <data name="Ip Query" xml:space="preserve">
-    <value>Ip查询</value>
+    <value>Ip Query</value>
   </data>
   <data name="Json formatting" xml:space="preserve">
-    <value>Json格式化</value>
+    <value>Json formatting</value>
   </data>
   <data name="Markdown Editor" xml:space="preserve">
-    <value>Markdown编辑</value>
+    <value>Markdown Editor</value>
   </data>
   <data name="One Click Download Of Images" xml:space="preserve">
-    <value>一键下载图片</value>
+    <value>One Click Download Of Images</value>
   </data>
   <data name="Product Card Generation" xml:space="preserve">
-    <value>商品卡片生成</value>
+    <value>Product Card Generation</value>
   </data>
   <data name="QRCode Generation" xml:space="preserve">
-    <value>二维码生成</value>
+    <value>QRCode Generation</value>
   </data>
   <data name="Query tools" xml:space="preserve">
-    <value>查询工具</value>
+    <value>Query tools</value>
   </data>
   <data name="Regular Expression" xml:space="preserve">
-    <value>正则表达式</value>
+    <value>Regular Expression</value>
   </data>
   <data name="Simple Main Image Generation" xml:space="preserve">
-    <value>简单主图生成</value>
+    <value>Simple Main Image Generation</value>
   </data>
   <data name="Special Symbols" xml:space="preserve">
-    <value>特殊符号大全</value>
+    <value>Special Symbols</value>
   </data>
   <data name="Text Tool" xml:space="preserve">
-    <value>文本工具</value>
+    <value>Text Tool</value>
   </data>
   <data name="ToolOnline" xml:space="preserve">
-    <value>在线工具</value>
-    <comment>网站标题</comment>
+    <value>ToolOnline</value>
   </data>
   <data name="Url Escape Character" xml:space="preserve">
-    <value>Url转义字符参考表</value>
+    <value>Url Escape Character</value>
   </data>
   <data name="Video Embedding Code Generation" xml:space="preserve">
-    <value>视频嵌入代码生成</value>
+    <value>Video Embedding Code Generation</value>
   </data>
   <data name="Vim Command Reference Table" xml:space="preserve">
-    <value>Vim命令参考表</value>
+    <value>Vim Command Reference Table</value>
   </data>
   <data name="Website Link Detection Tool" xml:space="preserve">
-    <value>网站链接检测工具</value>
+    <value>Website Link Detection Tool</value>
   </data>
   <data name="Word count" xml:space="preserve">
-    <value>字数统计</value>
+    <value>Word count</value>
   </data>
   <data name="Productivity Tools" xml:space="preserve">
-    <value>效率工具</value>
+    <value>Productivity Tools</value>
   </data>
   <data name="Pomodoro" xml:space="preserve">
-    <value>番茄钟</value>
+    <value>Pomodoro</value>
   </data>
 </root>

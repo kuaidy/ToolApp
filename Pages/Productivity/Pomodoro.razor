@@ -1,0 +1,367 @@
+﻿@page "/ProductiviryTools/Pomodoro"
+@using System.Threading
+@using System.Text.Json
+@using ToolApp.Common
+@using ToolApp.Models
+@using ToolApp.Pages.Common
+@inject IMessageService MessageService
+@inject IJSRuntime JS;
+<FluentGrid Spacing="3" Justify="JustifyContent.FlexStart">
+    <FluentGridItem xs="12">
+        <FluentLabel Typo="Typography.H2">番茄钟</FluentLabel>
+    </FluentGridItem>
+    <FluentGridItem xs="12">
+        <FluentStack Style="align-items: center;">
+            <FluentLabel>分钟</FluentLabel>
+            <FluentNumberField @bind-Value="MinuteCount" />
+        </FluentStack>
+    </FluentGridItem>
+    <FluentGridItem xs="12">
+        <FluentStack Style="align-items: center;">
+            <FluentLabel>备注</FluentLabel>
+            <FluentTextField @bind-Value="Remark" Style="width:200px;"></FluentTextField>
+        </FluentStack>
+    </FluentGridItem>
+    <FluentGridItem xs="12">
+        <FluentButton OnClick="@StartOrEnd">@m_StartOrEndText</FluentButton>
+        <FluentButton OnClick="@PauseOrResume">@m_PauseOrResumeText</FluentButton>
+    </FluentGridItem>
+    <FluentGridItem xs="12">
+        <FluentLabel Typo="Typography.H1">@TimeLeft</FluentLabel>
+    </FluentGridItem>
+    <FluentGridItem xs="12">
+        <FluentProgress Min="0" Max="AllCount" Value="CurrenCount"></FluentProgress>
+    </FluentGridItem>
+    <FluentGridItem xs="12">
+        <FluentMessageBarProvider Section="MESSAGE_SECTION" Format="MessageFormat.Notification" MaxMessageCount="100" />
+    </FluentGridItem>
+    <FluentGridItem xs="12">
+        <FluentStack Style="border:1px #ccc solid;padding:10px;">
+            <table>
+                <tr>
+                    <td style="height:15px;text-align: center;"></td>
+                </tr>
+                <tr>
+                    <td style="height:15px;text-align: center;">M</td>
+                </tr>
+                <tr>
+                    <td style="height:7px;text-align: center;"></td>
+                </tr>
+                <tr>
+                    <td style="height:15px;text-align: center;">T</td>
+                </tr>
+                <tr>
+                    <td style="height:7px;text-align: center;"></td>
+                </tr>
+                <tr>
+                    <td style="height:15px;text-align: center;">F</td>
+                </tr>
+                <tr>
+                    <td style="height:15px;text-align: center;"></td>
+                </tr>
+            </table>
+            <table style="border-collapse: separate;">
+                @for (int i = 0; i < 7; ++i)
+                {
+                    <tr style="">
+                        @for (int j = 1; j <= weeks; ++j)
+                        {
+                            DateInfo dateInfo = DateInfos.Find(x => x.X == j && x.Y == i);
+                            if (dateInfo != null)
+                            {
+                                <td style="width:15px;height:15px;background-color:@dateInfo.Color;margin:1px;cursor:pointer;" title="@dateInfo.Day @dateInfo.Count" @onclick="()=>{SelectedDay(dateInfo);}"></td>
+                            }
+                            else
+                            {
+                                <td style="width:15px;height:15px;background-color:none;margin:1px;cursor:pointer;"></td>
+                            }
+                        }
+                    </tr>
+                }
+            </table>
+        </FluentStack>
+    </FluentGridItem>
+    <FluentGridItem xs="12">
+        @if (m_toDayPomodoreRecords != null && m_toDayPomodoreRecords.Count > 0)
+        {
+            <FluentListbox TOption="PomodoreRecord"
+                           Items="@m_toDayPomodoreRecords"
+                           OptionText="@(p => (p.Remark==null?"":p.Remark)+" "+$"{p.StartTime}-{p.EndTime}计时结束了,共专注{Math.Round((p.EndTime - p.StartTime).TotalMinutes, 0)}分钟。")"
+                           OptionValue="@(p=>p.Guid)" />
+        }
+    </FluentGridItem>
+</FluentGrid>
+<Description DescFileName="Productivity/Pomodoro.md"></Description>
+@code {
+    private int m_MinuteCount = 25;
+    public int MinuteCount
+    {
+        get
+        {
+            return m_MinuteCount;
+        }
+        set
+        {
+            m_MinuteCount = value;
+            TimeLeft = $"{m_MinuteCount}:00";
+            CurrenCount = AllCount = m_MinuteCount * 60;
+        }
+
+    }
+    private string m_TimeLeft = "25:00";
+    public string TimeLeft
+    {
+        get
+        {
+            return m_TimeLeft;
+        }
+        set
+        {
+            m_TimeLeft = value;
+        }
+    }
+    private int m_CurrenCount;
+
+    public int CurrenCount
+    {
+        get
+        {
+            return m_CurrenCount;
+        }
+        set
+        {
+            m_CurrenCount = value;
+        }
+    }
+    private int m_AllCount = 0;
+    public int AllCount
+    {
+        get
+        {
+            return m_AllCount;
+        }
+        set
+        {
+            m_AllCount = value;
+        }
+    }
+
+    private string m_Remark;
+    public string Remark
+    {
+        get
+        {
+            return m_Remark;
+        }
+        set
+        {
+            m_Remark = value;
+        }
+    }
+
+    private DateTime m_StartTime;
+    private DateTime m_EndTime;
+    private int weeks = 0;
+    private List<DateInfo> DateInfos = new List<DateInfo>();
+    List<PomodoreRecord> m_PomodoreRecords = new List<PomodoreRecord>();
+    private List<PomodoreRecord> m_toDayPomodoreRecords = new List<PomodoreRecord>();
+
+    private Timer timer;
+    private bool isRunning = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await Statistic(DateTime.Now.Year);
+    }
+
+    private void StartTimer()
+    {
+        if (!isRunning)
+        {
+            timer = new Timer(TimerCallback, null, 0, 1000); // 第一次延迟 0 毫秒，之后每隔 1 秒触发一次
+            isRunning = true;
+            m_StartTime = DateTime.Now;
+        }
+    }
+
+    private void PauseTimer()
+    {
+        if (isRunning)
+        {
+            timer.Change(Timeout.Infinite, Timeout.Infinite); // 暂停计时器
+            isRunning = false;
+        }
+    }
+
+    private void ResumeTimer()
+    {
+        if (!isRunning)
+        {
+            timer.Change(0, 1000); // 恢复计时器
+            isRunning = true;
+        }
+    }
+
+    private async Task StopTimer()
+    {
+        if (timer != null)
+        {
+            timer.Dispose(); // 清理计时器资源
+            timer = null;
+            isRunning = false;
+            m_EndTime = DateTime.Now;
+            DisplayMessage();
+            await AddPomodoroRecord();
+            await Statistic(DateTime.Now.Year);
+        }
+    }
+    private async void TimerCallback(object state)
+    {
+        CurrenCount--;
+        if (CurrenCount == 0)
+        {
+            await StopTimer();
+            m_StartOrEndText = "开始";
+        }
+        int m = CurrenCount / 60;
+        int s = CurrenCount % 60;
+        TimeLeft = $"{m}:{s}";
+        InvokeAsync(StateHasChanged);
+    }
+
+    private string m_StartOrEndText = "开始";
+    private string m_PauseOrResumeText = "暂停";
+
+    async Task StartOrEnd()
+    {
+        if (m_StartOrEndText == "开始")
+        {
+            CurrenCount = AllCount = MinuteCount * 60;
+            StartTimer();
+            m_StartOrEndText = "结束";
+        }
+        else if (m_StartOrEndText == "结束")
+        {
+            StopTimer();
+            m_StartOrEndText = "开始";
+        }
+    }
+    async Task PauseOrResume()
+    {
+        if (m_PauseOrResumeText == "暂停")
+        {
+            PauseTimer();
+            m_PauseOrResumeText = "继续";
+        }
+        else if (m_PauseOrResumeText == "继续")
+        {
+            ResumeTimer();
+            m_PauseOrResumeText = "暂停";
+        }
+    }
+    void DisplayMessage()
+    {
+        MessageService.ShowMessageBar(options =>
+        {
+            options.Section = "MESSAGE_SECTION";
+            options.Title = $"{Remark}";
+            options.Body = $"{m_StartTime}-{m_EndTime}计时结束了,共专注{Math.Round((m_EndTime - m_StartTime).TotalMinutes, 0)}分钟。";
+            options.Intent = MessageIntent.Info;
+            options.Icon = null;
+            options.ClearAfterNavigation = true;
+            options.OnClose = (e) => { return Task.CompletedTask; };
+            options.Link = null;
+            options.PrimaryAction = null;
+            options.SecondaryAction = null;
+
+        });
+    }
+    async Task AddPomodoroRecord()
+    {
+        try
+        {
+            string dbName = "ToolAppDb";
+            string version = "1";
+            string objectStoreName = "PomodoroRecord";
+            PomodoreRecord pomodoreRecord = new PomodoreRecord();
+            pomodoreRecord.Guid = Guid.NewGuid().ToString();
+            pomodoreRecord.StartTime = m_StartTime;
+            pomodoreRecord.EndTime = m_EndTime;
+            pomodoreRecord.Remark = Remark;
+            m_PomodoreRecords.Add(pomodoreRecord);
+            await JS.InvokeVoidAsync("MyIndexedDB.Create", dbName, version, objectStoreName);
+            await JS.InvokeVoidAsync("MyIndexedDB.Add", dbName, version, objectStoreName, pomodoreRecord);
+        }
+        catch (Exception ex)
+        {
+            MessageService.ShowMessageBar(options =>
+            {
+                options.Section = "MESSAGE_SECTION";
+                options.Title = $"错误";
+                options.Body = $"保存失败。";
+                options.Intent = MessageIntent.Error;
+                options.Icon = null;
+                options.ClearAfterNavigation = true;
+                options.OnClose = (e) => { return Task.CompletedTask; };
+                options.Link = null;
+                options.PrimaryAction = null;
+                options.SecondaryAction = null;
+            });
+        }
+    }
+
+    public async Task Statistic(int year)
+    {
+        string dbName = "ToolAppDb";
+        string version = "1";
+        string objectStoreName = "PomodoroRecord";
+        var data = await JS.InvokeAsync<string>("MyIndexedDB.GetAll", dbName, version, objectStoreName);
+        if (!string.IsNullOrEmpty(data))
+        {
+            var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    Converters = { new JsonDateTimeConverter() }
+                };
+            m_PomodoreRecords = JsonSerializer.Deserialize<List<PomodoreRecord>>(data, options);
+        }
+        int dayCount = DateTime.IsLeapYear(year) ? 366 : 365;
+        DateTime firstDay = new DateTime(year, 1, 1);
+        DateInfos.Clear();
+        for (int i = 0; i < dayCount; ++i)
+        {
+            DateTime tempDay = firstDay.AddDays(i);
+            DateInfo dateInfo = new DateInfo();
+            dateInfo.Day = tempDay.ToString("yyyy-MM-dd");
+            dateInfo.Y = Convert.ToInt32(tempDay.DayOfWeek);
+            int tempDayCount = i + Convert.ToInt32(firstDay.DayOfWeek + 1);
+            //获取大于或等于最小整数
+            dateInfo.X = (int)Math.Ceiling(tempDayCount / 7.0);
+            dateInfo.Count = m_PomodoreRecords.Where(x => Convert.ToDateTime(x.StartTime).ToString("yyyy-MM-dd") == dateInfo.Day).Count();
+            if (dateInfo.Count > 0 && dateInfo.Count <= 5)
+            {
+                dateInfo.Color = "#0e4429";
+            }
+            else if (dateInfo.Count > 5 && dateInfo.Count <= 10)
+            {
+                dateInfo.Color = "#006d32";
+            }
+            else if (dateInfo.Count > 10 && dateInfo.Count <= 15)
+            {
+                dateInfo.Color = "#26a641";
+            }
+            else if (dateInfo.Count > 15)
+            {
+                dateInfo.Color = "#39d353";
+            }
+            weeks = dateInfo.X;
+            DateInfos.Add(dateInfo);
+        }
+        StateHasChanged();
+    }
+    public async void SelectedDay(DateInfo dateInfo)
+    {
+        m_toDayPomodoreRecords = m_PomodoreRecords.Where(x => x.StartTime.ToString("yyyy-MM-dd") == dateInfo.Day).ToList();
+    }
+}

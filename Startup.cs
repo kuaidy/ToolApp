@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace ToolApp
 {
@@ -45,6 +46,11 @@ namespace ToolApp
                 options.SetDefaultCulture(supportedCultures[0])
                 .AddSupportedCultures(supportedCultures)
                 .AddSupportedUICultures(supportedCultures);
+            });
+            //fluuentui
+            services.AddFluentUIComponents(options =>
+            {
+                options.ValidateClassNames = false;
             });
         }
 

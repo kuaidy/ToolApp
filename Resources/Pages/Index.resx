@@ -117,113 +117,113 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ASCII Character Reference" xml:space="preserve">
-    <value>ASCII字符参考</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="ASCII Character Reference" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
   <data name="Base conversion" xml:space="preserve">
-    <value>进制转换</value>
+    <value />
   </data>
   <data name="Color value conversion" xml:space="preserve">
-    <value>颜色值转换</value>
+    <value />
   </data>
   <data name="Common Linux commands" xml:space="preserve">
-    <value>Linux常用命令</value>
+    <value />
   </data>
   <data name="Common Mime Type Reference Table" xml:space="preserve">
-    <value>常见 MimeType 参考表</value>
+    <value />
   </data>
   <data name="CommonComparisonTable" xml:space="preserve">
-    <value>常用对照表</value>
+    <value />
   </data>
   <data name="Conversion Tool" xml:space="preserve">
-    <value>转换工具</value>
+    <value />
   </data>
   <data name="Coupon Inquiry" xml:space="preserve">
-    <value>优惠券查询</value>
+    <value />
   </data>
   <data name="CSS Selector reference table" xml:space="preserve">
-    <value>CSS 选择器参考表</value>
+    <value />
   </data>
   <data name="Emoji" xml:space="preserve">
-    <value>Emoji表情符号</value>
+    <value />
   </data>
   <data name="Encoding And Decoding" xml:space="preserve">
-    <value>编码解码</value>
+    <value />
   </data>
   <data name="Encoding Conversion" xml:space="preserve">
-    <value>编码转换</value>
+    <value />
   </data>
-  <data name="Frequently Used Phone List" xml:space="preserve">
-    <value>常用电话列表</value>
+  <data name="Frequently Used Phone List" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
   <data name="Generating tools" xml:space="preserve">
-    <value>生成工具</value>
+    <value />
   </data>
   <data name="Git Command Reference Table" xml:space="preserve">
-    <value>Git命令参考表</value>
+    <value />
   </data>
   <data name="Guid Generation" xml:space="preserve">
-    <value>Guid生成</value>
+    <value />
   </data>
   <data name="HTTP status code" xml:space="preserve">
-    <value>HTTP状态码对照表</value>
+    <value />
   </data>
   <data name="Ip Query" xml:space="preserve">
-    <value>Ip查询</value>
+    <value />
   </data>
   <data name="Json formatting" xml:space="preserve">
-    <value>Json格式化</value>
+    <value />
   </data>
   <data name="Markdown Editor" xml:space="preserve">
-    <value>Markdown编辑</value>
+    <value />
   </data>
   <data name="One Click Download Of Images" xml:space="preserve">
-    <value>一键下载图片</value>
+    <value />
   </data>
   <data name="Product Card Generation" xml:space="preserve">
-    <value>商品卡片生成</value>
+    <value />
   </data>
   <data name="QRCode Generation" xml:space="preserve">
-    <value>二维码生成</value>
+    <value />
   </data>
   <data name="Query tools" xml:space="preserve">
-    <value>查询工具</value>
+    <value />
   </data>
   <data name="Regular Expression" xml:space="preserve">
-    <value>正则表达式</value>
+    <value />
   </data>
   <data name="Simple Main Image Generation" xml:space="preserve">
-    <value>简单主图生成</value>
+    <value />
   </data>
   <data name="Special Symbols" xml:space="preserve">
-    <value>特殊符号大全</value>
+    <value />
   </data>
   <data name="Text Tool" xml:space="preserve">
-    <value>文本工具</value>
+    <value />
   </data>
   <data name="ToolOnline" xml:space="preserve">
-    <value>在线工具</value>
-    <comment>网站标题</comment>
+    <value />
   </data>
   <data name="Url Escape Character" xml:space="preserve">
-    <value>Url转义字符参考表</value>
+    <value />
   </data>
   <data name="Video Embedding Code Generation" xml:space="preserve">
-    <value>视频嵌入代码生成</value>
+    <value />
   </data>
   <data name="Vim Command Reference Table" xml:space="preserve">
-    <value>Vim命令参考表</value>
+    <value />
   </data>
   <data name="Website Link Detection Tool" xml:space="preserve">
-    <value>网站链接检测工具</value>
+    <value />
   </data>
   <data name="Word count" xml:space="preserve">
-    <value>字数统计</value>
+    <value />
   </data>
   <data name="Productivity Tools" xml:space="preserve">
-    <value>效率工具</value>
+    <value />
   </data>
   <data name="Pomodoro" xml:space="preserve">
-    <value>番茄钟</value>
+    <value />
   </data>
 </root>

@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+    <PublishAot>False</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>
@@ -78,8 +79,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Markdig" Version="0.35.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.2" />
+    <PackageReference Include="Markdig" Version="0.37.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.8" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.9.3" />
   </ItemGroup>
 
 </Project>

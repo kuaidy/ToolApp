@@ -4,6 +4,8 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.Extensions.Options
 
+@inject IViewLocalizer ViewLocalizer;
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,6 +24,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/MyIndexDB.js" asp-append-version="true"></script>
 
     <script src="~/lib/qrcode/qrcode.min.js"></script>
     <!-- 导入样式 -->
@@ -33,18 +36,26 @@
 @* <script src="https://unpkg.com/axios/dist/axios.min.js"></script> *@
     <!-- 导入组件库 -->
     <link href="~/lib/github-markdown-css/github-markdown-light.css" rel="stylesheet" type="text/css" />
+    <link href="ToolApp.styles.css" rel="stylesheet" />
     <!--阿里图标 -->
     <script src="//at.alicdn.com/t/c/font_2344911_462ux66iuo.js"></script>
     <!--有些js会有冲突导致报错，无法加载组件，可在页面单独处理-->
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "nxehgneoa1");
+    </script>
+
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">ToolApp</a>
-            </div>
-            <div>
                 @await Html.PartialAsync("_SelectLanguagePartial")
             </div>
         </nav>
@@ -55,9 +66,10 @@
     <div id="components-reconnect-modal" style="display:none;"></div>
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy;2021 - ToolApp - <a href="/Weiapp">小程序</a> - <a href="/About">关于</a> - <a href="/Donation">赞赏</a>
+            &copy;2021 - ToolApp - <a href="/Weiapp">@ViewLocalizer["MiniProgram"]</a> - <a href="/About">@ViewLocalizer["About"]</a> - <a href="/Donation">@ViewLocalizer["Donation"]</a>
         </div>
     </footer>
 </body>
+<script src="_content/Microsoft.FluentUI.AspNetCore.Components/Microsoft.FluentUI.AspNetCore.Components.lib.module.js" type="module" async></script>
 <script src ="~/_framework/blazor.server.js"></script>
 </html>
