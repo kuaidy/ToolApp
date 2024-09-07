@@ -11,15 +11,13 @@ MyIndexedDB.Create = function (dbName, version, objectStoreName) {
     request.onsuccess = function (event) {
         db = request.result;
         console.log("数据库打开成功");
-    }
-    //创建数据表
-    request.onupgradeneeded = function (event) {
-        db = event.target.result;
-        console.log("数据库升级成功");
+    };
+    request.onupgradeneeded = (event) => {
+        const db = event.target.result;
         if (!db.objectStoreNames.contains(objectStoreName)) {
             objectStore = db.createObjectStore(objectStoreName, { autoIncrement: true });
         }
-    }
+    };
 }
 
 //添加数据

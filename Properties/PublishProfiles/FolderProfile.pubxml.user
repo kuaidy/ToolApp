@@ -5,7 +5,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project>
   <PropertyGroup>
     <_PublishTargetUrl>C:\MyProject\ToolApp\bin\Release\net8.0\publish\</_PublishTargetUrl>
-    <History>True|2024-06-03T14:33:05.3868372Z||;True|2024-06-03T22:29:40.3231972+08:00||;True|2024-06-03T22:24:22.8531373+08:00||;</History>
+    <History>True|2024-09-07T08:54:06.6129797Z||;True|2024-09-07T16:32:46.2357010+08:00||;True|2024-09-07T16:25:03.4735457+08:00||;True|2024-09-07T16:03:45.4614867+08:00||;True|2024-06-03T22:33:05.3868372+08:00||;True|2024-06-03T22:29:40.3231972+08:00||;True|2024-06-03T22:24:22.8531373+08:00||;</History>
     <LastFailureDetails />
   </PropertyGroup>
 </Project>

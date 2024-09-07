@@ -84,4 +84,8 @@
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.9.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>

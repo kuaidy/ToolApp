@@ -6,6 +6,7 @@
 @using ToolApp.Pages.Common
 @inject IMessageService MessageService
 @inject IJSRuntime JS;
+
 <FluentGrid Spacing="3" Justify="JustifyContent.FlexStart">
     <FluentGridItem xs="12">
         <FluentLabel Typo="Typography.H2">番茄钟</FluentLabel>
@@ -48,7 +49,7 @@
                     <td style="height:7px;text-align: center;"></td>
                 </tr>
                 <tr>
-                    <td style="height:15px;text-align: center;">T</td>
+                    <td style="height:15px;text-align: center;">W</td>
                 </tr>
                 <tr>
                     <td style="height:7px;text-align: center;"></td>
@@ -169,10 +170,17 @@
     private Timer timer;
     private bool isRunning = false;
 
+    string dbName = "ToolAppDb";
+    string version = "1";
+    string objectStoreName = "PomodoroRecord";
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (firstRender) 
+        {
+            await JS.InvokeVoidAsync("MyIndexedDB.Create", dbName, version, objectStoreName);
             await Statistic(DateTime.Now.Year);
+        }
     }
 
     private void StartTimer()
@@ -281,16 +289,12 @@
     {
         try
         {
-            string dbName = "ToolAppDb";
-            string version = "1";
-            string objectStoreName = "PomodoroRecord";
             PomodoreRecord pomodoreRecord = new PomodoreRecord();
             pomodoreRecord.Guid = Guid.NewGuid().ToString();
             pomodoreRecord.StartTime = m_StartTime;
             pomodoreRecord.EndTime = m_EndTime;
             pomodoreRecord.Remark = Remark;
             m_PomodoreRecords.Add(pomodoreRecord);
-            await JS.InvokeVoidAsync("MyIndexedDB.Create", dbName, version, objectStoreName);
             await JS.InvokeVoidAsync("MyIndexedDB.Add", dbName, version, objectStoreName, pomodoreRecord);
         }
         catch (Exception ex)
@@ -316,6 +320,7 @@
         string dbName = "ToolAppDb";
         string version = "1";
         string objectStoreName = "PomodoroRecord";
+
         var data = await JS.InvokeAsync<string>("MyIndexedDB.GetAll", dbName, version, objectStoreName);
         if (!string.IsNullOrEmpty(data))
         {
@@ -358,7 +363,7 @@
             weeks = dateInfo.X;
             DateInfos.Add(dateInfo);
         }
-        StateHasChanged();
+        InvokeAsync(StateHasChanged);
     }
     public async void SelectedDay(DateInfo dateInfo)
     {
