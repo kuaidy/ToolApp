@@ -3,8 +3,10 @@
 @using ToolApp.Models
 <div class="div-input">
     <strong>请输入网址</strong>
-    <input type="text" name="" id="ip-colorvalue" class="ip-colorvalue" @bind-value="url">
+    <input type="text" name="" id="ip-colorvalue" class="ip-colorvalue" @bind-value="m_BaseUrl">
     <button @onclick="BeginCheck">开始检测</button>
+    <input @bind-value="m_IsChecked" type="checkbox" />
+    <span>只显示站外链接</span>
     <span>@message</span>
     <table class="table table-bordered border-primary">
         <thead>
@@ -15,7 +17,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (CheckUrlModel checkUrl in checkUrls)
+            @foreach (CheckUrlModel checkUrl in m_CheckUrls)
             {
                 <tr>
                     <td>@checkUrl.Url</td>
@@ -25,57 +27,95 @@
                             @checkUrl.Status
                         </td>
                     }
-                    else{
+                    else
+                    {
                         <td style="color:red;">
                             @checkUrl.Status
                         </td>
                     }
-                        <td>@checkUrl.Result</td>
+                    <td>@checkUrl.Result</td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
 @code {
-    private string url;
-    private List<CheckUrlModel> checkUrls = new List<CheckUrlModel>();
+    private string m_BaseUrl;
+    private List<CheckUrlModel> m_CheckUrls = new List<CheckUrlModel>();
+    private List<CheckUrlModel> m_AllCheckUrls = new List<CheckUrlModel>();
     private string message;
+    private bool m_IsChecked;
+    private HttpClient m_HttpClient = new HttpClient();
     private async void BeginCheck()
     {
-        checkUrls.Clear();
-        if (!string.IsNullOrEmpty(url))
+        m_CheckUrls.Clear();
+        m_AllCheckUrls.Clear();
+        if (!string.IsNullOrEmpty(m_BaseUrl))
         {
-            HttpClient httpClient = new HttpClient();
-            httpClient.Timeout = TimeSpan.FromSeconds(5);
-            HttpResponseMessage httpResponseMessage = await httpClient.GetAsync(url);
+            m_HttpClient.Timeout = TimeSpan.FromSeconds(10);
+            HttpResponseMessage httpResponseMessage = await m_HttpClient.GetAsync(m_BaseUrl);
             if (httpResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 CheckUrlModel checkUrl = new CheckUrlModel();
-                checkUrl.Url = url;
+                checkUrl.Url = m_BaseUrl;
                 checkUrl.Status = httpResponseMessage.StatusCode.ToString();
                 checkUrl.Result = "正常";
-                checkUrls.Add(checkUrl);
+                m_CheckUrls.Add(checkUrl);
+                m_AllCheckUrls.Add(checkUrl);
                 StateHasChanged();
-                string content = await httpClient.GetStringAsync(url);
+                await Check(m_BaseUrl);
+            }
+        }
+        if (m_IsChecked)
+        {
+            message = $"检测完毕，共检测{m_CheckUrls.Count}条。";
+        }
+        else
+        {
+            message = $"检测完毕，共检测{m_AllCheckUrls.Count}条。";
+        }
+        StateHasChanged();
+    }
+    private async Task Check(string url)
+    {
+        string pattern = $"^/.+";
+        bool res = Regex.IsMatch(url, pattern);
+        if (res)
+        {
+            url = m_BaseUrl + url;
+        }
+        if (url != "/")
+        {
+            pattern = $"^(https|http)://[^\\s/$.?#].[^\\s]*$";
+            res = Regex.IsMatch(url, pattern);
+            if (res)
+            {
+                string content = await m_HttpClient.GetStringAsync(url);
                 if (!string.IsNullOrEmpty(content))
                 {
-                    string pattern = $"href=\"([http://|https://].*?)\"";
+                    pattern = $"href=\"([http://|https://].*?)\"";
                     MatchCollection matchCollection = Regex.Matches(content, pattern);
                     foreach (Match match in matchCollection)
                     {
-                        message = $"正在检测，已检测{checkUrls.Count}条。";
-                        if (!match.Groups[1].Value.Contains(url))
+
+                        string tmpUrl = match.Groups[1].Value.Trim();
+                        if (m_AllCheckUrls.Any(x => x.Url == tmpUrl || x.Url == $"{tmpUrl}/")) continue;
+                        if (!tmpUrl.Contains(m_BaseUrl))
                         {
-                            string tmpUrl = match.Groups[1].Value;
                             try
                             {
-                                HttpResponseMessage tmpHttpResponseMessage = await httpClient.GetAsync(tmpUrl);
+                                HttpResponseMessage tmpHttpResponseMessage = await m_HttpClient.GetAsync(tmpUrl);
                                 if (tmpHttpResponseMessage != null)
                                 {
                                     CheckUrlModel tmpCheckUrl = new CheckUrlModel();
                                     tmpCheckUrl.Url = tmpUrl;
                                     tmpCheckUrl.Status = tmpHttpResponseMessage.StatusCode.ToString();
-                                    checkUrls.Add(tmpCheckUrl);
+                                    if (tmpHttpResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
+                                    {
+                                        tmpCheckUrl.Result = "正常";
+                                    }
+                                    m_CheckUrls.Add(tmpCheckUrl);
+                                    m_AllCheckUrls.Add(tmpCheckUrl);
                                     StateHasChanged();
                                 }
                                 else
@@ -83,25 +123,89 @@
                                     CheckUrlModel tmpCheckUrl = new CheckUrlModel();
                                     tmpCheckUrl.Url = tmpUrl;
                                     tmpCheckUrl.Status = "-1";
-                                    checkUrls.Add(tmpCheckUrl);
+                                    tmpCheckUrl.Result = "异常";
+                                    m_CheckUrls.Add(tmpCheckUrl);
+                                    m_AllCheckUrls.Add(tmpCheckUrl);
                                     StateHasChanged();
                                 }
                             }
-                            catch(Exception ex)
+                            catch (Exception ex)
                             {
                                 CheckUrlModel tmpCheckUrl = new CheckUrlModel();
                                 tmpCheckUrl.Url = tmpUrl;
                                 tmpCheckUrl.Status = "-1";
-                                checkUrls.Add(tmpCheckUrl);
+                                tmpCheckUrl.Result = "异常";
+                                m_CheckUrls.Add(tmpCheckUrl);
+                                m_AllCheckUrls.Add(tmpCheckUrl);
                                 StateHasChanged();
                                 continue;
                             }
+                        }
+                        else
+                        {
+                            try
+                            {
+                                HttpResponseMessage tmpHttpResponseMessage = await m_HttpClient.GetAsync(tmpUrl);
+                                if (tmpHttpResponseMessage != null)
+                                {
+                                    CheckUrlModel tmpCheckUrl = new CheckUrlModel();
+                                    tmpCheckUrl.Url = tmpUrl;
+                                    tmpCheckUrl.Status = tmpHttpResponseMessage.StatusCode.ToString();
+                                    if (tmpHttpResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
+                                    {
+                                        tmpCheckUrl.Result = "正常";
+                                    }
+                                    if (!m_IsChecked)
+                                    {
+                                        m_CheckUrls.Add(tmpCheckUrl);
+                                    }
+                                    m_AllCheckUrls.Add(tmpCheckUrl);
+                                    StateHasChanged();
+                                    if (tmpHttpResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
+                                    {
+                                        await Check(tmpUrl);
+                                    }
+                                }
+                                else
+                                {
+                                    CheckUrlModel tmpCheckUrl = new CheckUrlModel();
+                                    tmpCheckUrl.Url = tmpUrl;
+                                    tmpCheckUrl.Status = "-1";
+                                    tmpCheckUrl.Result = "异常";
+                                    if (!m_IsChecked)
+                                    {
+                                        m_CheckUrls.Add(tmpCheckUrl);
+                                    }
+                                    m_AllCheckUrls.Add(tmpCheckUrl);
+                                    StateHasChanged();
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                CheckUrlModel tmpCheckUrl = new CheckUrlModel();
+                                tmpCheckUrl.Url = tmpUrl;
+                                tmpCheckUrl.Status = "-1";
+                                tmpCheckUrl.Result = "异常";
+                                if (!m_IsChecked)
+                                {
+                                    m_CheckUrls.Add(tmpCheckUrl);
+                                }
+                                m_AllCheckUrls.Add(tmpCheckUrl);
+                                StateHasChanged();
+                                continue;
+                            }
+                        }
+                        if (m_IsChecked)
+                        {
+                            message = $"正在检测，已检测{m_CheckUrls.Count}条。";
+                        }
+                        else
+                        {
+                            message = $"正在检测，已检测{m_AllCheckUrls.Count}条。";
                         }
                     }
                 }
             }
         }
-        message = $"检测完毕，共检测{checkUrls.Count}条。";
-        StateHasChanged();
     }
 }
