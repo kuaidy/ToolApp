@@ -226,4 +226,7 @@
   <data name="Pomodoro" xml:space="preserve">
     <value>番茄钟</value>
   </data>
+  <data name="Article Formatting" xml:space="preserve">
+    <value>文章格式化</value>
+  </data>
 </root>

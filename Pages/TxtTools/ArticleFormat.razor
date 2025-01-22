@@ -1,0 +1,33 @@
+﻿@page "/txttools/articleformat"
+<FluentGrid Spacing="3" Justify="JustifyContent.FlexStart">
+    <FluentGridItem xs="12">
+        <FluentLabel Typo="Typography.H2">文章中英文排版</FluentLabel>
+    </FluentGridItem>
+    <FluentGridItem xs="6">
+        <FluentTextArea Placeholder="请输入需要格式化的内容" Style="width:100%;" Rows="10" @bind-Value="m_OriginalContent"></FluentTextArea>
+    </FluentGridItem>
+    <FluentGridItem xs="6">
+        <FluentTextArea Placeholder="" Style="width:100%;" Rows="10" @bind-Value="m_TargetContent"></FluentTextArea>
+    </FluentGridItem>
+    <FluentGridItem xs="12">
+        <FluentButton OnClick="FormatHandle">格式化</FluentButton>
+        <FluentButton OnClick="CopyHandle">复制结果</FluentButton>
+        <FluentButton OnClick="ClearHandle">清空</FluentButton>
+    </FluentGridItem>
+</FluentGrid>
+@code {
+    private string m_OriginalContent;
+    private string m_TargetContent;
+    private void FormatHandle()
+    {
+
+    }
+    private void CopyHandle()
+    {
+
+    }
+    private void ClearHandle()
+    {
+        
+    }
+}

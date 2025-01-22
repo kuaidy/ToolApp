@@ -225,4 +225,7 @@
   <data name="Pomodoro" xml:space="preserve">
     <value>Pomodoro</value>
   </data>
+  <data name="Article Formatting" xml:space="preserve">
+    <value>Article Formatting</value>
+  </data>
 </root>
