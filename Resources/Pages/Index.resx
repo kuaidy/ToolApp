@@ -229,4 +229,16 @@
   <data name="Article Formatting" xml:space="preserve">
     <value />
   </data>
+  <data name="Image Tools" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Image OCR" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Handwritten signature" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Remove image background" xml:space="preserve">
+    <value />
+  </data>
 </root>

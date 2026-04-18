@@ -1,0 +1,329 @@
+@page "/imagetools/handwrittensignature"
+@using System.Globalization
+@using Microsoft.AspNetCore.Components.Web
+@inject IJSRuntime JS
+@inject IStringLocalizer<HandwrittenSignature> L
+
+<HeadContent>
+    @* 手写字体批量加载（family 名须与下方 FontLabels 的键一致） *@
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&amp;family=Long+Cang&amp;family=ZCOOL+KuaiLe&amp;family=ZCOOL+XiaoWei&amp;family=ZCOOL+QingKe+HuangYou&amp;family=Zhi+Mang+Xing&amp;family=Liu+Jian+Mao+Cao&amp;family=Dancing+Script:wght@@400;700&amp;family=Great+Vibes&amp;family=Caveat:wght@@400;700&amp;family=Pacifico&amp;family=Satisfy&amp;family=Allura&amp;family=Sacramento&amp;family=Kalam:wght@@300;400;700&amp;family=Patrick+Hand&amp;family=Indie+Flower&amp;family=Permanent+Marker&amp;family=Rock+Salt&amp;family=Amatic+SC:wght@@400;700&amp;family=Homemade+Apple&amp;family=Marck+Script&amp;family=Berkshire+Swash&amp;family=Cookie&amp;family=Bad+Script&amp;family=Mr+Dafoe&amp;family=Allison&amp;family=Gloria+Hallelujah&amp;family=Reenie+Beanie&amp;family=Shadows+Into+Light&amp;family=Architects+Daughter&amp;display=swap" rel="stylesheet" />
+</HeadContent>
+
+<div class="tool-page">
+    <FluentLabel Typo="Typography.H2">@L["PageTitle"]</FluentLabel>
+    <p class="tool-lead">@L["Lead"]</p>
+
+    <div class="tool-section">
+        <div class="tool-section-title">@L["SectionDraw"]</div>
+        <p class="tool-note mb-3">@L["NoteDraw"]</p>
+        <div class="row g-3 align-items-end">
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="tool-field-col">
+                    <span class="tool-form-label">@L["LabelPenColor"]</span>
+                    <input type="color" class="form-control form-control-color" style="width:100%;max-width:8rem;height:2.5rem;" @bind="DrawPenColor" @bind:after="SyncDrawStrokeToJs" />
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="tool-field-col">
+                    <span class="tool-form-label">@L["LabelStrokeWidth", DrawLineWidth]</span>
+                    <input type="range" class="form-range tool-range" min="1" max="16" step="1" @bind="DrawLineWidth" @bind:event="oninput" @bind:after="SyncDrawStrokeToJs" />
+                </div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <div class="tool-field-col">
+                    <span class="tool-form-label">@L["LabelDrawBg"]</span>
+                    <label class="form-check d-flex align-items-center gap-2 mb-0">
+                        <input type="checkbox" class="form-check-input mt-0" @bind="DrawPadTransparentBg" @bind:after="OnDrawPadBackgroundChangedAsync" />
+                        <span>@L["TransparentBg"]</span>
+                    </label>
+                    @if (!DrawPadTransparentBg)
+                    {
+                        <input type="color" class="form-control form-control-color mt-2" style="width:100%;max-width:8rem;height:2.5rem;" @bind="DrawPadBgColor" @bind:after="OnDrawPadBackgroundChangedAsync" />
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="tool-btn-row mt-section">
+            <FluentButton OnClick="ClearDrawPadAsync">@L["ClearDraw"]</FluentButton>
+            <FluentButton Appearance="Appearance.Accent" OnClick="DownloadDrawAsync">@L["DownloadDrawPng"]</FluentButton>
+        </div>
+        <div class="tool-checkerboard mt-3" style="cursor:crosshair;justify-content:flex-start;">
+            <canvas id="@DrawPadId" width="@DrawPadWidth" height="@DrawPadHeight" style="width:100%;max-width:@(DrawPadWidth)px;height:auto;"></canvas>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(StatusMessage))
+    {
+        <div class="tool-message tool-message--error" role="alert">@StatusMessage</div>
+    }
+
+    <div class="tool-section">
+        <div class="tool-section-title">@L["SectionText"]</div>
+        <div class="row g-3 align-items-end">
+            <div class="col-12 col-md-6">
+                <div class="tool-field-col">
+                    <span class="tool-form-label">@L["LabelSignatureText"]</span>
+                    <FluentTextField @bind-Value="SignatureText" Placeholder="@L["PlaceholderName"]" Style="width:100%;" />
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="tool-field-col">
+                    <span class="tool-form-label">@L["LabelFontStyle"]</span>
+                    <select class="form-select" @bind="SelectedFontKey">
+                        @foreach (var key in FontKeyOrder)
+                        {
+                            <option value="@key">@FontOptionLabel(key)</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="tool-field-col">
+                    <span class="tool-form-label">@L["LabelFontSize", FontSize]</span>
+                    <input type="range" class="form-range tool-range" min="24" max="120" step="2" @bind="FontSize" @bind:event="oninput" />
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="tool-field-col">
+                    <span class="tool-form-label">@L["LabelInkColor"]</span>
+                    <input type="color" class="form-control form-control-color" style="width:100%;max-width:8rem;height:2.5rem;" @bind="TextColor" />
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="tool-field-col">
+                    <span class="tool-form-label">@L["LabelBackground"]</span>
+                    <FluentCheckbox @bind-Value="TransparentBackground" Label="@L["TransparentBgDoc"]" />
+                    @if (!TransparentBackground)
+                    {
+                        <input type="color" class="form-control form-control-color mt-2" style="width:100%;max-width:8rem;height:2.5rem;" @bind="BackgroundColor" />
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="tool-btn-row mt-section">
+            <FluentButton Appearance="Appearance.Accent" OnClick="GenerateAsync">@L["BtnGenerate"]</FluentButton>
+            <FluentButton OnClick="DownloadAsync" Disabled="@(!HasPreview)">@L["BtnDownloadPng"]</FluentButton>
+            <FluentButton OnClick="ClearTextSection">@L["BtnClearText"]</FluentButton>
+        </div>
+        @if (!HasPreview)
+        {
+            <p class="text-muted small mt-2 mb-0">@L["HintAfterGenerate"]</p>
+        }
+        <div class="tool-preview-wrap mt-2">
+            <canvas id="@CanvasId" width="0" height="0" style="max-width:100%;display:block;"></canvas>
+        </div>
+    </div>
+</div>
+
+@code {
+    private const string CanvasId = "handwritten-signature-canvas";
+    private const string DrawPadId = "handwritten-draw-pad";
+    private const int DrawPadWidth = 640;
+    private const int DrawPadHeight = 220;
+
+    private string SignatureText { get; set; } = "";
+    private string SelectedFontKey { get; set; } = "Ma Shan Zheng";
+    private int FontSize { get; set; } = 56;
+    private string TextColor { get; set; } = "#1a1a1a";
+    private string BackgroundColor { get; set; } = "#ffffff";
+    private bool TransparentBackground { get; set; } = true;
+    private bool HasPreview { get; set; }
+    private string StatusMessage { get; set; } = "";
+    private string DrawPenColor { get; set; } = "#1a1a1a";
+    private int DrawLineWidth { get; set; } = 4;
+    private bool DrawPadTransparentBg { get; set; } = true;
+    private string DrawPadBgColor { get; set; } = "#ffffff";
+
+    private static readonly string[] FontKeyOrder =
+    [
+        "Ma Shan Zheng", "Long Cang", "ZCOOL KuaiLe", "ZCOOL XiaoWei", "ZCOOL QingKe HuangYou", "Zhi Mang Xing", "Liu Jian Mao Cao",
+        "Dancing Script", "Great Vibes", "Caveat", "Pacifico", "Satisfy", "Allura", "Sacramento", "Kalam", "Patrick Hand", "Indie Flower",
+        "Permanent Marker", "Rock Salt", "Amatic SC", "Homemade Apple", "Marck Script", "Berkshire Swash", "Cookie", "Bad Script", "Mr Dafoe",
+        "Allison", "Gloria Hallelujah", "Reenie Beanie", "Shadows Into Light", "Architects Daughter"
+    ];
+
+    private static readonly Dictionary<string, string> FontLabelsZh = new()
+    {
+        ["Ma Shan Zheng"] = "马善政硬笔",
+        ["Long Cang"] = "龙藏行楷",
+        ["ZCOOL KuaiLe"] = "站酷快乐体",
+        ["ZCOOL XiaoWei"] = "站酷小薇体",
+        ["ZCOOL QingKe HuangYou"] = "站酷庆科黄油体",
+        ["Zhi Mang Xing"] = "志忙行（行草）",
+        ["Liu Jian Mao Cao"] = "刘建毛草（草书）",
+        ["Dancing Script"] = "Dancing Script",
+        ["Great Vibes"] = "Great Vibes",
+        ["Caveat"] = "Caveat（随手体）",
+        ["Pacifico"] = "Pacifico",
+        ["Satisfy"] = "Satisfy",
+        ["Allura"] = "Allura",
+        ["Sacramento"] = "Sacramento",
+        ["Kalam"] = "Kalam",
+        ["Patrick Hand"] = "Patrick Hand",
+        ["Indie Flower"] = "Indie Flower",
+        ["Permanent Marker"] = "Permanent Marker（马克笔）",
+        ["Rock Salt"] = "Rock Salt",
+        ["Amatic SC"] = "Amatic SC（瘦手写）",
+        ["Homemade Apple"] = "Homemade Apple",
+        ["Marck Script"] = "Marck Script",
+        ["Berkshire Swash"] = "Berkshire Swash",
+        ["Cookie"] = "Cookie",
+        ["Bad Script"] = "Bad Script",
+        ["Mr Dafoe"] = "Mr Dafoe",
+        ["Allison"] = "Allison",
+        ["Gloria Hallelujah"] = "Gloria Hallelujah",
+        ["Reenie Beanie"] = "Reenie Beanie",
+        ["Shadows Into Light"] = "Shadows Into Light",
+        ["Architects Daughter"] = "Architects Daughter"
+    };
+
+    private static readonly Dictionary<string, string> FontLabelsEn = new()
+    {
+        ["Ma Shan Zheng"] = "Ma Shan Zheng (Chinese brush)",
+        ["Long Cang"] = "Long Cang (running script)",
+        ["ZCOOL KuaiLe"] = "ZCOOL KuaiLe",
+        ["ZCOOL XiaoWei"] = "ZCOOL XiaoWei",
+        ["ZCOOL QingKe HuangYou"] = "ZCOOL QingKe HuangYou",
+        ["Zhi Mang Xing"] = "Zhi Mang Xing (semi-cursive)",
+        ["Liu Jian Mao Cao"] = "Liu Jian Mao Cao (cursive)",
+        ["Dancing Script"] = "Dancing Script",
+        ["Great Vibes"] = "Great Vibes",
+        ["Caveat"] = "Caveat (casual)",
+        ["Pacifico"] = "Pacifico",
+        ["Satisfy"] = "Satisfy",
+        ["Allura"] = "Allura",
+        ["Sacramento"] = "Sacramento",
+        ["Kalam"] = "Kalam",
+        ["Patrick Hand"] = "Patrick Hand",
+        ["Indie Flower"] = "Indie Flower",
+        ["Permanent Marker"] = "Permanent Marker",
+        ["Rock Salt"] = "Rock Salt",
+        ["Amatic SC"] = "Amatic SC (narrow)",
+        ["Homemade Apple"] = "Homemade Apple",
+        ["Marck Script"] = "Marck Script",
+        ["Berkshire Swash"] = "Berkshire Swash",
+        ["Cookie"] = "Cookie",
+        ["Bad Script"] = "Bad Script",
+        ["Mr Dafoe"] = "Mr Dafoe",
+        ["Allison"] = "Allison",
+        ["Gloria Hallelujah"] = "Gloria Hallelujah",
+        ["Reenie Beanie"] = "Reenie Beanie",
+        ["Shadows Into Light"] = "Shadows Into Light",
+        ["Architects Daughter"] = "Architects Daughter"
+    };
+
+    private string FontOptionLabel(string key) =>
+        CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.Equals("zh", StringComparison.OrdinalIgnoreCase)
+            ? FontLabelsZh[key]
+            : FontLabelsEn[key];
+
+    private bool _drawPadJsReady;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_drawPadJsReady)
+        {
+            return;
+        }
+        try
+        {
+            await JS.InvokeVoidAsync("signatureCanvas.initDrawPad", DrawPadId, DrawPadWidth, DrawPadHeight, DrawPadTransparentBg, DrawPadBgColor);
+            await SyncDrawStrokeToJs();
+            _drawPadJsReady = true;
+        }
+        catch (InvalidOperationException)
+        {
+            // 预渲染阶段尚无 JS 运行时，下一次交互渲染会再进入本方法
+        }
+    }
+
+    private async Task SyncDrawStrokeToJs()
+    {
+        await JS.InvokeVoidAsync("signatureCanvas.setDrawStroke", DrawPadId, DrawPenColor, DrawLineWidth);
+    }
+
+    private async Task OnDrawPadBackgroundChangedAsync()
+    {
+        await JS.InvokeVoidAsync("signatureCanvas.initDrawPad", DrawPadId, DrawPadWidth, DrawPadHeight, DrawPadTransparentBg, DrawPadBgColor);
+        await SyncDrawStrokeToJs();
+    }
+
+    private async Task ClearDrawPadAsync()
+    {
+        StatusMessage = "";
+        await JS.InvokeVoidAsync("signatureCanvas.clearDrawPad", DrawPadId, DrawPadTransparentBg, DrawPadBgColor);
+    }
+
+    private async Task DownloadDrawAsync()
+    {
+        StatusMessage = "";
+        try
+        {
+            var hasInk = await JS.InvokeAsync<bool>("signatureCanvas.drawPadHasInk", DrawPadId);
+            if (!hasInk)
+            {
+                StatusMessage = L["ErrDrawFirst"];
+                return;
+            }
+            var name = $"signature-draw-{DateTime.Now:yyyyMMdd-HHmmss}.png";
+            await JS.InvokeVoidAsync("signatureCanvas.download", DrawPadId, name);
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrDownload", ex.Message];
+        }
+    }
+
+    private async Task GenerateAsync()
+    {
+        StatusMessage = "";
+        try
+        {
+            var fontFamily = SelectedFontKey;
+            var result = await JS.InvokeAsync<DrawResult>("signatureCanvas.draw", CanvasId, SignatureText, fontFamily, FontSize, TextColor, TransparentBackground, BackgroundColor);
+            if (result == null || !result.ok)
+            {
+                HasPreview = false;
+                StatusMessage = result?.error == "empty" ? L["ErrEmptySignature"] : L["ErrGenerateRetry"];
+                return;
+            }
+            HasPreview = true;
+        }
+        catch (Exception ex)
+        {
+            HasPreview = false;
+            StatusMessage = L["ErrGenerate", ex.Message];
+        }
+    }
+
+    private async Task DownloadAsync()
+    {
+        if (!HasPreview)
+        {
+            return;
+        }
+        StatusMessage = "";
+        try
+        {
+            var name = $"signature-{DateTime.Now:yyyyMMdd-HHmmss}.png";
+            await JS.InvokeVoidAsync("signatureCanvas.download", CanvasId, name);
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrDownload", ex.Message];
+        }
+    }
+
+    private void ClearTextSection()
+    {
+        SignatureText = "";
+        HasPreview = false;
+        StatusMessage = "";
+    }
+
+    private sealed class DrawResult
+    {
+        public bool ok { get; set; }
+        public string error { get; set; } = "";
+    }
+}

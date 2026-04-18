@@ -1,0 +1,182 @@
+﻿@page "/imagetools/imageocr"
+@using System.IO
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Hosting
+@using ToolApp.Common
+@inject IWebHostEnvironment Env
+@inject IJSRuntime JS
+@inject IStringLocalizer<ImageOcr> L
+
+<div class="tool-page">
+    <FluentLabel Typo="Typography.H2">@L["PageTitle"]</FluentLabel>
+    <p class="tool-lead">@L["Lead"]</p>
+
+    <div class="tool-section">
+        <div class="tool-section-title">@L["SectionUpload"]</div>
+        <div class="row g-3 align-items-end">
+            <div class="col-12 col-md-6">
+                <div class="tool-field-col">
+                    <span class="tool-form-label">@L["LabelLanguage"]</span>
+                    <select class="form-select" @bind="SelectedLanguage" disabled="@Busy">
+                        <option value="chi_sim+eng">@L["LangChiSimEng"]</option>
+                        <option value="chi_sim">@L["LangChiSim"]</option>
+                        <option value="chi_tra+eng">@L["LangChiTraEng"]</option>
+                        <option value="chi_tra">@L["LangChiTra"]</option>
+                        <option value="eng">@L["LangEng"]</option>
+                        <option value="jpn">@L["LangJpn"]</option>
+                        <option value="kor">@L["LangKor"]</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="tool-field-col">
+                    <span class="tool-form-label">@L["LabelPickImage"]</span>
+                    <InputFile OnChange="OnFileSelectedAsync" accept="image/*" class="form-control" disabled="@Busy" />
+                </div>
+            </div>
+        </div>
+
+        <div class="tool-btn-row mt-section">
+            <FluentButton Appearance="Appearance.Accent" OnClick="RecognizeAgainAsync" Disabled="@(Busy || UploadedBytes.Length == 0)">@L["BtnRecognizeAgain"]</FluentButton>
+            <FluentButton OnClick="CopyResultAsync" Disabled="@(Busy || string.IsNullOrWhiteSpace(ResultText))">@L["BtnCopy"]</FluentButton>
+            <FluentButton OnClick="ClearAll">@L["BtnClear"]</FluentButton>
+        </div>
+    </div>
+
+    @if (Busy)
+    {
+        <div class="tool-message tool-message--busy" role="status">@L["BusyRecognizing"]</div>
+    }
+
+    @if (!string.IsNullOrEmpty(StatusMessage))
+    {
+        <div class="tool-message tool-message--error" role="alert">@StatusMessage</div>
+    }
+
+    <div class="tool-split-row">
+        <div class="tool-preview-col">
+            <div class="tool-section h-100 mb-0 d-flex flex-column">
+                <div class="tool-preview-heading">@L["PreviewHeading"]</div>
+                @if (!string.IsNullOrEmpty(PreviewDataUrl))
+                {
+                    <div class="tool-preview-wrap flex-grow-1">
+                        <img src="@PreviewDataUrl" alt="@L["PreviewAlt"]" class="img-fluid rounded d-block mx-auto" style="max-height:420px;object-fit:contain;" />
+                    </div>
+                }
+                else
+                {
+                    <div class="tool-preview-wrap flex-grow-1 d-flex align-items-center justify-content-center" style="min-height:200px;">
+                        <span class="text-muted small">@L["PreviewEmpty"]</span>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="tool-preview-col">
+            <div class="tool-section h-100 mb-0 d-flex flex-column">
+                <div class="tool-preview-heading">@L["ResultHeading"]</div>
+                <FluentTextArea @bind-Value="ResultText" Placeholder="@L["ResultPlaceholder"]" Style="width:100%;min-height:280px;" Rows="14"></FluentTextArea>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private const long MaxFileSize = 12 * 1024 * 1024;
+
+    private string SelectedLanguage { get; set; } = "chi_sim+eng";
+    private string ResultText { get; set; } = "";
+    private string PreviewDataUrl { get; set; } = "";
+    private string StatusMessage { get; set; } = "";
+    private bool Busy { get; set; }
+    private byte[] UploadedBytes { get; set; } = Array.Empty<byte>();
+    private string UploadedContentType { get; set; } = "image/png";
+
+    private string TessDataPath => Path.Combine(Env.ContentRootPath, "tessdata");
+
+    private async Task OnFileSelectedAsync(InputFileChangeEventArgs e)
+    {
+        StatusMessage = "";
+        var file = e.File;
+        if (file == null)
+        {
+            return;
+        }
+
+        try
+        {
+            await using var stream = file.OpenReadStream(MaxFileSize);
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            UploadedBytes = ms.ToArray();
+            UploadedContentType = string.IsNullOrEmpty(file.ContentType) ? "image/png" : file.ContentType;
+            PreviewDataUrl = $"data:{UploadedContentType};base64,{Convert.ToBase64String(UploadedBytes)}";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrReadImage", ex.Message];
+            UploadedBytes = Array.Empty<byte>();
+            PreviewDataUrl = "";
+            return;
+        }
+
+        await RunOcrAsync();
+    }
+
+    private async Task RecognizeAgainAsync()
+    {
+        await RunOcrAsync();
+    }
+
+    private async Task RunOcrAsync()
+    {
+        if (UploadedBytes.Length == 0)
+        {
+            StatusMessage = L["ErrPickFirst"];
+            return;
+        }
+
+        StatusMessage = "";
+        Busy = true;
+        ResultText = "";
+        try
+        {
+            var text = await Task.Run(() => TesseractOcr.Recognize(UploadedBytes, SelectedLanguage, TessDataPath));
+            ResultText = string.IsNullOrWhiteSpace(text) ? L["EmptyOcrResult"] : text;
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrRecognize", ex.Message];
+            ResultText = "";
+        }
+        finally
+        {
+            Busy = false;
+        }
+    }
+
+    private async Task CopyResultAsync()
+    {
+        StatusMessage = "";
+        if (string.IsNullOrWhiteSpace(ResultText))
+        {
+            return;
+        }
+        try
+        {
+            await JS.InvokeVoidAsync("navigator.clipboard.writeText", ResultText);
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrCopy", ex.Message];
+        }
+    }
+
+    private void ClearAll()
+    {
+        ResultText = "";
+        PreviewDataUrl = "";
+        UploadedBytes = Array.Empty<byte>();
+        UploadedContentType = "image/png";
+        StatusMessage = "";
+    }
+}

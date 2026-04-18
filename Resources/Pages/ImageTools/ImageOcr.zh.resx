@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PageTitle" xml:space="preserve"><value>图片文字提取</value></data>
+  <data name="Lead" xml:space="preserve"><value>上传含文字的图片，使用本地 Tesseract OCR 识别。支持常见图片格式（如 PNG、JPEG、TIFF）。单文件最大约 12MB。</value></data>
+  <data name="SectionUpload" xml:space="preserve"><value>上传与语言</value></data>
+  <data name="LabelLanguage" xml:space="preserve"><value>识别语言</value></data>
+  <data name="LabelPickImage" xml:space="preserve"><value>选择图片</value></data>
+  <data name="LangChiSimEng" xml:space="preserve"><value>简体中文 + 英文（常用）</value></data>
+  <data name="LangChiSim" xml:space="preserve"><value>仅简体中文</value></data>
+  <data name="LangChiTraEng" xml:space="preserve"><value>繁体中文 + 英文</value></data>
+  <data name="LangChiTra" xml:space="preserve"><value>仅繁体中文</value></data>
+  <data name="LangEng" xml:space="preserve"><value>仅英文</value></data>
+  <data name="LangJpn" xml:space="preserve"><value>日文</value></data>
+  <data name="LangKor" xml:space="preserve"><value>韩文</value></data>
+  <data name="BtnRecognizeAgain" xml:space="preserve"><value>重新识别</value></data>
+  <data name="BtnCopy" xml:space="preserve"><value>复制结果</value></data>
+  <data name="BtnClear" xml:space="preserve"><value>清空</value></data>
+  <data name="BusyRecognizing" xml:space="preserve"><value>正在识别…</value></data>
+  <data name="PreviewHeading" xml:space="preserve"><value>预览</value></data>
+  <data name="ResultHeading" xml:space="preserve"><value>识别结果</value></data>
+  <data name="ResultPlaceholder" xml:space="preserve"><value>识别结果将显示在这里</value></data>
+  <data name="PreviewAlt" xml:space="preserve"><value>上传预览</value></data>
+  <data name="PreviewEmpty" xml:space="preserve"><value>选择图片后将显示预览</value></data>
+  <data name="ErrReadImage" xml:space="preserve"><value>读取图片失败：{0}</value></data>
+  <data name="ErrPickFirst" xml:space="preserve"><value>请先选择一张图片。</value></data>
+  <data name="EmptyOcrResult" xml:space="preserve"><value>（未识别到文字，可尝试换一张更清晰的图或调整识别语言。）</value></data>
+  <data name="ErrRecognize" xml:space="preserve"><value>识别失败：{0}</value></data>
+  <data name="ErrCopy" xml:space="preserve"><value>复制失败（浏览器可能限制剪贴板权限）：{0}</value></data>
+</root>

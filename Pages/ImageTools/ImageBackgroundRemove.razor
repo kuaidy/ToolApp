@@ -1,0 +1,254 @@
+@page "/imagetools/bgremove"
+@using System.IO
+@using Microsoft.AspNetCore.Components.Forms
+@inject IJSRuntime JS
+@inject IStringLocalizer<ImageBackgroundRemove> L
+
+<div class="tool-page">
+    <FluentLabel Typo="Typography.H2">@L["PageTitle"]</FluentLabel>
+    <p class="tool-lead">@L["Lead"]</p>
+
+    <div class="tool-section">
+        <div class="tool-section-title">@L["SectionMode"]</div>
+        <div class="tool-radio-row">
+            <label class="form-check">
+                <input class="form-check-input" type="radio" name="bgmode" checked="@(Mode == "quick")" @onchange="@(_ => Mode = "quick")" disabled="@Busy" />
+                <span>@L["ModeQuick"]</span>
+            </label>
+            <label class="form-check">
+                <input class="form-check-input" type="radio" name="bgmode" checked="@(Mode == "color")" @onchange="@(_ => Mode = "color")" disabled="@Busy" />
+                <span>@L["ModeColor"]</span>
+            </label>
+            <label class="form-check">
+                <input class="form-check-input" type="radio" name="bgmode" checked="@(Mode == "ai")" @onchange="@(_ => Mode = "ai")" disabled="@Busy" />
+                <span>@L["ModeAi"]</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="tool-section">
+        <div class="tool-section-title">@L["SectionImageParams"]</div>
+        <div class="row g-3 align-items-end">
+            <div class="col-12 col-md-6">
+                <div class="tool-field-col">
+                    <span class="tool-form-label">@L["LabelPickImage"]</span>
+                    <InputFile OnChange="OnFileSelectedAsync" accept="image/*" class="form-control" disabled="@Busy" />
+                </div>
+            </div>
+            @if (Mode == "quick")
+            {
+                <div class="col-12 col-md-6">
+                    <div class="tool-field-col">
+                        <span class="tool-form-label">@L["LabelTolerance", Tolerance]</span>
+                        <input type="range" class="form-range tool-range" min="1" max="100" step="1" @bind="Tolerance" @bind:event="oninput" disabled="@Busy" />
+                    </div>
+                </div>
+            }
+            else if (Mode == "color")
+            {
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="tool-field-col">
+                        <span class="tool-form-label">@L["LabelKeyColor"]</span>
+                        <input type="color" class="form-control form-control-color" style="width:100%;max-width:8rem;height:2.5rem;" @bind="KeyColor" disabled="@Busy" />
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="tool-field-col">
+                        <span class="tool-form-label">@L["LabelTolerance", Tolerance]</span>
+                        <input type="range" class="form-range tool-range" min="1" max="100" step="1" @bind="Tolerance" @bind:event="oninput" disabled="@Busy" />
+                    </div>
+                </div>
+                <div class="col-12 col-sm-12 col-lg-4">
+                    <div class="tool-field-col">
+                        <span class="tool-form-label">@L["LabelSoftBand", SoftBand]</span>
+                        <input type="range" class="form-range tool-range" min="0" max="60" step="1" @bind="SoftBand" @bind:event="oninput" disabled="@Busy" />
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-12">
+                    <p class="tool-note mb-0">@L["AiNote"]</p>
+                </div>
+            }
+        </div>
+
+        <div class="tool-btn-row mt-section">
+            <FluentButton Appearance="Appearance.Accent" OnClick="RemoveBackgroundAsync" Disabled="@(Busy || !HasImage)">
+                @if (Mode == "ai")
+                {
+                    <text>@L["BtnAiRemove"]</text>
+                }
+                else
+                {
+                    <text>@L["BtnQuickRemove"]</text>
+                }
+            </FluentButton>
+            <FluentButton OnClick="DownloadAsync" Disabled="@(Busy || !HasResult)">@L["BtnDownloadPng"]</FluentButton>
+            <FluentButton OnClick="ClearAll">@L["BtnClear"]</FluentButton>
+        </div>
+    </div>
+
+    @if (Busy)
+    {
+        <div class="tool-message tool-message--busy" role="status">
+            @(Mode == "ai" ? L["BusyAi"] : L["BusyQuick"])
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(StatusMessage))
+    {
+        <div class="tool-message tool-message--error" role="alert">@StatusMessage</div>
+    }
+
+    <div class="tool-section mb-0">
+        <div class="tool-section-title">@L["SectionPreview"]</div>
+        @* canvas 必须始终在 DOM 中（固定 id），否则选图后先调 JS 再置 HasImage 会报 canvas not found *@
+        <div class="tool-checkerboard @(HasImage ? "" : "justify-content-center")" style="min-height:160px;">
+            <canvas id="@CanvasId" class="@(HasImage ? "" : "d-none")" style="max-width:100%;height:auto;"></canvas>
+            @if (!HasImage)
+            {
+                <span class="text-muted small">@L["PreviewEmpty"]</span>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private const string CanvasId = "image-bg-remove-canvas";
+    private const long MaxFileSize = 12 * 1024 * 1024;
+
+    private string Mode { get; set; } = "quick";
+    private int Tolerance { get; set; } = 42;
+    private int SoftBand { get; set; } = 18;
+    private string KeyColor { get; set; } = "#ffffff";
+    private bool Busy { get; set; }
+    private bool HasImage { get; set; }
+    private bool HasResult { get; set; }
+    private string StatusMessage { get; set; } = "";
+    private byte[] LastFileBytes { get; set; } = Array.Empty<byte>();
+    private string LastContentType { get; set; } = "image/png";
+
+    private async Task OnFileSelectedAsync(InputFileChangeEventArgs e)
+    {
+        StatusMessage = "";
+        HasResult = false;
+        var file = e.File;
+        if (file == null)
+        {
+            return;
+        }
+
+        Busy = true;
+        try
+        {
+            await using var stream = file.OpenReadStream(MaxFileSize);
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            LastFileBytes = ms.ToArray();
+            LastContentType = string.IsNullOrEmpty(file.ContentType) ? "image/png" : file.ContentType;
+            var dataUrl = $"data:{LastContentType};base64,{Convert.ToBase64String(LastFileBytes)}";
+            await JS.InvokeVoidAsync("imageBackgroundRemove.loadDataUrl", CanvasId, dataUrl);
+            HasImage = true;
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrReadImage", ex.Message];
+            HasImage = false;
+            LastFileBytes = Array.Empty<byte>();
+        }
+        finally
+        {
+            Busy = false;
+        }
+    }
+
+    private async Task ReloadSourceToCanvasAsync()
+    {
+        if (LastFileBytes.Length == 0)
+        {
+            return;
+        }
+        var dataUrl = $"data:{LastContentType};base64,{Convert.ToBase64String(LastFileBytes)}";
+        await JS.InvokeVoidAsync("imageBackgroundRemove.loadDataUrl", CanvasId, dataUrl);
+    }
+
+    private async Task RemoveBackgroundAsync()
+    {
+        if (!HasImage || LastFileBytes.Length == 0)
+        {
+            return;
+        }
+        StatusMessage = "";
+        Busy = true;
+        try
+        {
+            RemoveResult res;
+
+            if (Mode == "ai")
+            {
+                res = await JS.InvokeAsync<RemoveResult>("imageBackgroundRemove.removeBackgroundAi", CanvasId, LastFileBytes, LastContentType);
+            }
+            else
+            {
+                await ReloadSourceToCanvasAsync();
+                if (Mode == "quick")
+                {
+                    res = await JS.InvokeAsync<RemoveResult>("imageBackgroundRemove.removeBackground", CanvasId, Tolerance);
+                }
+                else
+                {
+                    res = await JS.InvokeAsync<RemoveResult>("imageBackgroundRemove.removeByColor", CanvasId, KeyColor, Tolerance, SoftBand);
+                }
+            }
+
+            if (res == null || !res.ok)
+            {
+                StatusMessage = Mode == "ai"
+                    ? L["ErrAiFailed"]
+                    : L["ErrProcessFailed"];
+                HasResult = false;
+                return;
+            }
+            HasResult = true;
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrProcess", ex.Message];
+            HasResult = false;
+        }
+        finally
+        {
+            Busy = false;
+        }
+    }
+
+    private async Task DownloadAsync()
+    {
+        StatusMessage = "";
+        try
+        {
+            var name = $"no-bg-{DateTime.Now:yyyyMMdd-HHmmss}.png";
+            await JS.InvokeVoidAsync("imageBackgroundRemove.download", CanvasId, name);
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrDownload", ex.Message];
+        }
+    }
+
+    private async Task ClearAll()
+    {
+        StatusMessage = "";
+        HasImage = false;
+        HasResult = false;
+        LastFileBytes = Array.Empty<byte>();
+        await JS.InvokeVoidAsync("imageBackgroundRemove.reset", CanvasId);
+    }
+
+    private sealed class RemoveResult
+    {
+        public bool ok { get; set; }
+        public string error { get; set; } = "";
+    }
+}

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PageTitle" xml:space="preserve"><value>Image OCR</value></data>
+  <data name="Lead" xml:space="preserve"><value>Upload an image with text for local Tesseract OCR. Common formats (PNG, JPEG, TIFF) are supported. Max about 12MB per file.</value></data>
+  <data name="SectionUpload" xml:space="preserve"><value>Upload &amp; language</value></data>
+  <data name="LabelLanguage" xml:space="preserve"><value>Recognition language</value></data>
+  <data name="LabelPickImage" xml:space="preserve"><value>Choose image</value></data>
+  <data name="LangChiSimEng" xml:space="preserve"><value>Simplified Chinese + English (common)</value></data>
+  <data name="LangChiSim" xml:space="preserve"><value>Simplified Chinese only</value></data>
+  <data name="LangChiTraEng" xml:space="preserve"><value>Traditional Chinese + English</value></data>
+  <data name="LangChiTra" xml:space="preserve"><value>Traditional Chinese only</value></data>
+  <data name="LangEng" xml:space="preserve"><value>English only</value></data>
+  <data name="LangJpn" xml:space="preserve"><value>Japanese</value></data>
+  <data name="LangKor" xml:space="preserve"><value>Korean</value></data>
+  <data name="BtnRecognizeAgain" xml:space="preserve"><value>Recognize again</value></data>
+  <data name="BtnCopy" xml:space="preserve"><value>Copy result</value></data>
+  <data name="BtnClear" xml:space="preserve"><value>Clear</value></data>
+  <data name="BusyRecognizing" xml:space="preserve"><value>Recognizing…</value></data>
+  <data name="PreviewHeading" xml:space="preserve"><value>Preview</value></data>
+  <data name="ResultHeading" xml:space="preserve"><value>Result</value></data>
+  <data name="ResultPlaceholder" xml:space="preserve"><value>Recognized text appears here</value></data>
+  <data name="PreviewAlt" xml:space="preserve"><value>Upload preview</value></data>
+  <data name="PreviewEmpty" xml:space="preserve"><value>Choose an image to preview</value></data>
+  <data name="ErrReadImage" xml:space="preserve"><value>Failed to read image: {0}</value></data>
+  <data name="ErrPickFirst" xml:space="preserve"><value>Please choose an image first.</value></data>
+  <data name="EmptyOcrResult" xml:space="preserve"><value>(No text recognized—try a clearer image or change the language.)</value></data>
+  <data name="ErrRecognize" xml:space="preserve"><value>Recognition failed: {0}</value></data>
+  <data name="ErrCopy" xml:space="preserve"><value>Copy failed (browser may block clipboard): {0}</value></data>
+</root>
