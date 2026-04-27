@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PageTitle" xml:space="preserve"><value>Image upscale</value></data>
+  <data name="Lead" xml:space="preserve"><value>Server-side upscale using Lanczos3 resampling plus optional sharpening. This is not AI super-resolution: it cannot recover lost detail, but often looks cleaner than a plain browser zoom. Output is capped around 8 megapixels.</value></data>
+  <data name="SectionUpload" xml:space="preserve"><value>Image</value></data>
+  <data name="LabelPickImage" xml:space="preserve"><value>Choose file</value></data>
+  <data name="OriginalInfo" xml:space="preserve"><value>Original: {0} × {1} px, about {2}</value></data>
+  <data name="SectionOptions" xml:space="preserve"><value>Options</value></data>
+  <data name="LabelScale" xml:space="preserve"><value>Scale factor</value></data>
+  <data name="LabelSharpen" xml:space="preserve"><value>Sharpening ({0})</value></data>
+  <data name="LabelOutputFormat" xml:space="preserve"><value>Output format</value></data>
+  <data name="LabelJpegQuality" xml:space="preserve"><value>JPEG quality</value></data>
+  <data name="BtnProcess" xml:space="preserve"><value>Generate</value></data>
+  <data name="BtnRestorePreview" xml:space="preserve"><value>Show original</value></data>
+  <data name="BtnDownload" xml:space="preserve"><value>Download</value></data>
+  <data name="BtnClear" xml:space="preserve"><value>Clear</value></data>
+  <data name="ResultInfo" xml:space="preserve"><value>Output: {0} × {1} px, about {2}</value></data>
+  <data name="Busy" xml:space="preserve"><value>Working…</value></data>
+  <data name="SectionPreview" xml:space="preserve"><value>Preview</value></data>
+  <data name="PreviewEmpty" xml:space="preserve"><value>Preview appears here after you choose an image</value></data>
+  <data name="ErrReadImage" xml:space="preserve"><value>Read failed: {0}</value></data>
+  <data name="ErrLoad" xml:space="preserve"><value>Could not load the image.</value></data>
+  <data name="ErrProcess" xml:space="preserve"><value>Processing failed.</value></data>
+  <data name="ErrProcessDetail" xml:space="preserve"><value>Processing failed: {0}</value></data>
+  <data name="ErrRestore" xml:space="preserve"><value>Could not restore preview.</value></data>
+  <data name="ErrDownload" xml:space="preserve"><value>Download failed: {0}</value></data>
+</root>

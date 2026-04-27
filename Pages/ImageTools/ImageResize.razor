@@ -1,0 +1,344 @@
+@page "/imagetools/imageresize"
+@using System.IO
+@using Microsoft.AspNetCore.Components.Forms
+@inject IJSRuntime JS
+@inject IStringLocalizer<ImageResize> L
+
+<div class="tool-page">
+    <h2>@L["PageTitle"]</h2>
+    <p class="tool-lead">@L["Lead"]</p>
+
+    <div class="tool-section">
+        <div class="tool-section-title">@L["SectionUpload"]</div>
+        <div class="row g-3 align-items-end">
+            <div class="col-12 col-md-8">
+                <div class="tool-field-col">
+                    <span class="tool-form-label">@L["LabelPickImage"]</span>
+                    <InputFile OnChange="OnFileSelectedAsync" accept="image/*" class="form-control" disabled="@Busy" />
+                </div>
+            </div>
+        </div>
+        @if (OrigW > 0)
+        {
+            <p class="tool-note mt-3 mb-0">@L["OriginalSize", OrigW, OrigH]</p>
+        }
+    </div>
+
+    <div class="tool-section">
+        <div class="tool-section-title">@L["SectionDimensions"]</div>
+        <div class="row g-3 align-items-end">
+            <div class="col-6 col-md-3">
+                <div class="tool-field-col">
+                    <span class="tool-form-label">@L["LabelWidth"]</span>
+                    <input type="number" class="form-control" min="1" max="16384" step="1"
+                           value="@TargetW" @oninput="OnWidthInput" disabled="@(!HasImage || Busy)" />
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="tool-field-col">
+                    <span class="tool-form-label">@L["LabelHeight"]</span>
+                    <input type="number" class="form-control" min="1" max="16384" step="1"
+                           value="@TargetH" @oninput="OnHeightInput" disabled="@(!HasImage || Busy)" />
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-check d-block mt-2">
+                    <InputCheckbox @bind-Value="MaintainAspect" @bind-Value:after="OnMaintainAspectAfterAsync"
+                                   class="form-check-input" disabled="@(!HasImage || Busy)" />
+                    <span>@L["LabelMaintainAspect"]</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="tool-section-title mt-section mb-2 small text-muted">@L["SectionQuickScale"]</div>
+        <div class="d-flex flex-wrap gap-2">
+            @foreach (var pct in ScalePresets)
+            {
+                var p = pct;
+                <button type="button" class="btn btn-sm btn-outline-secondary"
+                        @onclick="@(() => ApplyPercentAsync(p))"
+                        disabled="@(!HasImage || Busy || OrigW <= 0)">
+                    @p%
+                </button>
+            }
+        </div>
+
+        <div class="row g-3 align-items-end mt-section">
+            <div class="col-12 col-md-4">
+                <div class="tool-field-col">
+                    <span class="tool-form-label">@L["LabelOutputFormat"]</span>
+                    <select class="form-select" @bind="OutputMime" disabled="@(!HasImage || Busy)">
+                        <option value="image/png">PNG</option>
+                        <option value="image/jpeg">JPEG</option>
+                        <option value="image/webp">WebP</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="tool-btn-row mt-section">
+            <button type="button" class="btn btn-primary"
+                    @onclick="ApplyResizeAsync"
+                    disabled="@(Busy || !HasImage || TargetW < 1 || TargetH < 1)">@L["BtnApply"]</button>
+            <button type="button" class="btn btn-outline-secondary"
+                    @onclick="RestoreOriginalAsync"
+                    disabled="@(Busy || !HasImage)">@L["BtnRestoreOriginal"]</button>
+            <button type="button" class="btn btn-outline-secondary"
+                    @onclick="DownloadAsync"
+                    disabled="@(Busy || !HasImage)">@L["BtnDownload"]</button>
+            <button type="button" class="btn btn-outline-secondary"
+                    @onclick="ClearAllAsync">@L["BtnClear"]</button>
+        </div>
+    </div>
+
+    @if (Busy)
+    {
+        <div class="tool-message tool-message--busy" role="status">@L["Busy"]</div>
+    }
+
+    @if (!string.IsNullOrEmpty(StatusMessage))
+    {
+        <div class="tool-message tool-message--error" role="alert">@StatusMessage</div>
+    }
+
+    @if (OutputMime != "image/png")
+    {
+        <p class="tool-note small">@L["NoteNonPngAlpha"]</p>
+    }
+
+    <div class="tool-section mb-0">
+        <div class="tool-section-title">@L["SectionPreview"]</div>
+        <div class="tool-checkerboard @(HasImage ? "" : "justify-content-center")" style="min-height:160px;">
+            <canvas id="@CanvasId" class="@(HasImage ? "" : "d-none")" style="max-width:100%;height:auto;"></canvas>
+            @if (!HasImage)
+            {
+                <span class="text-muted small">@L["PreviewEmpty"]</span>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private const string CanvasId = "image-resize-canvas";
+    private const long MaxFileSize = 12 * 1024 * 1024;
+
+    private static readonly int[] ScalePresets = [25, 50, 75, 100, 150, 200];
+
+    private bool Busy { get; set; }
+    private bool HasImage { get; set; }
+    private string StatusMessage { get; set; } = "";
+    private byte[] LastFileBytes { get; set; } = Array.Empty<byte>();
+    private string LastContentType { get; set; } = "image/png";
+    private int OrigW { get; set; }
+    private int OrigH { get; set; }
+    private int TargetW { get; set; } = 1;
+    private int TargetH { get; set; } = 1;
+    private bool MaintainAspect { get; set; } = true;
+    private string OutputMime { get; set; } = "image/png";
+
+    private async Task OnFileSelectedAsync(InputFileChangeEventArgs e)
+    {
+        StatusMessage = "";
+        var file = e.File;
+        if (file == null)
+        {
+            return;
+        }
+
+        Busy = true;
+        try
+        {
+            await using var stream = file.OpenReadStream(MaxFileSize);
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            LastFileBytes = ms.ToArray();
+            LastContentType = string.IsNullOrEmpty(file.ContentType) ? "image/png" : file.ContentType;
+            var dataUrl = $"data:{LastContentType};base64,{Convert.ToBase64String(LastFileBytes)}";
+            var dim = await JS.InvokeAsync<DimResult>("imageResize.loadDataUrl", CanvasId, dataUrl);
+            if (dim == null || dim.width < 1 || dim.height < 1)
+            {
+                StatusMessage = L["ErrLoad"];
+                HasImage = false;
+                OrigW = OrigH = 0;
+                return;
+            }
+
+            OrigW = dim.width;
+            OrigH = dim.height;
+            TargetW = OrigW;
+            TargetH = OrigH;
+            HasImage = true;
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrReadImage", ex.Message];
+            HasImage = false;
+            LastFileBytes = Array.Empty<byte>();
+            OrigW = OrigH = 0;
+        }
+        finally
+        {
+            Busy = false;
+        }
+    }
+
+    private void OnWidthInput(ChangeEventArgs e)
+    {
+        if (!int.TryParse(e.Value?.ToString(), out var w) || w < 1)
+        {
+            return;
+        }
+
+        w = Math.Clamp(w, 1, 16384);
+        TargetW = w;
+        if (MaintainAspect && OrigW > 0 && OrigH > 0)
+        {
+            TargetH = Math.Max(1, (int)Math.Round(w * (double)OrigH / OrigW));
+            TargetH = Math.Clamp(TargetH, 1, 16384);
+        }
+    }
+
+    private void OnHeightInput(ChangeEventArgs e)
+    {
+        if (!int.TryParse(e.Value?.ToString(), out var h) || h < 1)
+        {
+            return;
+        }
+
+        h = Math.Clamp(h, 1, 16384);
+        TargetH = h;
+        if (MaintainAspect && OrigW > 0 && OrigH > 0)
+        {
+            TargetW = Math.Max(1, (int)Math.Round(h * (double)OrigW / OrigH));
+            TargetW = Math.Clamp(TargetW, 1, 16384);
+        }
+    }
+
+    private Task OnMaintainAspectAfterAsync()
+    {
+        if (MaintainAspect && OrigW > 0 && OrigH > 0)
+        {
+            TargetH = Math.Max(1, (int)Math.Round(TargetW * (double)OrigH / OrigW));
+            TargetH = Math.Clamp(TargetH, 1, 16384);
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private async Task ApplyPercentAsync(int percent)
+    {
+        if (!HasImage || OrigW <= 0 || Busy)
+        {
+            return;
+        }
+
+        var f = percent / 100.0;
+        TargetW = Math.Max(1, Math.Min(16384, (int)Math.Round(OrigW * f)));
+        TargetH = Math.Max(1, Math.Min(16384, (int)Math.Round(OrigH * f)));
+        await ApplyResizeAsync();
+    }
+
+    private async Task ApplyResizeAsync()
+    {
+        if (!HasImage || LastFileBytes.Length == 0)
+        {
+            return;
+        }
+
+        StatusMessage = "";
+        Busy = true;
+        try
+        {
+            var res = await JS.InvokeAsync<OkResult>("imageResize.applyResize", CanvasId, TargetW, TargetH);
+            if (res == null || !res.ok)
+            {
+                StatusMessage = L["ErrApply"];
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrApplyDetail", ex.Message];
+        }
+        finally
+        {
+            Busy = false;
+        }
+    }
+
+    private async Task RestoreOriginalAsync()
+    {
+        StatusMessage = "";
+        Busy = true;
+        try
+        {
+            var res = await JS.InvokeAsync<DimOkResult>("imageResize.restoreOriginalSize", CanvasId);
+            if (res == null || !res.ok)
+            {
+                StatusMessage = L["ErrRestore"];
+                return;
+            }
+
+            if (res.width > 0 && res.height > 0)
+            {
+                TargetW = res.width;
+                TargetH = res.height;
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrRestoreDetail", ex.Message];
+        }
+        finally
+        {
+            Busy = false;
+        }
+    }
+
+    private async Task DownloadAsync()
+    {
+        StatusMessage = "";
+        try
+        {
+            var ext = OutputMime switch
+            {
+                "image/jpeg" => ".jpg",
+                "image/webp" => ".webp",
+                _ => ".png"
+            };
+            var name = $"resized-{DateTime.Now:yyyyMMdd-HHmmss}{ext}";
+            await JS.InvokeVoidAsync("imageResize.download", CanvasId, name, OutputMime, 0.92);
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrDownload", ex.Message];
+        }
+    }
+
+    private async Task ClearAllAsync()
+    {
+        StatusMessage = "";
+        HasImage = false;
+        LastFileBytes = Array.Empty<byte>();
+        OrigW = OrigH = 0;
+        TargetW = TargetH = 1;
+        await JS.InvokeVoidAsync("imageResize.reset", CanvasId);
+    }
+
+    private sealed class DimResult
+    {
+        public int width { get; set; }
+        public int height { get; set; }
+    }
+
+    private sealed class OkResult
+    {
+        public bool ok { get; set; }
+    }
+
+    private sealed class DimOkResult
+    {
+        public bool ok { get; set; }
+        public int width { get; set; }
+        public int height { get; set; }
+    }
+}

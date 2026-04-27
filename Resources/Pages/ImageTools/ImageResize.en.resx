@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PageTitle" xml:space="preserve"><value>Resize image</value></data>
+  <data name="Lead" xml:space="preserve"><value>Change width and height in the browser, optionally keep aspect ratio, use quick scale presets, and download as PNG, JPEG, or WebP. Processing stays on your device.</value></data>
+  <data name="SectionUpload" xml:space="preserve"><value>Image</value></data>
+  <data name="LabelPickImage" xml:space="preserve"><value>Choose file</value></data>
+  <data name="OriginalSize" xml:space="preserve"><value>Original size: {0} × {1} px</value></data>
+  <data name="SectionDimensions" xml:space="preserve"><value>Target size</value></data>
+  <data name="LabelWidth" xml:space="preserve"><value>Width (px)</value></data>
+  <data name="LabelHeight" xml:space="preserve"><value>Height (px)</value></data>
+  <data name="LabelMaintainAspect" xml:space="preserve"><value>Lock aspect ratio (editing width or height updates the other)</value></data>
+  <data name="SectionQuickScale" xml:space="preserve"><value>Quick scale (vs. original)</value></data>
+  <data name="LabelOutputFormat" xml:space="preserve"><value>Download format</value></data>
+  <data name="BtnApply" xml:space="preserve"><value>Apply size</value></data>
+  <data name="BtnRestoreOriginal" xml:space="preserve"><value>Restore original size</value></data>
+  <data name="BtnDownload" xml:space="preserve"><value>Download</value></data>
+  <data name="BtnClear" xml:space="preserve"><value>Clear</value></data>
+  <data name="Busy" xml:space="preserve"><value>Working…</value></data>
+  <data name="NoteNonPngAlpha" xml:space="preserve"><value>JPEG and WebP do not support transparency; transparent areas may become a solid color.</value></data>
+  <data name="SectionPreview" xml:space="preserve"><value>Preview</value></data>
+  <data name="PreviewEmpty" xml:space="preserve"><value>Preview appears here after you choose an image</value></data>
+  <data name="ErrReadImage" xml:space="preserve"><value>Could not read the image: {0}</value></data>
+  <data name="ErrLoad" xml:space="preserve"><value>Could not read image dimensions. Try another file.</value></data>
+  <data name="ErrApply" xml:space="preserve"><value>Resize failed. Please try again.</value></data>
+  <data name="ErrApplyDetail" xml:space="preserve"><value>Resize failed: {0}</value></data>
+  <data name="ErrRestore" xml:space="preserve"><value>Could not restore original size.</value></data>
+  <data name="ErrRestoreDetail" xml:space="preserve"><value>Restore failed: {0}</value></data>
+  <data name="ErrDownload" xml:space="preserve"><value>Download failed: {0}</value></data>
+</root>

@@ -241,4 +241,13 @@
   <data name="Remove image background" xml:space="preserve">
     <value>图片背景一键清除</value>
   </data>
+  <data name="Image resize" xml:space="preserve">
+    <value>图片尺寸修改</value>
+  </data>
+  <data name="Image compress" xml:space="preserve">
+    <value>图片压缩</value>
+  </data>
+  <data name="Image HD upscale" xml:space="preserve">
+    <value>图片变高清</value>
+  </data>
 </root>

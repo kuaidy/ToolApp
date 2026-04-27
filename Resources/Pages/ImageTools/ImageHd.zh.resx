@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PageTitle" xml:space="preserve"><value>图片变高清</value></data>
+  <data name="Lead" xml:space="preserve"><value>在服务器上用高质量算法放大像素（Lanczos3 重采样）并可选锐化。不是 AI 超分辨率，无法恢复已丢失的细节，但可减少放大后的模糊感。输出约 8MP 以内。</value></data>
+  <data name="SectionUpload" xml:space="preserve"><value>选择图片</value></data>
+  <data name="LabelPickImage" xml:space="preserve"><value>上传文件</value></data>
+  <data name="OriginalInfo" xml:space="preserve"><value>原始：{0} × {1} 像素，约 {2}</value></data>
+  <data name="SectionOptions" xml:space="preserve"><value>选项</value></data>
+  <data name="LabelScale" xml:space="preserve"><value>放大倍数</value></data>
+  <data name="LabelSharpen" xml:space="preserve"><value>锐化强度（{0}）</value></data>
+  <data name="LabelOutputFormat" xml:space="preserve"><value>输出格式</value></data>
+  <data name="LabelJpegQuality" xml:space="preserve"><value>JPEG 质量</value></data>
+  <data name="BtnProcess" xml:space="preserve"><value>生成高清图</value></data>
+  <data name="BtnRestorePreview" xml:space="preserve"><value>恢复原图预览</value></data>
+  <data name="BtnDownload" xml:space="preserve"><value>下载</value></data>
+  <data name="BtnClear" xml:space="preserve"><value>清空</value></data>
+  <data name="ResultInfo" xml:space="preserve"><value>输出：{0} × {1} 像素，约 {2}</value></data>
+  <data name="Busy" xml:space="preserve"><value>处理中…</value></data>
+  <data name="SectionPreview" xml:space="preserve"><value>预览</value></data>
+  <data name="PreviewEmpty" xml:space="preserve"><value>选择图片后将显示在此</value></data>
+  <data name="ErrReadImage" xml:space="preserve"><value>读取失败：{0}</value></data>
+  <data name="ErrLoad" xml:space="preserve"><value>无法加载图片。</value></data>
+  <data name="ErrProcess" xml:space="preserve"><value>处理失败。</value></data>
+  <data name="ErrProcessDetail" xml:space="preserve"><value>处理失败：{0}</value></data>
+  <data name="ErrRestore" xml:space="preserve"><value>无法恢复预览。</value></data>
+  <data name="ErrDownload" xml:space="preserve"><value>下载失败：{0}</value></data>
+</root>

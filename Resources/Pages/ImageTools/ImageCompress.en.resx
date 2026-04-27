@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PageTitle" xml:space="preserve"><value>Compress image</value></data>
+  <data name="Lead" xml:space="preserve"><value>Server-side compression (SixLabors.ImageSharp): images are uploaded, re-encoded, and returned. Ten tiers (slider steps): higher tier means stronger JPEG/WebP compression (smaller files); PNG stays lossless with stronger zlib at higher tiers.</value></data>
+  <data name="SectionUpload" xml:space="preserve"><value>Image</value></data>
+  <data name="LabelPickImage" xml:space="preserve"><value>Choose file</value></data>
+  <data name="OriginalInfo" xml:space="preserve"><value>Original: {0} × {1} px, about {2}</value></data>
+  <data name="SectionOptions" xml:space="preserve"><value>Options</value></data>
+  <data name="LabelOutputFormat" xml:space="preserve"><value>Output format</value></data>
+  <data name="LabelQuality" xml:space="preserve"><value>Compression tier: {0} of 10</value></data>
+  <data name="LabelFillWhite" xml:space="preserve"><value>Use white background before JPEG/WebP (helps PNGs with transparency)</value></data>
+  <data name="NoteServerPrivacy" xml:space="preserve"><value>Images are sent to this site over HTTPS, re-encoded on the server, and returned. Do not upload confidential images.</value></data>
+  <data name="NotePngServer" xml:space="preserve"><value>PNG is lossless. Tier 1 (10%) is zlib Level0 (fastest, largest); tier 10 (100%) is Level9 (slowest, usually smallest); tiers in between map to Level1–Level8.</value></data>
+  <data name="BtnCompress" xml:space="preserve"><value>Compress preview</value></data>
+  <data name="BtnRestorePreview" xml:space="preserve"><value>Show original</value></data>
+  <data name="BtnDownload" xml:space="preserve"><value>Download</value></data>
+  <data name="BtnClear" xml:space="preserve"><value>Clear</value></data>
+  <data name="ResultStats" xml:space="preserve"><value>Preview file size about {0} (about {1} of the original)</value></data>
+  <data name="Busy" xml:space="preserve"><value>Working…</value></data>
+  <data name="NoteLossyAlpha" xml:space="preserve"><value>JPEG and WebP are lossy; transparent areas may look different after compositing on white.</value></data>
+  <data name="SectionPreview" xml:space="preserve"><value>Preview</value></data>
+  <data name="PreviewEmpty" xml:space="preserve"><value>Preview appears here after you choose an image</value></data>
+  <data name="ErrReadImage" xml:space="preserve"><value>Could not read the image: {0}</value></data>
+  <data name="ErrLoad" xml:space="preserve"><value>Could not load the image. Try another file.</value></data>
+  <data name="ErrCompress" xml:space="preserve"><value>Compression failed. Try again or pick another format.</value></data>
+  <data name="ErrCompressDetail" xml:space="preserve"><value>Compression failed: {0}</value></data>
+  <data name="ErrRestore" xml:space="preserve"><value>Could not restore the original preview.</value></data>
+  <data name="ErrRestoreDetail" xml:space="preserve"><value>Restore failed: {0}</value></data>
+  <data name="ErrDownload" xml:space="preserve"><value>Download failed: {0}</value></data>
+</root>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PageTitle" xml:space="preserve"><value>图片压缩</value></data>
+  <data name="Lead" xml:space="preserve"><value>由服务器使用 SixLabors.ImageSharp 压缩：图片会上传到当前站点处理并返回。压缩共 10 个档位（滑块 10 格）；档位越高，JPEG/WebP 压缩越强、文件越小；PNG 仍为无损，档位越高 zlib 越强、通常文件越小。</value></data>
+  <data name="SectionUpload" xml:space="preserve"><value>选择图片</value></data>
+  <data name="LabelPickImage" xml:space="preserve"><value>上传文件</value></data>
+  <data name="OriginalInfo" xml:space="preserve"><value>原始：{0} × {1} 像素，约 {2}</value></data>
+  <data name="SectionOptions" xml:space="preserve"><value>压缩选项</value></data>
+  <data name="LabelOutputFormat" xml:space="preserve"><value>输出格式</value></data>
+  <data name="LabelQuality" xml:space="preserve"><value>压缩档位：第 {0}/10 档</value></data>
+  <data name="LabelFillWhite" xml:space="preserve"><value>JPEG/WebP 导出前铺白底（适合含透明通道的 PNG）</value></data>
+  <data name="NoteServerPrivacy" xml:space="preserve"><value>图片以 multipart 形式提交到当前站点，由服务器解码并重编码后返回；请勿上传敏感或机密内容。</value></data>
+  <data name="NotePngServer" xml:space="preserve"><value>PNG 为像素无损。第 1 档（10%）对应 zlib Level0（最快、体积最大），第 10 档（100%）对应 Level9（最慢、通常最小）；中间档线性对应 Level1–Level8。</value></data>
+  <data name="BtnCompress" xml:space="preserve"><value>压缩预览</value></data>
+  <data name="BtnRestorePreview" xml:space="preserve"><value>恢复原图预览</value></data>
+  <data name="BtnDownload" xml:space="preserve"><value>下载</value></data>
+  <data name="BtnClear" xml:space="preserve"><value>清空</value></data>
+  <data name="ResultStats" xml:space="preserve"><value>当前预览约 {0}（约为原文件的 {1}）</value></data>
+  <data name="Busy" xml:space="preserve"><value>处理中…</value></data>
+  <data name="NoteLossyAlpha" xml:space="preserve"><value>JPEG / WebP 为有损格式，透明区域在铺白底后可能与原图观感不同。</value></data>
+  <data name="SectionPreview" xml:space="preserve"><value>预览</value></data>
+  <data name="PreviewEmpty" xml:space="preserve"><value>选择图片后将显示在此</value></data>
+  <data name="ErrReadImage" xml:space="preserve"><value>读取图片失败：{0}</value></data>
+  <data name="ErrLoad" xml:space="preserve"><value>无法读取图片，请换一张图重试。</value></data>
+  <data name="ErrCompress" xml:space="preserve"><value>压缩失败，请重试或更换格式。</value></data>
+  <data name="ErrCompressDetail" xml:space="preserve"><value>压缩失败：{0}</value></data>
+  <data name="ErrRestore" xml:space="preserve"><value>无法恢复原图预览。</value></data>
+  <data name="ErrRestoreDetail" xml:space="preserve"><value>恢复失败：{0}</value></data>
+  <data name="ErrDownload" xml:space="preserve"><value>下载失败：{0}</value></data>
+</root>

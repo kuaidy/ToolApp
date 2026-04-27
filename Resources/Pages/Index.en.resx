@@ -240,4 +240,13 @@
   <data name="Remove image background" xml:space="preserve">
     <value>Remove image background</value>
   </data>
+  <data name="Image resize" xml:space="preserve">
+    <value>Image resize</value>
+  </data>
+  <data name="Image compress" xml:space="preserve">
+    <value>Image compress</value>
+  </data>
+  <data name="Image HD upscale" xml:space="preserve">
+    <value>Image upscale (HD)</value>
+  </data>
 </root>
