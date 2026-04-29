@@ -249,4 +249,7 @@
   <data name="Image HD upscale" xml:space="preserve">
     <value>Image upscale (HD)</value>
   </data>
+  <data name="SeoHomeMetaDescription" xml:space="preserve">
+    <value>ToolApp — free online tools: image OCR, compression, QR codes, JSON/Markdown, encoding, color and base conversion, reference tables (HTTP, Git, Vim, emoji), and more. English and Chinese.</value>
+  </data>
 </root>

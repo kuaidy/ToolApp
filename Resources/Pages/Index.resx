@@ -250,4 +250,7 @@
   <data name="Image HD upscale" xml:space="preserve">
     <value />
   </data>
+  <data name="SeoHomeMetaDescription" xml:space="preserve">
+    <value>Free online tools for images, text, encoding, and conversion. Reference tables, OCR, QR codes, and developer utilities. English and Chinese.</value>
+  </data>
 </root>

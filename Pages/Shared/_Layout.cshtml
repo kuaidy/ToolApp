@@ -1,19 +1,129 @@
-﻿@using Microsoft.AspNetCore.Builder
+﻿@using System.Collections.Generic
+@using Microsoft.AspNetCore.Builder
 @using Microsoft.AspNetCore.Components.Web;
+@using Microsoft.AspNetCore.Http.Features
 @using Microsoft.AspNetCore.Localization
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.Extensions.Options
+@using System.Text.Encodings.Web
+@using System.Text.Json
 
 @inject IViewLocalizer ViewLocalizer;
+@inject IOptions<SeoOptions> SeoOptionsAccessor
+
+@{
+    var seo = SeoOptionsAccessor.Value;
+    var requestCultureFeature = Context.Features.Get<IRequestCultureFeature>();
+    var uiName = requestCultureFeature?.RequestCulture?.UICulture?.Name ?? "en";
+    var htmlLang = string.Equals(uiName, "zh", StringComparison.OrdinalIgnoreCase) ? "zh-CN" : "en";
+    var ogLocale = htmlLang.StartsWith("zh", StringComparison.OrdinalIgnoreCase) ? "zh_CN" : "en_US";
+
+    var baseUrl = !string.IsNullOrWhiteSpace(seo.PublicBaseUrl)
+        ? seo.PublicBaseUrl.TrimEnd('/')
+        : $"{Context.Request.Scheme}://{Context.Request.Host.Value}{Context.Request.PathBase}".TrimEnd('/');
+
+    var path = Context.Request.Path.Value;
+    if (string.IsNullOrEmpty(path)) path = "/";
+    var canonicalUrl = $"{baseUrl}{path}";
+
+    var pageTitlePart = ViewData["Title"]?.ToString();
+    var documentTitle = string.IsNullOrEmpty(pageTitlePart) ? "ToolApp" : $"{pageTitlePart} - ToolApp";
+
+    var metaDesc = ViewData["MetaDescription"] as string;
+    if (string.IsNullOrWhiteSpace(metaDesc))
+        metaDesc = seo.DefaultMetaDescription;
+
+    var robots = ViewData["Robots"] as string ?? "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
+
+    var ogImagePath = ViewData["OgImage"] as string ?? seo.DefaultOgImagePath;
+    var ogImageUrl = "";
+    if (!string.IsNullOrWhiteSpace(ogImagePath))
+    {
+        ogImageUrl = ogImagePath.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+            ? ogImagePath
+            : baseUrl + (ogImagePath.StartsWith("/") ? ogImagePath : "/" + ogImagePath);
+    }
+
+    var ldPayload = new Dictionary<string, object>
+    {
+        ["@context"] = "https://schema.org",
+        ["@graph"] = new object[]
+        {
+            new Dictionary<string, object>
+            {
+                ["@type"] = "WebSite",
+                ["@id"] = $"{baseUrl}/#website",
+                ["name"] = "ToolApp",
+                ["url"] = baseUrl,
+                ["description"] = metaDesc,
+                ["inLanguage"] = new[] { "en", "zh-CN" },
+                ["publisher"] = new Dictionary<string, object> { ["@id"] = $"{baseUrl}/#organization" }
+            },
+            new Dictionary<string, object>
+            {
+                ["@type"] = "Organization",
+                ["@id"] = $"{baseUrl}/#organization",
+                ["name"] = "ToolApp",
+                ["url"] = baseUrl
+            },
+            new Dictionary<string, object>
+            {
+                ["@type"] = "WebApplication",
+                ["name"] = "ToolApp",
+                ["url"] = baseUrl,
+                ["description"] = metaDesc,
+                ["applicationCategory"] = "UtilitiesApplication",
+                ["operatingSystem"] = "Any",
+                ["browserRequirements"] = "Requires JavaScript. Runs in the browser for interactive tools.",
+                ["inLanguage"] = new[] { "en", "zh-CN" },
+                ["offers"] = new Dictionary<string, object>
+                {
+                    ["@type"] = "Offer",
+                    ["price"] = "0",
+                    ["priceCurrency"] = "USD"
+                }
+            }
+        }
+    };
+    var jsonLd = JsonSerializer.Serialize(ldPayload, new JsonSerializerOptions
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    });
+}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="@htmlLang">
 <head>
-    <script src="https://quge5.com/88/tag.min.js" data-zone="234654" async data-cfasync="false"></script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ToolApp</title>
+    <title>@documentTitle</title>
+    <meta name="description" content="@metaDesc" />
+    <meta name="robots" content="@robots" />
+    <link rel="canonical" href="@canonicalUrl" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="@documentTitle" />
+    <meta property="og:description" content="@metaDesc" />
+    <meta property="og:url" content="@canonicalUrl" />
+    <meta property="og:site_name" content="ToolApp" />
+    <meta property="og:locale" content="@ogLocale" />
+    @if (!string.IsNullOrEmpty(ogImageUrl))
+    {
+        <meta property="og:image" content="@ogImageUrl" />
+    }
+    <meta name="twitter:card" content="@(!string.IsNullOrEmpty(ogImageUrl) ? "summary_large_image" : "summary")" />
+    <meta name="twitter:title" content="@documentTitle" />
+    <meta name="twitter:description" content="@metaDesc" />
+    @if (!string.IsNullOrEmpty(ogImageUrl))
+    {
+        <meta name="twitter:image" content="@ogImageUrl" />
+    }
+    <script type="application/ld+json">@Html.Raw(jsonLd)</script>
+
     <base href="~/" />
+
+    <script src="https://5gvci.com/act/files/tag.min.js?z=10942051" data-cfasync="false" async></script>
+    <script>(function(s){s.dataset.zone='10942053',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+    <script>(function(s){s.dataset.zone='10942057',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/image-tools.css" asp-append-version="true" />
