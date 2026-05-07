@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <PublishAot>False</PublishAot>
+    <DefaultItemExcludes>$(DefaultItemExcludes);publish\**;publish/**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>

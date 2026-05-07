@@ -1,5 +1,7 @@
 ﻿@page "/imagetools/imageocr"
 @using System.IO
+@using System.Threading
+@using System.Threading.Tasks
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Hosting
 @using ToolApp.Common
@@ -17,7 +19,7 @@
             <div class="col-12 col-md-6">
                 <div class="tool-field-col">
                     <span class="tool-form-label">@L["LabelLanguage"]</span>
-                    <select class="form-select" @bind="SelectedLanguage" disabled="@Busy">
+                    <select class="form-select" @bind="SelectedLanguage" disabled="@Recognizing">
                         <option value="chi_sim+eng">@L["LangChiSimEng"]</option>
                         <option value="chi_sim">@L["LangChiSim"]</option>
                         <option value="chi_tra+eng">@L["LangChiTraEng"]</option>
@@ -31,19 +33,19 @@
             <div class="col-12 col-md-6">
                 <div class="tool-field-col">
                     <span class="tool-form-label">@L["LabelPickImage"]</span>
-                    <InputFile OnChange="OnFileSelectedAsync" accept="image/*" class="form-control" disabled="@Busy" />
+                    <InputFile OnChange="OnFileSelectedAsync" accept="image/*" class="form-control" />
                 </div>
             </div>
         </div>
 
         <div class="tool-btn-row mt-section">
-            <FluentButton Appearance="Appearance.Accent" OnClick="RecognizeAgainAsync" Disabled="@(Busy || UploadedBytes.Length == 0)">@L["BtnRecognizeAgain"]</FluentButton>
-            <FluentButton OnClick="CopyResultAsync" Disabled="@(Busy || string.IsNullOrWhiteSpace(ResultText))">@L["BtnCopy"]</FluentButton>
+            <FluentButton Appearance="Appearance.Accent" OnClick="RecognizeAgainAsync" Disabled="@(Recognizing || UploadedBytes.Length == 0)">@L["BtnRecognizeAgain"]</FluentButton>
+            <FluentButton OnClick="CopyResultAsync" Disabled="@(Recognizing || string.IsNullOrWhiteSpace(ResultText))">@L["BtnCopy"]</FluentButton>
             <FluentButton OnClick="ClearAll">@L["BtnClear"]</FluentButton>
         </div>
     </div>
 
-    @if (Busy)
+    @if (Recognizing)
     {
         <div class="tool-message tool-message--busy" role="status">@L["BusyRecognizing"]</div>
     }
@@ -57,13 +59,19 @@
         <div class="tool-preview-col">
             <div class="tool-section h-100 mb-0 d-flex flex-column">
                 <div class="tool-preview-heading">@L["PreviewHeading"]</div>
-                @if (!string.IsNullOrEmpty(PreviewDataUrl))
+                @if (PreviewBusy)
                 {
-                    <div class="tool-preview-wrap flex-grow-1">
-                        <img src="@PreviewDataUrl" alt="@L["PreviewAlt"]" class="img-fluid rounded d-block mx-auto" style="max-height:420px;object-fit:contain;" />
+                    <div class="tool-preview-wrap flex-grow-1 d-flex align-items-center justify-content-center text-muted small" style="min-height:120px;">
+                        @L["PreviewGenerating"]
                     </div>
                 }
-                else
+                else if (!string.IsNullOrEmpty(PreviewDataUrl))
+                {
+                    <div class="tool-preview-wrap flex-grow-1">
+                        <img src="@PreviewDataUrl" alt="@L["PreviewAlt"]" class="img-fluid rounded d-block mx-auto" style="max-height:420px;object-fit:contain;" decoding="async" />
+                    </div>
+                }
+                else if (!PreviewBusy)
                 {
                     <div class="tool-preview-wrap flex-grow-1 d-flex align-items-center justify-content-center" style="min-height:200px;">
                         <span class="text-muted small">@L["PreviewEmpty"]</span>
@@ -74,7 +82,15 @@
         <div class="tool-preview-col">
             <div class="tool-section h-100 mb-0 d-flex flex-column">
                 <div class="tool-preview-heading">@L["ResultHeading"]</div>
-                <FluentTextArea @bind-Value="ResultText" Placeholder="@L["ResultPlaceholder"]" Style="width:100%;min-height:280px;" Rows="14"></FluentTextArea>
+                @* FluentTextArea 在 Blazor Server 下由代码赋值时有时不同步，改用原生 textarea *@
+                <textarea id="ocr-result-text"
+                          class="form-control font-monospace"
+                          rows="14"
+                          placeholder="@(Recognizing ? L["PlaceholderRecognizing"].Value : L["ResultPlaceholder"].Value)"
+                          style="width:100%;min-height:280px;white-space:pre-wrap;"
+                          @bind="ResultText"
+                          @bind:event="oninput"
+                          @key="ResultRevision"></textarea>
             </div>
         </div>
     </div>
@@ -84,10 +100,17 @@
     private const long MaxFileSize = 12 * 1024 * 1024;
 
     private string SelectedLanguage { get; set; } = "chi_sim+eng";
+    private int ResultRevision { get; set; }
     private string ResultText { get; set; } = "";
     private string PreviewDataUrl { get; set; } = "";
     private string StatusMessage { get; set; } = "";
-    private bool Busy { get; set; }
+    /// <summary>OCR 进行中；与预览生成分开，选图后可先看到图再识别。</summary>
+    private bool Recognizing { get; set; }
+    /// <summary>缩略图编码中（很短）；与 OCR 无关。</summary>
+    private bool PreviewBusy { get; set; }
+    private long _ocrSession;
+
+    private long BeginNewOcrSession() => Interlocked.Increment(ref _ocrSession);
     private byte[] UploadedBytes { get; set; } = Array.Empty<byte>();
     private string UploadedContentType { get; set; } = "image/png";
 
@@ -109,25 +132,36 @@
             await stream.CopyToAsync(ms);
             UploadedBytes = ms.ToArray();
             UploadedContentType = string.IsNullOrEmpty(file.ContentType) ? "image/png" : file.ContentType;
-            PreviewDataUrl = $"data:{UploadedContentType};base64,{Convert.ToBase64String(UploadedBytes)}";
+
+            var session = BeginNewOcrSession();
+            PreviewBusy = true;
+            PreviewDataUrl = "";
+            await InvokeAsync(StateHasChanged);
+
+            try
+            {
+                PreviewDataUrl = await Task.Run(() => ImagePreviewDataUrl.Create(UploadedBytes, UploadedContentType));
+            }
+            finally
+            {
+                PreviewBusy = false;
+            }
+
+            await InvokeAsync(StateHasChanged);
+
+            _ = RunOcrForSessionAsync(session);
         }
         catch (Exception ex)
         {
-            StatusMessage = L["ErrReadImage", ex.Message];
+            StatusMessage = L["ErrReadImage", FormatUserFacingError(ex)];
             UploadedBytes = Array.Empty<byte>();
             PreviewDataUrl = "";
+            PreviewBusy = false;
             return;
         }
-
-        await RunOcrAsync();
     }
 
     private async Task RecognizeAgainAsync()
-    {
-        await RunOcrAsync();
-    }
-
-    private async Task RunOcrAsync()
     {
         if (UploadedBytes.Length == 0)
         {
@@ -135,22 +169,62 @@
             return;
         }
 
+        var session = BeginNewOcrSession();
+        await RunOcrForSessionAsync(session);
+    }
+
+    private async Task RunOcrForSessionAsync(long session)
+    {
+        if (UploadedBytes.Length == 0)
+        {
+            return;
+        }
+
         StatusMessage = "";
-        Busy = true;
+        Recognizing = true;
         ResultText = "";
+        await InvokeAsync(StateHasChanged);
+
         try
         {
             var text = await Task.Run(() => TesseractOcr.Recognize(UploadedBytes, SelectedLanguage, TessDataPath));
-            ResultText = string.IsNullOrWhiteSpace(text) ? L["EmptyOcrResult"] : text;
+            if (session != _ocrSession)
+            {
+                return;
+            }
+
+            var display = string.IsNullOrWhiteSpace(text) ? L["EmptyOcrResult"].Value : text;
+            await InvokeAsync(() =>
+            {
+                if (session != _ocrSession)
+                {
+                    return;
+                }
+
+                ResultText = display ?? "";
+                ResultRevision++;
+                StateHasChanged();
+            });
         }
         catch (Exception ex)
         {
-            StatusMessage = L["ErrRecognize", ex.Message];
+            if (session != _ocrSession)
+            {
+                return;
+            }
+
+            StatusMessage = L["ErrRecognize", FormatUserFacingError(ex)];
             ResultText = "";
+            ResultRevision++;
         }
         finally
         {
-            Busy = false;
+            if (session == _ocrSession)
+            {
+                Recognizing = false;
+            }
+
+            await InvokeAsync(StateHasChanged);
         }
     }
 
@@ -167,13 +241,43 @@
         }
         catch (Exception ex)
         {
-            StatusMessage = L["ErrCopy", ex.Message];
+            StatusMessage = L["ErrCopy", FormatUserFacingError(ex)];
         }
+    }
+
+    /// <summary>
+    /// 展示最内层异常信息（Tesseract/反射常把真实原因放在 InnerException，外层多为 “target of an invocation”）。
+    /// </summary>
+    private static string FormatUserFacingError(Exception ex)
+    {
+        var e = ex;
+        while (e != null)
+        {
+            if (e is AggregateException agg && agg.InnerExceptions.Count > 0)
+            {
+                e = agg.InnerExceptions[0];
+                continue;
+            }
+
+            if (e.InnerException != null)
+            {
+                e = e.InnerException;
+                continue;
+            }
+
+            return string.IsNullOrWhiteSpace(e.Message) ? ex.Message : e.Message;
+        }
+
+        return ex.Message;
     }
 
     private void ClearAll()
     {
+        BeginNewOcrSession();
+        Recognizing = false;
+        PreviewBusy = false;
         ResultText = "";
+        ResultRevision++;
         PreviewDataUrl = "";
         UploadedBytes = Array.Empty<byte>();
         UploadedContentType = "image/png";

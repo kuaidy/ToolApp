@@ -1,6 +1,8 @@
 @page "/imagetools/bgremove"
 @using System.IO
+@using System.Threading.Tasks
 @using Microsoft.AspNetCore.Components.Forms
+@using ToolApp.Common
 @inject IJSRuntime JS
 @inject IStringLocalizer<ImageBackgroundRemove> L
 
@@ -147,8 +149,22 @@
             await stream.CopyToAsync(ms);
             LastFileBytes = ms.ToArray();
             LastContentType = string.IsNullOrEmpty(file.ContentType) ? "image/png" : file.ContentType;
-            var dataUrl = $"data:{LastContentType};base64,{Convert.ToBase64String(LastFileBytes)}";
-            await JS.InvokeVoidAsync("imageBackgroundRemove.loadDataUrl", CanvasId, dataUrl);
+
+            if (ImagePreviewDataUrl.TryGetDimensions(LastFileBytes, out var ow, out var oh))
+            {
+                var previewUrl = await Task.Run(() => ImagePreviewDataUrl.Create(LastFileBytes, LastContentType));
+                await JS.InvokeVoidAsync("imageBackgroundRemove.loadDataUrl", CanvasId, previewUrl, ow, oh);
+                await JS.InvokeVoidAsync(
+                    "imageBackgroundRemove.upgradeToFullUpload",
+                    CanvasId,
+                    $"data:{LastContentType};base64,{Convert.ToBase64String(LastFileBytes)}");
+            }
+            else
+            {
+                var dataUrl = $"data:{LastContentType};base64,{Convert.ToBase64String(LastFileBytes)}";
+                await JS.InvokeVoidAsync("imageBackgroundRemove.loadDataUrl", CanvasId, dataUrl);
+            }
+
             HasImage = true;
         }
         catch (Exception ex)
@@ -170,7 +186,7 @@
             return;
         }
         var dataUrl = $"data:{LastContentType};base64,{Convert.ToBase64String(LastFileBytes)}";
-        await JS.InvokeVoidAsync("imageBackgroundRemove.loadDataUrl", CanvasId, dataUrl);
+        await JS.InvokeVoidAsync("imageBackgroundRemove.upgradeToFullUpload", CanvasId, dataUrl);
     }
 
     private async Task RemoveBackgroundAsync()

@@ -25,6 +25,8 @@
   <data name="ResultPlaceholder" xml:space="preserve"><value>Recognized text appears here</value></data>
   <data name="PreviewAlt" xml:space="preserve"><value>Upload preview</value></data>
   <data name="PreviewEmpty" xml:space="preserve"><value>Choose an image to preview</value></data>
+  <data name="PreviewGenerating" xml:space="preserve"><value>Generating preview…</value></data>
+  <data name="PlaceholderRecognizing" xml:space="preserve"><value>Recognizing, please wait…</value></data>
   <data name="ErrReadImage" xml:space="preserve"><value>Failed to read image: {0}</value></data>
   <data name="ErrPickFirst" xml:space="preserve"><value>Please choose an image first.</value></data>
   <data name="EmptyOcrResult" xml:space="preserve"><value>(No text recognized—try a clearer image or change the language.)</value></data>

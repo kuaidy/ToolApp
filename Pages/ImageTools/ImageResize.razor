@@ -1,6 +1,8 @@
 @page "/imagetools/imageresize"
 @using System.IO
+@using System.Threading.Tasks
 @using Microsoft.AspNetCore.Components.Forms
+@using ToolApp.Common
 @inject IJSRuntime JS
 @inject IStringLocalizer<ImageResize> L
 
@@ -153,21 +155,47 @@
             await stream.CopyToAsync(ms);
             LastFileBytes = ms.ToArray();
             LastContentType = string.IsNullOrEmpty(file.ContentType) ? "image/png" : file.ContentType;
-            var dataUrl = $"data:{LastContentType};base64,{Convert.ToBase64String(LastFileBytes)}";
-            var dim = await JS.InvokeAsync<DimResult>("imageResize.loadDataUrl", CanvasId, dataUrl);
-            if (dim == null || dim.width < 1 || dim.height < 1)
-            {
-                StatusMessage = L["ErrLoad"];
-                HasImage = false;
-                OrigW = OrigH = 0;
-                return;
-            }
 
-            OrigW = dim.width;
-            OrigH = dim.height;
-            TargetW = OrigW;
-            TargetH = OrigH;
-            HasImage = true;
+            if (ImagePreviewDataUrl.TryGetDimensions(LastFileBytes, out var ow, out var oh))
+            {
+                OrigW = ow;
+                OrigH = oh;
+                var previewUrl = await Task.Run(() => ImagePreviewDataUrl.Create(LastFileBytes, LastContentType));
+                var dim = await JS.InvokeAsync<DimResult>("imageResize.loadDataUrl", CanvasId, previewUrl, OrigW, OrigH);
+                if (dim == null || dim.width < 1 || dim.height < 1)
+                {
+                    StatusMessage = L["ErrLoad"];
+                    HasImage = false;
+                    OrigW = OrigH = 0;
+                    return;
+                }
+
+                await JS.InvokeAsync<DimResult>(
+                    "imageResize.upgradeToFullUpload",
+                    CanvasId,
+                    $"data:{LastContentType};base64,{Convert.ToBase64String(LastFileBytes)}");
+                TargetW = OrigW;
+                TargetH = OrigH;
+                HasImage = true;
+            }
+            else
+            {
+                var dataUrl = $"data:{LastContentType};base64,{Convert.ToBase64String(LastFileBytes)}";
+                var dim = await JS.InvokeAsync<DimResult>("imageResize.loadDataUrl", CanvasId, dataUrl);
+                if (dim == null || dim.width < 1 || dim.height < 1)
+                {
+                    StatusMessage = L["ErrLoad"];
+                    HasImage = false;
+                    OrigW = OrigH = 0;
+                    return;
+                }
+
+                OrigW = dim.width;
+                OrigH = dim.height;
+                TargetW = OrigW;
+                TargetH = OrigH;
+                HasImage = true;
+            }
         }
         catch (Exception ex)
         {

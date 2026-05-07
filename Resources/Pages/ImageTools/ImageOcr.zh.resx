@@ -25,6 +25,8 @@
   <data name="ResultPlaceholder" xml:space="preserve"><value>识别结果将显示在这里</value></data>
   <data name="PreviewAlt" xml:space="preserve"><value>上传预览</value></data>
   <data name="PreviewEmpty" xml:space="preserve"><value>选择图片后将显示预览</value></data>
+  <data name="PreviewGenerating" xml:space="preserve"><value>正在生成预览…</value></data>
+  <data name="PlaceholderRecognizing" xml:space="preserve"><value>正在识别，请稍候…</value></data>
   <data name="ErrReadImage" xml:space="preserve"><value>读取图片失败：{0}</value></data>
   <data name="ErrPickFirst" xml:space="preserve"><value>请先选择一张图片。</value></data>
   <data name="EmptyOcrResult" xml:space="preserve"><value>（未识别到文字，可尝试换一张更清晰的图或调整识别语言。）</value></data>

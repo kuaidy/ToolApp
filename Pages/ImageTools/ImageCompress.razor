@@ -1,16 +1,12 @@
 @page "/imagetools/imagecompress"
 @using System.IO
-@using System.Net.Http
-@using System.Net.Http.Headers
-@using System.Net.Http.Json
-@using System.Text.Json
+@using System.Threading
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Forms
-@using ToolApp.Controllers
+@using SixLabors.ImageSharp
+@using ToolApp.Common
 @using ToolApp.Services
 @inject IJSRuntime JS
-@inject IHttpClientFactory HttpClientFactory
-@inject NavigationManager Nav
 @inject IStringLocalizer<ImageCompress> L
 
 <div class="tool-page">
@@ -116,8 +112,6 @@
     private const string CanvasId = "image-compress-canvas";
     private const long MaxFileSize = 20 * 1024 * 1024;
 
-    private static readonly JsonSerializerOptions JsonReadOptions = new() { PropertyNameCaseInsensitive = true };
-
     private bool Busy { get; set; }
     private bool HasImage { get; set; }
     private bool HasCompressedPreview { get; set; }
@@ -204,20 +198,45 @@
             LastFileBytes = ms.ToArray();
             OriginalBytes = LastFileBytes.Length;
             LastContentType = string.IsNullOrEmpty(file.ContentType) ? "image/png" : file.ContentType;
-            var dataUrl = $"data:{LastContentType};base64,{Convert.ToBase64String(LastFileBytes)}";
-            var dim = await JS.InvokeAsync<DimResult>("imageCompress.loadDataUrl", CanvasId, dataUrl);
-            if (dim == null || dim.width < 1 || dim.height < 1)
-            {
-                StatusMessage = L["ErrLoad"];
-                HasImage = false;
-                OrigW = OrigH = 0;
-                OriginalBytes = 0;
-                return;
-            }
 
-            OrigW = dim.width;
-            OrigH = dim.height;
-            HasImage = true;
+            if (ImagePreviewDataUrl.TryGetDimensions(LastFileBytes, out var ow, out var oh))
+            {
+                OrigW = ow;
+                OrigH = oh;
+                var previewUrl = await Task.Run(() => ImagePreviewDataUrl.Create(LastFileBytes, LastContentType));
+                var dim = await JS.InvokeAsync<DimResult>("imageCompress.loadDataUrl", CanvasId, previewUrl, OrigW, OrigH);
+                if (dim == null || dim.width < 1 || dim.height < 1)
+                {
+                    StatusMessage = L["ErrLoad"];
+                    HasImage = false;
+                    OrigW = OrigH = 0;
+                    OriginalBytes = 0;
+                    return;
+                }
+
+                await JS.InvokeAsync<DimResult>(
+                    "imageCompress.upgradeToFullUpload",
+                    CanvasId,
+                    $"data:{LastContentType};base64,{Convert.ToBase64String(LastFileBytes)}");
+                HasImage = true;
+            }
+            else
+            {
+                var dataUrl = $"data:{LastContentType};base64,{Convert.ToBase64String(LastFileBytes)}";
+                var dim = await JS.InvokeAsync<DimResult>("imageCompress.loadDataUrl", CanvasId, dataUrl);
+                if (dim == null || dim.width < 1 || dim.height < 1)
+                {
+                    StatusMessage = L["ErrLoad"];
+                    HasImage = false;
+                    OrigW = OrigH = 0;
+                    OriginalBytes = 0;
+                    return;
+                }
+
+                OrigW = dim.width;
+                OrigH = dim.height;
+                HasImage = true;
+            }
             HasCompressedPreview = false;
             CompressedBytes = null;
         }
@@ -246,54 +265,66 @@
         Busy = true;
         try
         {
-            var http = HttpClientFactory.CreateClient();
-            var uri = Nav.ToAbsoluteUri("/api/imagetools/imagecompress/compress");
-            using var form = new MultipartFormDataContent();
-            var fileContent = new ByteArrayContent(LastFileBytes);
-            fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(
-                string.IsNullOrWhiteSpace(LastContentType) ? "application/octet-stream" : LastContentType);
-            form.Add(fileContent, "file", "upload");
-            form.Add(new StringContent(OutputMime), "mime");
+            // 在同一进程内直接压缩，避免 Blazor Server 用 HttpClient 请求站点公网 URL（部署后易出现环路/代理中断，
+            // 表现为 “Error while copying content to a stream”）。
+            var outputMime = string.IsNullOrWhiteSpace(OutputMime) ? "image/jpeg" : OutputMime.Trim();
+            if (!IsAllowedOutputMime(outputMime))
+            {
+                StatusMessage = L["ErrCompress"];
+                HasCompressedPreview = false;
+                CompressedBytes = null;
+                ClearServerResult();
+                return;
+            }
+
             var q = ImageSharpCompressService.NormalizeQualityStep10(QualityPercent);
-            form.Add(new StringContent(q.ToString()), "quality");
-            form.Add(new StringContent(FillWhiteBackground ? "true" : "false"), "fillBackground");
-
-            using var resp = await http.PostAsync(uri, form);
-            var body = await resp.Content.ReadFromJsonAsync<CompressApiResponse>(JsonReadOptions);
-            if (body == null)
+            await using var input = new MemoryStream(LastFileBytes, writable: false);
+            byte[] bytes;
+            try
             {
-                StatusMessage = L["ErrCompress"];
+                bytes = await ImageSharpCompressService.CompressAsync(
+                    input,
+                    outputMime,
+                    q,
+                    FillWhiteBackground,
+                    CancellationToken.None);
+            }
+            catch (UnknownImageFormatException)
+            {
+                StatusMessage = L["ErrLoad"];
+                HasCompressedPreview = false;
+                CompressedBytes = null;
+                ClearServerResult();
+                return;
+            }
+            catch (InvalidOperationException ex)
+            {
+                StatusMessage = string.IsNullOrWhiteSpace(ex.Message) ? L["ErrCompress"] : L["ErrCompressDetail", ex.Message];
                 HasCompressedPreview = false;
                 CompressedBytes = null;
                 ClearServerResult();
                 return;
             }
 
-            if (!body.Ok)
-            {
-                StatusMessage = string.IsNullOrWhiteSpace(body.Error) ? L["ErrCompress"] : body.Error;
-                HasCompressedPreview = false;
-                CompressedBytes = null;
-                ClearServerResult();
-                return;
-            }
-
-            if (string.IsNullOrEmpty(body.Base64))
-            {
-                StatusMessage = L["ErrCompress"];
-                HasCompressedPreview = false;
-                CompressedBytes = null;
-                ClearServerResult();
-                return;
-            }
-
-            ServerResultBase64 = body.Base64;
-            ServerResultMime = string.IsNullOrEmpty(body.MimeType) ? OutputMime : body.MimeType;
-            CompressedBytes = body.CompressedBytes > 0 ? body.CompressedBytes : 0L;
+            ServerResultBase64 = Convert.ToBase64String(bytes);
+            ServerResultMime = outputMime;
+            CompressedBytes = bytes.LongLength;
             HasCompressedPreview = true;
 
-            var previewUrl = $"data:{ServerResultMime};base64,{ServerResultBase64}";
-            await JS.InvokeAsync<DimResult>("imageCompress.loadDataUrl", CanvasId, previewUrl);
+            if (ImagePreviewDataUrl.TryGetDimensions(bytes, out var cw, out var ch))
+            {
+                var previewUrl = await Task.Run(() => ImagePreviewDataUrl.Create(bytes, ServerResultMime));
+                await JS.InvokeAsync<DimResult>("imageCompress.loadDataUrl", CanvasId, previewUrl, cw, ch);
+                await JS.InvokeAsync<DimResult>(
+                    "imageCompress.upgradeCanvasPreview",
+                    CanvasId,
+                    $"data:{ServerResultMime};base64,{ServerResultBase64}");
+            }
+            else
+            {
+                var previewUrl = $"data:{ServerResultMime};base64,{ServerResultBase64}";
+                await JS.InvokeAsync<DimResult>("imageCompress.loadDataUrl", CanvasId, previewUrl);
+            }
         }
         catch (Exception ex)
         {
@@ -368,6 +399,11 @@
         ClearServerResult();
         await JS.InvokeVoidAsync("imageCompress.reset", CanvasId);
     }
+
+    private static bool IsAllowedOutputMime(string m) =>
+        m.Equals("image/png", StringComparison.OrdinalIgnoreCase)
+        || m.Equals("image/jpeg", StringComparison.OrdinalIgnoreCase)
+        || m.Equals("image/webp", StringComparison.OrdinalIgnoreCase);
 
     private sealed class DimResult
     {

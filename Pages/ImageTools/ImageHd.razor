@@ -1,15 +1,11 @@
 @page "/imagetools/imagehd"
 @using System.IO
-@using System.Net.Http
-@using System.Net.Http.Headers
-@using System.Net.Http.Json
-@using System.Text.Json
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Forms
-@using ToolApp.Controllers
+@using SixLabors.ImageSharp
+@using ToolApp.Common
+@using ToolApp.Services
 @inject IJSRuntime JS
-@inject IHttpClientFactory HttpClientFactory
-@inject NavigationManager Nav
 @inject IStringLocalizer<ImageHd> L
 
 <div class="tool-page">
@@ -117,8 +113,6 @@
     private const string CanvasId = "image-hd-canvas";
     private const long MaxFileSize = 20 * 1024 * 1024;
 
-    private static readonly JsonSerializerOptions JsonReadOptions = new() { PropertyNameCaseInsensitive = true };
-
     private bool Busy { get; set; }
     private bool HasImage { get; set; }
     private bool HasResult { get; set; }
@@ -182,20 +176,45 @@
             LastFileBytes = ms.ToArray();
             OriginalBytes = LastFileBytes.Length;
             LastContentType = string.IsNullOrEmpty(file.ContentType) ? "image/png" : file.ContentType;
-            var dataUrl = $"data:{LastContentType};base64,{Convert.ToBase64String(LastFileBytes)}";
-            var dim = await JS.InvokeAsync<DimResult>("imageHd.loadDataUrl", CanvasId, dataUrl);
-            if (dim == null || dim.width < 1 || dim.height < 1)
-            {
-                StatusMessage = L["ErrLoad"];
-                HasImage = false;
-                OrigW = OrigH = 0;
-                OriginalBytes = 0;
-                return;
-            }
 
-            OrigW = dim.width;
-            OrigH = dim.height;
-            HasImage = true;
+            if (ImagePreviewDataUrl.TryGetDimensions(LastFileBytes, out var ow, out var oh))
+            {
+                OrigW = ow;
+                OrigH = oh;
+                var previewUrl = await Task.Run(() => ImagePreviewDataUrl.Create(LastFileBytes, LastContentType));
+                var dim = await JS.InvokeAsync<DimResult>("imageHd.loadDataUrl", CanvasId, previewUrl, OrigW, OrigH);
+                if (dim == null || dim.width < 1 || dim.height < 1)
+                {
+                    StatusMessage = L["ErrLoad"];
+                    HasImage = false;
+                    OrigW = OrigH = 0;
+                    OriginalBytes = 0;
+                    return;
+                }
+
+                await JS.InvokeAsync<DimResult>(
+                    "imageHd.upgradeToFullUpload",
+                    CanvasId,
+                    $"data:{LastContentType};base64,{Convert.ToBase64String(LastFileBytes)}");
+                HasImage = true;
+            }
+            else
+            {
+                var dataUrl = $"data:{LastContentType};base64,{Convert.ToBase64String(LastFileBytes)}";
+                var dim = await JS.InvokeAsync<DimResult>("imageHd.loadDataUrl", CanvasId, dataUrl);
+                if (dim == null || dim.width < 1 || dim.height < 1)
+                {
+                    StatusMessage = L["ErrLoad"];
+                    HasImage = false;
+                    OrigW = OrigH = 0;
+                    OriginalBytes = 0;
+                    return;
+                }
+
+                OrigW = dim.width;
+                OrigH = dim.height;
+                HasImage = true;
+            }
         }
         catch (Exception ex)
         {
@@ -222,44 +241,61 @@
         Busy = true;
         try
         {
-            var http = HttpClientFactory.CreateClient();
-            var uri = Nav.ToAbsoluteUri("/api/imagetools/imagehd/process");
-            using var form = new MultipartFormDataContent();
-            var fileContent = new ByteArrayContent(LastFileBytes);
-            fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(
-                string.IsNullOrWhiteSpace(LastContentType) ? "application/octet-stream" : LastContentType);
-            form.Add(fileContent, "file", "upload");
-            form.Add(new StringContent(Scale.ToString()), "scale");
-            form.Add(new StringContent(Sharpen.ToString()), "sharpen");
-            form.Add(new StringContent(OutputMime), "mime");
-            form.Add(new StringContent(JpegQuality.ToString()), "jpegQuality");
-
-            using var resp = await http.PostAsync(uri, form);
-            var body = await resp.Content.ReadFromJsonAsync<ImageHdApiResponse>(JsonReadOptions);
-            if (body == null || !body.Ok)
-            {
-                StatusMessage = string.IsNullOrWhiteSpace(body?.Error) ? L["ErrProcess"] : body!.Error;
-                HasResult = false;
-                ResultBase64 = "";
-                return;
-            }
-
-            if (string.IsNullOrEmpty(body.Base64))
+            var outputMime = string.IsNullOrWhiteSpace(OutputMime) ? "image/png" : OutputMime.Trim();
+            if (!IsAllowedOutputMime(outputMime))
             {
                 StatusMessage = L["ErrProcess"];
                 HasResult = false;
                 return;
             }
 
-            ResultBase64 = body.Base64;
-            ResultMime = string.IsNullOrEmpty(body.MimeType) ? OutputMime : body.MimeType;
-            OutW = body.OutWidth;
-            OutH = body.OutHeight;
-            ResultBytes = body.ResultBytes > 0 ? body.ResultBytes : 0L;
+            await using var input = new MemoryStream(LastFileBytes, writable: false);
+            var (bytes, outW, outH) = await ImageHdUpscaleService.UpscaleAsync(
+                input,
+                Scale,
+                Sharpen,
+                outputMime,
+                JpegQuality);
+
+            ResultBase64 = Convert.ToBase64String(bytes);
+            ResultMime = outputMime.Equals("image/jpeg", StringComparison.OrdinalIgnoreCase) ? "image/jpeg" : "image/png";
+            OutW = outW;
+            OutH = outH;
+            ResultBytes = bytes.LongLength;
             HasResult = true;
 
-            var previewUrl = $"data:{ResultMime};base64,{ResultBase64}";
-            await JS.InvokeAsync<DimResult>("imageHd.loadDataUrl", CanvasId, previewUrl);
+            if (ImagePreviewDataUrl.TryGetDimensions(bytes, out _, out _))
+            {
+                var previewUrl = await Task.Run(() => ImagePreviewDataUrl.Create(bytes, ResultMime));
+                await JS.InvokeAsync<DimResult>("imageHd.loadDataUrl", CanvasId, previewUrl, OutW, OutH);
+                await JS.InvokeAsync<DimResult>(
+                    "imageHd.upgradeCanvasPreview",
+                    CanvasId,
+                    $"data:{ResultMime};base64,{ResultBase64}");
+            }
+            else
+            {
+                var previewUrl = $"data:{ResultMime};base64,{ResultBase64}";
+                await JS.InvokeAsync<DimResult>("imageHd.loadDataUrl", CanvasId, previewUrl);
+            }
+        }
+        catch (UnknownImageFormatException)
+        {
+            StatusMessage = L["ErrLoad"];
+            HasResult = false;
+            ResultBase64 = "";
+        }
+        catch (InvalidOperationException ex)
+        {
+            StatusMessage = string.IsNullOrWhiteSpace(ex.Message) ? L["ErrProcess"] : ex.Message;
+            HasResult = false;
+            ResultBase64 = "";
+        }
+        catch (ArgumentException ex)
+        {
+            StatusMessage = string.IsNullOrWhiteSpace(ex.Message) ? L["ErrProcess"] : ex.Message;
+            HasResult = false;
+            ResultBase64 = "";
         }
         catch (Exception ex)
         {
@@ -334,6 +370,10 @@
         ResultBytes = 0;
         await JS.InvokeVoidAsync("imageHd.reset", CanvasId);
     }
+
+    private static bool IsAllowedOutputMime(string m) =>
+        m.Equals("image/png", StringComparison.OrdinalIgnoreCase)
+        || m.Equals("image/jpeg", StringComparison.OrdinalIgnoreCase);
 
     private sealed class DimResult
     {
