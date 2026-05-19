@@ -1,4 +1,4 @@
-﻿@page
+@page
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.Extensions.Localization
 @model IndexModel
@@ -10,11 +10,222 @@
     ViewData["MetaDescription"] = ViewLocalizer["SeoHomeMetaDescription"].Value;
 }
 
-<div class="text-center">
-    
-    <div>
-        <div class="TypeTitle">@ViewLocalizer["CommonComparisonTable"]</div>
-        <ul class="ul_tools">
+@section Styles {
+    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+}
+
+<div class="home-page">
+    <header class="home-hero">
+        <h1 class="home-hero-main">@ViewLocalizer["HomeHeroHeadline"]</h1>
+        <p class="home-hero-sub">@ViewLocalizer["HomeHeroLead"]</p>
+    </header>
+
+    <main class="home-main" id="tools">
+    <section id="cat-hot" class="home-cat-block">
+        <h2 class="home-cat-title home-cat-title--hot">@ViewLocalizer["HomeSectionHot"]</h2>
+        <ul class="ul_tools home-tool-grid">
+            <li class="li_tool">
+                <a href="./imagetools/imageocr" class="a_tool">
+                    <img class="icon" src="~/images/orc.svg" asp-append-version="true" alt="" />
+                    <span class="sp_toolname">@ViewLocalizer["Image OCR"]</span>
+                </a>
+            </li>
+            <li class="li_tool">
+                <a href="./imagetools/bgremove" class="a_tool">
+                    <img class="icon" src="~/images/clear.svg" asp-append-version="true" alt="" />
+                    <span class="sp_toolname">@ViewLocalizer["Remove image background"]</span>
+                </a>
+            </li>
+            <li class="li_tool">
+                <a href="./imagetools/imagehd" class="a_tool">
+                    <img class="icon" src="~/images/hd.svg" asp-append-version="true" alt="" />
+                    <span class="sp_toolname">@ViewLocalizer["Image HD upscale"]</span>
+                </a>
+            </li>
+            <li class="li_tool">
+                <a href="./imagetools/imagecompress" class="a_tool">
+                    <img class="icon" src="~/images/compress.svg" asp-append-version="true" alt="" />
+                    <span class="sp_toolname">@ViewLocalizer["Image compress"]</span>
+                </a>
+            </li>
+
+        </ul>
+    </section>
+    <section id="cat-image" class="home-cat-block">
+        <h2 class="home-cat-title">@ViewLocalizer["Image Tools"]</h2>
+        <ul class="ul_tools home-tool-grid">
+            <li class="li_tool">
+                <a href="./imagetools/imageocr" class="a_tool">
+                    <img class="icon" src="~/images/orc.svg" asp-append-version="true" alt="" />
+                    <span class="sp_toolname">@ViewLocalizer["Image OCR"]</span>
+                </a>
+            </li>
+            <li class="li_tool">
+                <a href="./imagetools/handwrittensignature" class="a_tool">
+                    <img class="icon" src="~/images/sign.svg" asp-append-version="true" alt="" />
+                    <span class="sp_toolname">@ViewLocalizer["Handwritten signature"]</span>
+                </a>
+            </li>
+            <li class="li_tool">
+                <a href="./imagetools/bgremove" class="a_tool">
+                    <img class="icon" src="~/images/clear.svg" asp-append-version="true" alt="" />
+                    <span class="sp_toolname">@ViewLocalizer["Remove image background"]</span>
+                </a>
+            </li>
+            <li class="li_tool">
+                <a href="./imagetools/imageresize" class="a_tool">
+                    <img class="icon" src="~/images/resize.svg" asp-append-version="true" alt="" />
+                    <span class="sp_toolname">@ViewLocalizer["Image resize"]</span>
+                </a>
+            </li>
+            <li class="li_tool">
+                <a href="./imagetools/imagecompress" class="a_tool">
+                    <img class="icon" src="~/images/compress.svg" asp-append-version="true" alt="" />
+                    <span class="sp_toolname">@ViewLocalizer["Image compress"]</span>
+                </a>
+            </li>
+            <li class="li_tool">
+                <a href="./imagetools/imagehd" class="a_tool">
+                    <img class="icon" src="~/images/hd.svg" asp-append-version="true" alt="" />
+                    <span class="sp_toolname">@ViewLocalizer["Image HD upscale"]</span>
+                </a>
+            </li>
+        
+        </ul>
+    </section>
+    <section id="cat-text" class="home-cat-block">
+        <h2 class="home-cat-title">@ViewLocalizer["Text Tool"]</h2>
+        <ul class="ul_tools home-tool-grid">
+            <li class="li_tool">
+                <a href="./TxtTools/WordCount" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-shuliangtongji"></use>
+                    </svg>
+                    <span class="sp_toolname">@ViewLocalizer["Word count"]</span>
+                </a>
+            </li>
+            <li class="li_tool">
+                <a href="./TxtTools/JsonFormat" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-json"></use>
+                    </svg>
+                    <span class="sp_toolname">@ViewLocalizer["Json formatting"]</span>
+                </a>
+            </li>
+            <li class="li_tool">
+                <a href="./TxtTools/MarkdownEdit" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-md"></use>
+                    </svg>
+                    <span class="sp_toolname">@ViewLocalizer["Markdown Editor"]</span>
+                </a>
+            </li>
+            <li class="li_tool">
+                <a href="./TxtTools/Regular" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-a-regex1x"></use>
+                    </svg>
+                    <span class="sp_toolname">@ViewLocalizer["Regular Expression"]</span>
+                </a>
+            </li>
+            <li class="li_tool">
+                <a href="./txttools/articleformat" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-a-regex1x"></use>
+                    </svg>
+                    <span class="sp_toolname">@ViewLocalizer["Article Formatting"]</span>
+                </a>
+            </li>
+        
+        </ul>
+    </section>
+    <section id="cat-convert" class="home-cat-block">
+        <h2 class="home-cat-title">@ViewLocalizer["Conversion Tool"]</h2>
+        <ul class="ul_tools home-tool-grid">
+            <li class="li_tool">
+                <a href="./ConvertTools/BinaryConvert" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-binarycode"></use>
+                    </svg>
+                    <span class="sp_toolname">@ViewLocalizer["Base conversion"]</span>
+               </a>
+            </li>
+            <li class="li_tool">
+                <a href="./ConvertTools/ColorConvert" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-dixiayanse"></use>
+                    </svg>
+                    <span class="sp_toolname">@ViewLocalizer["Color value conversion"]</span>
+                </a>
+            </li> 
+        
+        </ul>
+    </section>
+    <section id="cat-code" class="home-cat-block">
+        <h2 class="home-cat-title">@ViewLocalizer["Encoding Conversion"]</h2>
+        <ul class="ul_tools home-tool-grid">
+            <li class="li_tool">
+                <a href="./CodeTools/EncodeDecode" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-bianma"></use>
+                    </svg>
+                    <span class="sp_toolname">@ViewLocalizer["Encoding And Decoding"]</span>
+               </a>
+            </li>
+        
+        </ul>
+    </section>
+    <section id="cat-create" class="home-cat-block">
+        <h2 class="home-cat-title">@ViewLocalizer["Generating tools"]</h2>
+        <ul class="ul_tools home-tool-grid">
+            <li class="li_tool">
+                <a href="./CreateTools/GuidCreate" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-g"></use>
+                    </svg>
+                    <span class="sp_toolname">@ViewLocalizer["Guid Generation"]</span>
+               </a>
+            </li>
+            <li class="li_tool">
+                <a href="./CreateTools/QrCodeCreate" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-erweima"></use>
+                    </svg>
+                    <span class="sp_toolname">@ViewLocalizer["QRCode Generation"]</span>
+               </a>
+            </li>
+            <li class="li_tool">
+                <a href="./BackImg/index.html" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-tupian"></use>
+                    </svg>
+                    <span class="sp_toolname">
+                        @ViewLocalizer["Simple Main Image Generation"]
+                    </span>
+               </a>
+            </li>
+            <li class="li_tool">
+                <a href="./CreateTools/CodeGeneration" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-shipin"></use>
+                    </svg>
+                    <span class="sp_toolname">@ViewLocalizer["Video Embedding Code Generation"]</span>
+               </a>
+            </li>
+            <li class="li_tool">
+                <a href="./CreateTools/GoodGeneration" class="a_tool">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-gouwu"></use>
+                    </svg>
+                    <span class="sp_toolname">@ViewLocalizer["Product Card Generation"]</span>
+                </a>
+            </li>
+        
+        </ul>
+    </section>
+    <section id="cat-table" class="home-cat-block">
+        <h2 class="home-cat-title">@ViewLocalizer["CommonComparisonTable"]</h2>
+        <ul class="ul_tools home-tool-grid">
             <li class="li_tool">
                 <a href="./TableTools/MimiType" class="a_tool">
                     <svg class="icon" aria-hidden="true">
@@ -103,196 +314,12 @@
                     <span class="sp_toolname">@ViewLocalizer["ASCII Character Reference"]</span>
                 </a>
             </li>
+        
         </ul>
-    </div>
-
-    <div>
-        <div class="TypeTitle">@ViewLocalizer["Image Tools"]</div>
-        <ul class="ul_tools">
-            <li class="li_tool">
-                <a href="./imagetools/imageocr" class="a_tool">
-                    <img class="icon" src="~/images/orc.svg" asp-append-version="true" alt="" />
-                    <span class="sp_toolname">@ViewLocalizer["Image OCR"]</span>
-                </a>
-            </li>
-            <li class="li_tool">
-                <a href="./imagetools/handwrittensignature" class="a_tool">
-                    <img class="icon" src="~/images/sign.svg" asp-append-version="true" alt="" />
-                    <span class="sp_toolname">@ViewLocalizer["Handwritten signature"]</span>
-                </a>
-            </li>
-            <li class="li_tool">
-                <a href="./imagetools/bgremove" class="a_tool">
-                    <img class="icon" src="~/images/clear.svg" asp-append-version="true" alt="" />
-                    <span class="sp_toolname">@ViewLocalizer["Remove image background"]</span>
-                </a>
-            </li>
-            <li class="li_tool">
-                <a href="./imagetools/imageresize" class="a_tool">
-                    <img class="icon" src="~/images/resize.svg" asp-append-version="true" alt="" />
-                    <span class="sp_toolname">@ViewLocalizer["Image resize"]</span>
-                </a>
-            </li>
-            <li class="li_tool">
-                <a href="./imagetools/imagecompress" class="a_tool">
-                    <img class="icon" src="~/images/compress.svg" asp-append-version="true" alt="" />
-                    <span class="sp_toolname">@ViewLocalizer["Image compress"]</span>
-                </a>
-            </li>
-            <li class="li_tool">
-                <a href="./imagetools/imagehd" class="a_tool">
-                    <img class="icon" src="~/images/hd.svg" asp-append-version="true" alt="" />
-                    <span class="sp_toolname">@ViewLocalizer["Image HD upscale"]</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    @* 效率工具 *@
-     <div>
-        <div class="TypeTitle">@ViewLocalizer["Productivity Tools"]</div>
-        <ul class="ul_tools">
-            <li class="li_tool">
-                <a href="./ProductiviryTools/Pomodoro" class="a_tool">
-                    <img class="icon" src="images/fanqie.svg" />
-                    <span class="sp_toolname">@ViewLocalizer["Pomodoro"]</span>
-               </a>
-            </li>
-        </ul>
-    </div>
-
-    <div>
-        <div class="TypeTitle">@ViewLocalizer["Conversion Tool"]</div>
-        <ul class="ul_tools">
-            <li class="li_tool">
-                <a href="./ConvertTools/BinaryConvert" class="a_tool">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-binarycode"></use>
-                    </svg>
-                    <span class="sp_toolname">@ViewLocalizer["Base conversion"]</span>
-               </a>
-            </li>
-            <li class="li_tool">
-                <a href="./ConvertTools/ColorConvert" class="a_tool">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-dixiayanse"></use>
-                    </svg>
-                    <span class="sp_toolname">@ViewLocalizer["Color value conversion"]</span>
-                </a>
-            </li> 
-        </ul>
-    </div>
-    
-    <div>
-        <div class="TypeTitle">@ViewLocalizer["Text Tool"]</div>
-        <ul class="ul_tools">
-            <li class="li_tool">
-                <a href="./TxtTools/WordCount" class="a_tool">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-shuliangtongji"></use>
-                    </svg>
-                    <span class="sp_toolname">@ViewLocalizer["Word count"]</span>
-                </a>
-            </li>
-            <li class="li_tool">
-                <a href="./TxtTools/JsonFormat" class="a_tool">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-json"></use>
-                    </svg>
-                    <span class="sp_toolname">@ViewLocalizer["Json formatting"]</span>
-                </a>
-            </li>
-            <li class="li_tool">
-                <a href="./TxtTools/MarkdownEdit" class="a_tool">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-md"></use>
-                    </svg>
-                    <span class="sp_toolname">@ViewLocalizer["Markdown Editor"]</span>
-                </a>
-            </li>
-            <li class="li_tool">
-                <a href="./TxtTools/Regular" class="a_tool">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-a-regex1x"></use>
-                    </svg>
-                    <span class="sp_toolname">@ViewLocalizer["Regular Expression"]</span>
-                </a>
-            </li>
-            <li class="li_tool">
-                <a href="./txttools/articleformat" class="a_tool">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-a-regex1x"></use>
-                    </svg>
-                    <span class="sp_toolname">@ViewLocalizer["Article Formatting"]</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <div>
-        <div class="TypeTitle">@ViewLocalizer["Encoding Conversion"]</div>
-        <ul class="ul_tools">
-            <li class="li_tool">
-                <a href="./CodeTools/EncodeDecode" class="a_tool">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-bianma"></use>
-                    </svg>
-                    <span class="sp_toolname">@ViewLocalizer["Encoding And Decoding"]</span>
-               </a>
-            </li>
-        </ul>
-    </div>
-
-    <div>
-        <div class="TypeTitle">@ViewLocalizer["Generating tools"]</div>
-        <ul class="ul_tools">
-            <li class="li_tool">
-                <a href="./CreateTools/GuidCreate" class="a_tool">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-g"></use>
-                    </svg>
-                    <span class="sp_toolname">@ViewLocalizer["Guid Generation"]</span>
-               </a>
-            </li>
-            <li class="li_tool">
-                <a href="./CreateTools/QrCodeCreate" class="a_tool">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-erweima"></use>
-                    </svg>
-                    <span class="sp_toolname">@ViewLocalizer["QRCode Generation"]</span>
-               </a>
-            </li>
-            <li class="li_tool">
-                <a href="./BackImg/index.html" class="a_tool">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-tupian"></use>
-                    </svg>
-                    <span class="sp_toolname">
-                        @ViewLocalizer["Simple Main Image Generation"]
-                    </span>
-               </a>
-            </li>
-            <li class="li_tool">
-                <a href="./CreateTools/CodeGeneration" class="a_tool">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-shipin"></use>
-                    </svg>
-                    <span class="sp_toolname">@ViewLocalizer["Video Embedding Code Generation"]</span>
-               </a>
-            </li>
-            <li class="li_tool">
-                <a href="./CreateTools/GoodGeneration" class="a_tool">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-gouwu"></use>
-                    </svg>
-                    <span class="sp_toolname">@ViewLocalizer["Product Card Generation"]</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-    <div>
-        <div class="TypeTitle">@ViewLocalizer["Query tools"]</div>
-        <ul class="ul_tools">
+    </section>
+    <section id="cat-query" class="home-cat-block">
+        <h2 class="home-cat-title">@ViewLocalizer["Query tools"]</h2>
+        <ul class="ul_tools home-tool-grid">
             <li class="li_tool">
                 <a href="./QueryTools/ShowIp" class="a_tool">
                     <svg class="icon" aria-hidden="true">
@@ -309,6 +336,47 @@
                     <span class="sp_toolname">@ViewLocalizer["Website Link Detection Tool"]</span>
                 </a>
             </li>
+        
         </ul>
-    </div>
+    </section>
+    <section id="cat-productivity" class="home-cat-block">
+        <h2 class="home-cat-title">@ViewLocalizer["Productivity Tools"]</h2>
+        <ul class="ul_tools home-tool-grid">
+            <li class="li_tool">
+                <a href="./ProductiviryTools/Pomodoro" class="a_tool">
+                    <img class="icon" src="~/images/fanqie.svg" asp-append-version="true" alt="" />
+                    <span class="sp_toolname">@ViewLocalizer["Pomodoro"]</span>
+               </a>
+            </li>
+        
+        </ul>
+    </section>
+
+    <section class="home-benefits" aria-labelledby="benefits-heading">
+        <h2 id="benefits-heading" class="home-benefits-title">@ViewLocalizer["HomeBenefitsTitle"]</h2>
+        <p class="home-benefits-lead">@ViewLocalizer["HomeBenefitsLead"]</p>
+        <div class="home-benefits-grid">
+            <article class="home-benefit-card">
+                <div class="home-benefit-icon" aria-hidden="true">①</div>
+                <h3>@ViewLocalizer["HomeBenefitEasy"]</h3>
+                <p>@ViewLocalizer["HomeBenefitEasyDesc"]</p>
+            </article>
+            <article class="home-benefit-card">
+                <div class="home-benefit-icon" aria-hidden="true">②</div>
+                <h3>@ViewLocalizer["HomeBenefitFree"]</h3>
+                <p>@ViewLocalizer["HomeBenefitFreeDesc"]</p>
+            </article>
+            <article class="home-benefit-card">
+                <div class="home-benefit-icon" aria-hidden="true">③</div>
+                <h3>@ViewLocalizer["HomeBenefitBrowser"]</h3>
+                <p>@ViewLocalizer["HomeBenefitBrowserDesc"]</p>
+            </article>
+            <article class="home-benefit-card">
+                <div class="home-benefit-icon" aria-hidden="true">④</div>
+                <h3>@ViewLocalizer["HomeBenefitLang"]</h3>
+                <p>@ViewLocalizer["HomeBenefitLangDesc"]</p>
+            </article>
+        </div>
+    </section>
+    </main>
 </div>

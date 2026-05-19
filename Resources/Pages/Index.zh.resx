@@ -250,6 +250,102 @@
   <data name="Image HD upscale" xml:space="preserve">
     <value>图片变高清</value>
   </data>
+  <data name="HomeHeroHeadline" xml:space="preserve">
+    <value>🚀 免费的在线工具箱</value>
+  </data>
+  <data name="HomeSectionHot" xml:space="preserve">
+    <value>🔥 热门工具 🔥</value>
+  </data>
+  <data name="HomeBenefitsTitle" xml:space="preserve">
+    <value>ToolApp 让工具使用更简单</value>
+  </data>
+  <data name="HomeBenefitsLead" xml:space="preserve">
+    <value>图片处理、文本格式化、编码转换与开发参考——选择工具、在线处理、即可完成</value>
+  </data>
+  <data name="HomeBenefitEasy" xml:space="preserve">
+    <value>操作简单</value>
+  </data>
+  <data name="HomeBenefitEasyDesc" xml:space="preserve">
+    <value>选择工具、处理、完成，三步搞定</value>
+  </data>
+  <data name="HomeBenefitFree" xml:space="preserve">
+    <value>完全免费</value>
+  </data>
+  <data name="HomeBenefitFreeDesc" xml:space="preserve">
+    <value>无需注册，所有工具免费使用</value>
+  </data>
+  <data name="HomeBenefitBrowser" xml:space="preserve">
+    <value>浏览器即用</value>
+  </data>
+  <data name="HomeBenefitBrowserDesc" xml:space="preserve">
+    <value>无需安装，打开网页即可使用</value>
+  </data>
+  <data name="HomeBenefitLang" xml:space="preserve">
+    <value>中英双语</value>
+  </data>
+  <data name="HomeBenefitLangDesc" xml:space="preserve">
+    <value>界面支持中文与 English 切换</value>
+  </data>
+  <data name="HomeHeroBadge" xml:space="preserve">
+    <value>免费 · 在线 · 即用</value>
+  </data>
+  <data name="HomeHeroTitle" xml:space="preserve">
+    <value>一站式在线工具箱</value>
+  </data>
+  <data name="HomeHeroLead" xml:space="preserve">
+    <value>图片处理、文本编辑、编码转换、开发参考表——在浏览器中完成日常与开发任务，无需安装、无需注册。</value>
+  </data>
+  <data name="HomeCtaBrowse" xml:space="preserve">
+    <value>浏览全部工具</value>
+  </data>
+  <data name="HomeCtaPopular" xml:space="preserve">
+    <value>热门工具</value>
+  </data>
+  <data name="HomeFeatureFree" xml:space="preserve">
+    <value>完全免费</value>
+  </data>
+  <data name="HomeFeatureNoSignup" xml:space="preserve">
+    <value>无需注册</value>
+  </data>
+  <data name="HomeFeatureBrowser" xml:space="preserve">
+    <value>浏览器即用</value>
+  </data>
+  <data name="HomeFeatureBilingual" xml:space="preserve">
+    <value>中英双语</value>
+  </data>
+  <data name="HomeFeaturedTitle" xml:space="preserve">
+    <value>热门工具</value>
+  </data>
+  <data name="HomeCategoriesTitle" xml:space="preserve">
+    <value>按分类浏览</value>
+  </data>
+  <data name="HomeAllToolsTitle" xml:space="preserve">
+    <value>全部工具</value>
+  </data>
+  <data name="HomeCatTableDesc" xml:space="preserve">
+    <value>HTTP、Git、Vim、MIME、Emoji 等速查表</value>
+  </data>
+  <data name="HomeCatImageDesc" xml:space="preserve">
+    <value>OCR、压缩、高清、抠图、签名等</value>
+  </data>
+  <data name="HomeCatProductivityDesc" xml:space="preserve">
+    <value>番茄钟等效率小工具</value>
+  </data>
+  <data name="HomeCatConvertDesc" xml:space="preserve">
+    <value>进制、颜色值等换算</value>
+  </data>
+  <data name="HomeCatTextDesc" xml:space="preserve">
+    <value>JSON、Markdown、正则、排版</value>
+  </data>
+  <data name="HomeCatCodeDesc" xml:space="preserve">
+    <value>Base64、URL 等编解码</value>
+  </data>
+  <data name="HomeCatCreateDesc" xml:space="preserve">
+    <value>二维码、GUID、主图卡片</value>
+  </data>
+  <data name="HomeCatQueryDesc" xml:space="preserve">
+    <value>IP 查询、链接检测</value>
+  </data>
   <data name="SeoHomeMetaDescription" xml:space="preserve">
     <value>ToolApp 在线工具合集：图片 OCR、压缩与高清、二维码与 GUID 生成、JSON/Markdown、编码转换、进制与颜色转换，以及 HTTP/Git/Vim/Emoji 等参考表。支持中英文界面。</value>
   </data>

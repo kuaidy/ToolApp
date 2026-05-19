@@ -1,0 +1,202 @@
+/* Homepage — docsmall-inspired layout (https://docsmall.com/) */
+
+.home-page {
+  scroll-behavior: smooth;
+  padding-bottom: 2rem;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+/* Hero */
+.home-hero {
+  text-align: center;
+  padding: 2rem 0 1.25rem;
+  margin: 0;
+  background: transparent;
+  border: none;
+}
+
+.home-hero-main {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 0.65rem;
+  line-height: 1.35;
+}
+
+.home-hero-sub {
+  font-size: 0.95rem;
+  color: #666;
+  max-width: 32rem;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.home-main {
+  display: block;
+}
+
+/* Category blocks */
+.home-cat-block {
+  margin-bottom: 2.25rem;
+}
+
+.home-cat-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 1rem;
+  padding: 0;
+  border: none;
+  text-align: left;
+}
+
+.home-cat-title--hot {
+  font-size: 1.2rem;
+  color: #1a1a1a;
+}
+
+/* Tool card grid */
+.home-page .home-tool-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+  padding: 0 !important;
+  margin: 0;
+  list-style: none;
+  flex-wrap: unset !important;
+}
+
+.home-page .home-tool-grid .li_tool {
+  display: block;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.home-page .home-tool-grid .a_tool {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 108px;
+  padding: 18px 12px 14px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  color: #333;
+  text-decoration: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.home-page .home-tool-grid .li_tool:hover .a_tool {
+  border-color: #4a90e2;
+  box-shadow: 0 4px 14px rgba(74, 144, 226, 0.12);
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.home-page .home-tool-grid .sp_toolname {
+  margin-left: 0 !important;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.home-page .home-tool-grid .icon,
+.home-page .home-tool-grid img.icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+/* Benefits — like docsmall footer section */
+.home-benefits {
+  background: #f7f8fa;
+  margin-top: 2.5rem;
+  padding: 2.5rem 1.25rem;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.home-benefits-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 0.5rem;
+}
+
+.home-benefits-lead {
+  font-size: 0.9rem;
+  color: #666;
+  max-width: 36rem;
+  margin: 0 auto 1.75rem;
+  line-height: 1.65;
+}
+
+.home-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  text-align: center;
+}
+
+.home-benefit-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 1.25rem 0.75rem;
+}
+
+.home-benefit-icon {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #4a90e2;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.home-benefit-card h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 0.35rem;
+}
+
+.home-benefit-card p {
+  font-size: 0.78rem;
+  color: #888;
+  margin: 0;
+  line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+  .home-benefits-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .home-page .home-tool-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .home-benefits-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-page .home-tool-grid .a_tool {
+    min-height: 96px;
+    padding: 14px 8px 12px;
+  }
+}

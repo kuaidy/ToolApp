@@ -7,6 +7,7 @@
 @inject IMessageService MessageService
 @inject IJSRuntime JS;
 
+<div class="tool-page">
 <FluentGrid Spacing="3" Justify="JustifyContent.FlexStart">
     <FluentGridItem xs="12">
         <FluentLabel Typo="Typography.H2">番茄钟</FluentLabel>
@@ -93,6 +94,7 @@
     </FluentGridItem>
 </FluentGrid>
 <Description DescFileName="Productivity/Pomodoro.md"></Description>
+</div>
 @code {
     private int m_MinuteCount = 25;
     public int MinuteCount

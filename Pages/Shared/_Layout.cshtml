@@ -126,7 +126,8 @@
     <script>(function(s){s.dataset.zone='10942057',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/image-tools.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/tool-page.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/lib/jsoneditor/jsoneditor.min.css" rel="stylesheet" type="text/css" />
     <link href="~/lib/MarkDown/css/editormd.css" rel="stylesheet" />

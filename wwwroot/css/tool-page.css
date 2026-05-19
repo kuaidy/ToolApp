@@ -1,0 +1,269 @@
+/* Shared tool page layout (image tools, cshtml, Blazor, markdown docs) */
+
+.tool-page,
+.container > .text-left {
+  width: 100%;
+  padding-bottom: 2rem;
+}
+
+.tool-page > h2,
+.container > .text-left > h2,
+.container > .text-left > h3:first-child {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 0.35rem;
+}
+
+.tool-lead,
+.container > .text-left > p:first-of-type {
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.6;
+  margin: 0 0 1.25rem;
+  max-width: 52rem;
+}
+
+.tool-section {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 1.15rem 1.35rem;
+  margin-bottom: 1.1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.tool-section-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 0.9rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.tool-form-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #605e5c;
+}
+
+.tool-field-col {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.tool-field-col .form-control,
+.tool-field-col .form-select {
+  width: 100%;
+}
+
+.tool-range {
+  margin-top: 0.15rem;
+}
+
+.tool-btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.35rem;
+}
+
+.tool-btn-row.mt-section {
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.tool-message {
+  font-size: 0.9rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.tool-message--error {
+  color: #a4262c;
+  background: #fdf3f4;
+  border: 1px solid #f1bbbc;
+}
+
+.tool-message--busy {
+  color: #0078d4;
+  background: #f3f9fd;
+  border: 1px solid #c7e0f4;
+}
+
+.tool-preview-wrap {
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 1rem;
+  background: #fafafa;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.tool-preview-wrap h3,
+.tool-preview-wrap .tool-preview-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.65rem;
+  color: #333;
+}
+
+.tool-checkerboard {
+  background: repeating-conic-gradient(#ebebeb 0% 25%, #fff 0% 50%) 50% / 14px 14px;
+  border-radius: 6px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  flex: 1;
+}
+
+.tool-checkerboard canvas {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.tool-radio-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  align-items: center;
+}
+
+.tool-radio-row .form-check {
+  margin-bottom: 0;
+  min-height: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.tool-note {
+  font-size: 0.875rem;
+  color: #666;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.tool-split-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+@media (min-width: 992px) {
+  .tool-split-row {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .tool-split-row > .tool-preview-col {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+/* Markdown reference / About pages */
+.tool-doc.markdown-body {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Legacy cshtml tool panels */
+.container > .text-left > .JsonConvert,
+.container > .text-left > .QrCode-Content,
+.container > .text-left > .color-content,
+.tool-page > .JsonConvert,
+.tool-page > .QrCode-Content {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.container > .text-left .form-control,
+.container > .text-left .form-select,
+.container > .text-left textarea,
+.tool-page .form-control,
+.tool-page .form-select,
+.tool-page textarea {
+  border-radius: 6px;
+  border-color: #d9d9d9;
+}
+
+.container > .text-left .btn,
+.tool-page .btn {
+  border-radius: 6px;
+}
+
+.container > .text-left .table,
+.tool-page .table {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* CheckUrl and similar Blazor forms without tool-page sections */
+.tool-page.div-input,
+.container > .div-input.tool-page {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 1.15rem 1.35rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.tool-page.div-input strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.tool-page.div-input .ip-colorvalue {
+  max-width: 100%;
+  width: min(100%, 480px);
+  margin-bottom: 0.75rem;
+}
+
+.tool-page.div-input button {
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Fluent UI tool pages */
+.tool-page fluent-grid {
+  width: 100%;
+}
+
+.tool-page fluent-button {
+  margin-right: 0.35rem;
+}
+
+/* Simple Blazor pages with only a heading */
+.container > h3:first-child {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 0.75rem;
+}
+
+.container > .container.tool-page {
+  width: 100%;
+  max-width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+}

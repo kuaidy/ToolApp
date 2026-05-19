@@ -250,6 +250,102 @@
   <data name="Image HD upscale" xml:space="preserve">
     <value />
   </data>
+  <data name="HomeHeroHeadline" xml:space="preserve">
+    <value>🚀 Free online toolbox</value>
+  </data>
+  <data name="HomeSectionHot" xml:space="preserve">
+    <value>🔥 Popular tools 🔥</value>
+  </data>
+  <data name="HomeBenefitsTitle" xml:space="preserve">
+    <value>ToolApp makes tools easier to use</value>
+  </data>
+  <data name="HomeBenefitsLead" xml:space="preserve">
+    <value>Images, text, encoding, and dev cheat sheets — pick a tool, process online, and you are done.</value>
+  </data>
+  <data name="HomeBenefitEasy" xml:space="preserve">
+    <value>Easy to use</value>
+  </data>
+  <data name="HomeBenefitEasyDesc" xml:space="preserve">
+    <value>Select, process, and finish in three steps</value>
+  </data>
+  <data name="HomeBenefitFree" xml:space="preserve">
+    <value>Free forever</value>
+  </data>
+  <data name="HomeBenefitFreeDesc" xml:space="preserve">
+    <value>No signup — all tools are free</value>
+  </data>
+  <data name="HomeBenefitBrowser" xml:space="preserve">
+    <value>Runs in browser</value>
+  </data>
+  <data name="HomeBenefitBrowserDesc" xml:space="preserve">
+    <value>No install — open the page and go</value>
+  </data>
+  <data name="HomeBenefitLang" xml:space="preserve">
+    <value>EN &amp; 中文</value>
+  </data>
+  <data name="HomeBenefitLangDesc" xml:space="preserve">
+    <value>Switch UI between English and Chinese</value>
+  </data>
+  <data name="HomeHeroBadge" xml:space="preserve">
+    <value>Free · Online · Instant</value>
+  </data>
+  <data name="HomeHeroTitle" xml:space="preserve">
+    <value>Your all-in-one online toolbox</value>
+  </data>
+  <data name="HomeHeroLead" xml:space="preserve">
+    <value>Image tools, text editors, encoding, and developer cheat sheets — get everyday and dev tasks done in the browser. No install, no signup.</value>
+  </data>
+  <data name="HomeCtaBrowse" xml:space="preserve">
+    <value>Browse all tools</value>
+  </data>
+  <data name="HomeCtaPopular" xml:space="preserve">
+    <value>Popular tools</value>
+  </data>
+  <data name="HomeFeatureFree" xml:space="preserve">
+    <value>Free to use</value>
+  </data>
+  <data name="HomeFeatureNoSignup" xml:space="preserve">
+    <value>No signup</value>
+  </data>
+  <data name="HomeFeatureBrowser" xml:space="preserve">
+    <value>Runs in browser</value>
+  </data>
+  <data name="HomeFeatureBilingual" xml:space="preserve">
+    <value>EN &amp; 中文</value>
+  </data>
+  <data name="HomeFeaturedTitle" xml:space="preserve">
+    <value>Popular tools</value>
+  </data>
+  <data name="HomeCategoriesTitle" xml:space="preserve">
+    <value>Browse by category</value>
+  </data>
+  <data name="HomeAllToolsTitle" xml:space="preserve">
+    <value>All tools</value>
+  </data>
+  <data name="HomeCatTableDesc" xml:space="preserve">
+    <value>HTTP, Git, Vim, MIME, emoji cheat sheets</value>
+  </data>
+  <data name="HomeCatImageDesc" xml:space="preserve">
+    <value>OCR, compress, upscale, background removal, signature</value>
+  </data>
+  <data name="HomeCatProductivityDesc" xml:space="preserve">
+    <value>Pomodoro and productivity helpers</value>
+  </data>
+  <data name="HomeCatConvertDesc" xml:space="preserve">
+    <value>Base, color, and unit conversion</value>
+  </data>
+  <data name="HomeCatTextDesc" xml:space="preserve">
+    <value>JSON, Markdown, regex, formatting</value>
+  </data>
+  <data name="HomeCatCodeDesc" xml:space="preserve">
+    <value>Base64, URL encode/decode</value>
+  </data>
+  <data name="HomeCatCreateDesc" xml:space="preserve">
+    <value>QR codes, GUIDs, product cards</value>
+  </data>
+  <data name="HomeCatQueryDesc" xml:space="preserve">
+    <value>IP lookup, link checker</value>
+  </data>
   <data name="SeoHomeMetaDescription" xml:space="preserve">
     <value>Free online tools for images, text, encoding, and conversion. Reference tables, OCR, QR codes, and developer utilities. English and Chinese.</value>
   </data>

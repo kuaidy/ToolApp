@@ -1,4 +1,5 @@
 ﻿@page "/txttools/articleformat"
+<div class="tool-page">
 <FluentGrid Spacing="3" Justify="JustifyContent.FlexStart">
     <FluentGridItem xs="12">
         <FluentLabel Typo="Typography.H2">文章中英文排版</FluentLabel>
@@ -15,6 +16,7 @@
         <FluentButton OnClick="ClearHandle">清空</FluentButton>
     </FluentGridItem>
 </FluentGrid>
+</div>
 @code {
     private string m_OriginalContent;
     private string m_TargetContent;
