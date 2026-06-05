@@ -16,8 +16,11 @@ public static class TesseractOcr
 {
     static TesseractOcr()
     {
-        TesseractNativeResolver.Initialize();
+        EnsureNativeLibraries();
     }
+
+    /// <summary>在首次 OCR 前调用，确保原生库解析器已注册（Program 启动时也会调用）。</summary>
+    public static void EnsureNativeLibraries() => TesseractNativeResolver.Initialize();
 
     /// <summary>
     /// 使用 Tesseract 从图片字节识别文字。
@@ -39,34 +42,65 @@ public static class TesseractOcr
 
         ValidateLanguageResources(tessDataPath, languages);
 
-        var ext = GuessImageExtension(imageBytes);
-        var tempPath = Path.Combine(Path.GetTempPath(), "ocr-" + Guid.NewGuid().ToString("N") + ext);
+        var tempPath = NormalizeToPngPath(imageBytes);
         var preprocessedPathA = Path.Combine(Path.GetTempPath(), "ocr-" + Guid.NewGuid().ToString("N") + "-prep-a.png");
-        var preprocessedPathB = Path.Combine(Path.GetTempPath(), "ocr-" + Guid.NewGuid().ToString("N") + "-prep-b.png");
         var preprocessedPathColor = Path.Combine(Path.GetTempPath(), "ocr-" + Guid.NewGuid().ToString("N") + "-prep-color.png");
+        var preprocessedPathInvert = Path.Combine(Path.GetTempPath(), "ocr-" + Guid.NewGuid().ToString("N") + "-invert.png");
         try
         {
-            File.WriteAllBytes(tempPath, imageBytes);
 
             try
             {
-                BuildPreprocessedImage(tempPath, preprocessedPathA, strongBinarize: false);
-                BuildPreprocessedImage(tempPath, preprocessedPathB, strongBinarize: true);
+                var candidates = new List<OcrCandidate>();
+                var darkBackground = IsDarkDominantImage(tempPath);
+
+                AddCandidate(candidates, TryRecognizeManagedVariants(tempPath, languages, tessDataPath));
+                var fastBest = PickBestText(candidates, languages);
+                if (IsGoodEnough(fastBest, languages))
+                {
+                    return NormalizeCjkSpacing(fastBest);
+                }
+
+                if (darkBackground)
+                {
+                    BuildInvertedImage(tempPath, preprocessedPathInvert);
+                    AddCandidate(candidates, TryRecognizeManagedVariants(preprocessedPathInvert, languages, tessDataPath));
+                    fastBest = PickBestText(candidates, languages);
+                    if (IsGoodEnough(fastBest, languages))
+                    {
+                        return NormalizeCjkSpacing(fastBest);
+                    }
+                }
+
                 BuildUpscaledColorImage(tempPath, preprocessedPathColor);
+                AddCandidate(candidates, TryRecognizeManagedVariants(preprocessedPathColor, languages, tessDataPath));
+                fastBest = PickBestText(candidates, languages);
+                if (IsGoodEnough(fastBest, languages))
+                {
+                    return NormalizeCjkSpacing(fastBest);
+                }
 
-                var candidates = new List<string>();
+                if (darkBackground && File.Exists(preprocessedPathInvert))
+                {
+                    BuildUpscaledColorImage(preprocessedPathInvert, preprocessedPathColor);
+                    AddCandidate(candidates, TryRecognizeManagedVariants(preprocessedPathColor, languages, tessDataPath));
+                    fastBest = PickBestText(candidates, languages);
+                    if (IsGoodEnough(fastBest, languages))
+                    {
+                        return NormalizeCjkSpacing(fastBest);
+                    }
+                }
 
-                AddIfNotEmpty(candidates, TryRecognizeManagedVariants(tempPath, languages, tessDataPath));
-                AddIfNotEmpty(candidates, TryRecognizeManagedVariants(preprocessedPathColor, languages, tessDataPath));
-                AddIfNotEmpty(candidates, TryRecognizeManagedVariants(preprocessedPathA, languages, tessDataPath));
-                AddIfNotEmpty(candidates, TryRecognizeManagedVariants(preprocessedPathB, languages, tessDataPath));
+                // 灰度增强仅作兜底；强二值化容易把背景纹理/线框误识别为文字
+                BuildPreprocessedImage(tempPath, preprocessedPathA, strongBinarize: false);
+                AddCandidate(candidates, TryRecognizeManagedVariants(preprocessedPathA, languages, tessDataPath));
 
-                AddIfNotEmpty(candidates, TryRecognizeWithTesseractCliVariants(tempPath, languages, tessDataPath, out _));
-                AddIfNotEmpty(candidates, TryRecognizeWithTesseractCliVariants(preprocessedPathColor, languages, tessDataPath, out _));
-                AddIfNotEmpty(candidates, TryRecognizeWithTesseractCliVariants(preprocessedPathA, languages, tessDataPath, out _));
-                AddIfNotEmpty(candidates, TryRecognizeWithTesseractCliVariants(preprocessedPathB, languages, tessDataPath, out _));
+                if (IsTesseractCliAvailable())
+                {
+                    AddCandidate(candidates, TryRecognizeWithTesseractCliVariants(tempPath, languages, tessDataPath, out _));
+                }
 
-                return PickBestText(candidates, languages);
+                return NormalizeCjkSpacing(PickBestText(candidates, languages));
             }
             catch (Exception ex)
             {
@@ -101,19 +135,43 @@ public static class TesseractOcr
                 {
                     File.Delete(preprocessedPathA);
                 }
-                if (File.Exists(preprocessedPathB))
-                {
-                    File.Delete(preprocessedPathB);
-                }
                 if (File.Exists(preprocessedPathColor))
                 {
                     File.Delete(preprocessedPathColor);
+                }
+                if (File.Exists(preprocessedPathInvert))
+                {
+                    File.Delete(preprocessedPathInvert);
                 }
             }
             catch
             {
                 // ignore
             }
+        }
+    }
+
+    /// <summary>
+    /// 用 ImageSharp 解码并统一保存为 PNG，避免 WebP/HEIC 等格式 Tesseract 无法直接读取。
+    /// </summary>
+    private static string NormalizeToPngPath(byte[] imageBytes)
+    {
+        var pngPath = Path.Combine(Path.GetTempPath(), "ocr-" + Guid.NewGuid().ToString("N") + ".png");
+        try
+        {
+            using var image = Image.Load<Rgba32>(imageBytes);
+            image.SaveAsPng(pngPath, new PngEncoder
+            {
+                CompressionLevel = PngCompressionLevel.BestSpeed
+            });
+            return pngPath;
+        }
+        catch
+        {
+            var ext = GuessImageExtension(imageBytes);
+            var fallbackPath = Path.Combine(Path.GetTempPath(), "ocr-" + Guid.NewGuid().ToString("N") + ext);
+            File.WriteAllBytes(fallbackPath, imageBytes);
+            return fallbackPath;
         }
     }
 
@@ -134,6 +192,12 @@ public static class TesseractOcr
             return ".png";
         }
 
+        if (b.Length >= 12 && b[0] == 0x52 && b[1] == 0x49 && b[2] == 0x46 && b[3] == 0x46 &&
+            b[8] == 0x57 && b[9] == 0x45 && b[10] == 0x42 && b[11] == 0x50)
+        {
+            return ".webp";
+        }
+
         if ((b[0] == 0x49 && b[1] == 0x49 && b[2] == 0x2A && b[3] == 0x00) ||
             (b[0] == 0x4D && b[1] == 0x4D && b[2] == 0x00 && b[3] == 0x2A))
         {
@@ -143,6 +207,11 @@ public static class TesseractOcr
         if (b[0] == 0x47 && b[1] == 0x49 && b[2] == 0x46)
         {
             return ".gif";
+        }
+
+        if (b.Length >= 12 && b[4] == 0x66 && b[5] == 0x74 && b[6] == 0x79 && b[7] == 0x70)
+        {
+            return ".heic";
         }
 
         return ".png";
@@ -225,11 +294,11 @@ public static class TesseractOcr
         var best = string.Empty;
         var lastErr = string.Empty;
 
-        foreach (var psm in new[] { 3, 4, 6, 11, 12, 13 })
+        foreach (var psm in new[] { 3, 6, 11 })
         {
             if (TryRecognizeWithTesseractCli(imagePath, languages, tessDataPath, psm, out var text, out var err))
             {
-                if (RankCandidate(text, languages) > RankCandidate(best, languages))
+                if (RankCandidate(new OcrCandidate { Text = text }, languages) > RankCandidate(new OcrCandidate { Text = best }, languages))
                 {
                     best = text;
                 }
@@ -244,31 +313,40 @@ public static class TesseractOcr
         return best;
     }
 
-    private static string TryRecognizeManagedVariants(string imagePath, string languages, string tessDataPath)
+    private sealed class OcrCandidate
+    {
+        public string Text { get; init; } = "";
+        public float MeanConfidence { get; init; }
+    }
+
+    private static OcrCandidate TryRecognizeManagedVariants(string imagePath, string languages, string tessDataPath)
     {
         var psmModes = new[]
         {
             PageSegMode.Auto,
             PageSegMode.SingleBlock,
-            PageSegMode.SingleColumn,
-            PageSegMode.SparseText,
-            PageSegMode.SparseTextOsd
+            PageSegMode.SingleColumn
         };
 
-        var best = string.Empty;
+        OcrCandidate? best = null;
         var anySuccess = false;
-        Exception lastEx = null;
+        Exception? lastEx = null;
 
         foreach (var psm in psmModes)
         {
             try
             {
-                var text = RecognizeWithManagedEngine(imagePath, languages, tessDataPath, psm);
+                var candidate = RecognizeWithManagedEngine(imagePath, languages, tessDataPath, psm);
                 anySuccess = true;
 
-                if (!string.IsNullOrWhiteSpace(text) && RankCandidate(text, languages) > RankCandidate(best, languages))
+                if (string.IsNullOrWhiteSpace(candidate.Text))
                 {
-                    best = text;
+                    continue;
+                }
+
+                if (best == null || RankCandidate(candidate, languages) > RankCandidate(best, languages))
+                {
+                    best = candidate;
                 }
             }
             catch (Exception ex)
@@ -282,10 +360,10 @@ public static class TesseractOcr
             throw lastEx;
         }
 
-        return best;
+        return best ?? new OcrCandidate();
     }
 
-    private static string RecognizeWithManagedEngine(string imagePath, string languages, string tessDataPath, PageSegMode psm)
+    private static OcrCandidate RecognizeWithManagedEngine(string imagePath, string languages, string tessDataPath, PageSegMode psm)
     {
         using var engine = new TesseractEngine(tessDataPath, languages.Trim(), EngineMode.Default);
         engine.SetVariable("user_defined_dpi", "300");
@@ -293,7 +371,134 @@ public static class TesseractOcr
 
         using var img = Pix.LoadFromFile(imagePath);
         using var page = engine.Process(img);
-        return page.GetText().Trim();
+
+        OcrCandidate? best = null;
+        foreach (var minConfidence in new[] { 62f, 52f, 42f })
+        {
+            var lines = ExtractQualityLines(page, languages, minConfidence);
+            if (string.IsNullOrWhiteSpace(lines.Text))
+            {
+                continue;
+            }
+
+            if (best == null || RankCandidate(lines, languages) > RankCandidate(best, languages))
+            {
+                best = lines;
+            }
+        }
+
+        return best ?? new OcrCandidate();
+    }
+
+    /// <summary>
+    /// 按行提取并过滤：丢弃低置信度行，以及不像正文的碎片（线框/纹理误识别）。
+    /// </summary>
+    private static OcrCandidate ExtractQualityLines(Page page, string languages, float minLineConfidence)
+    {
+        var sb = new StringBuilder();
+        var confidences = new List<float>();
+
+        using var iter = page.GetIterator();
+        iter.Begin();
+
+        do
+        {
+            var line = iter.GetText(PageIteratorLevel.TextLine);
+            if (string.IsNullOrWhiteSpace(line))
+            {
+                continue;
+            }
+
+            line = line.Replace("\n", string.Empty).Trim();
+            var conf = iter.GetConfidence(PageIteratorLevel.TextLine);
+            if (conf < minLineConfidence || !IsQualityOcrLine(line, languages))
+            {
+                continue;
+            }
+
+            if (sb.Length > 0)
+            {
+                sb.AppendLine();
+            }
+
+            sb.Append(line);
+            confidences.Add(conf);
+        }
+        while (iter.Next(PageIteratorLevel.TextLine));
+
+        return new OcrCandidate
+        {
+            Text = sb.ToString().Trim(),
+            MeanConfidence = confidences.Count == 0 ? 0f : confidences.Average()
+        };
+    }
+
+    private static bool IsQualityOcrLine(string line, string languages)
+    {
+        if (string.IsNullOrWhiteSpace(line))
+        {
+            return false;
+        }
+
+        if (!ExpectsChinese(languages))
+        {
+            return line.Any(char.IsLetterOrDigit);
+        }
+
+        var cjk = CountCjk(line);
+        if (cjk == 0)
+        {
+            return false;
+        }
+
+        if (cjk >= 2)
+        {
+            return GetCjkLetterRatio(line) >= 0.2 || cjk * 2 >= line.Length;
+        }
+
+        return line.Length <= 10 && GetCjkLetterRatio(line) >= 0.15;
+    }
+
+    private static string NormalizeCjkSpacing(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return string.Empty;
+        }
+
+        var sb = new StringBuilder(text.Length);
+        for (var i = 0; i < text.Length; i++)
+        {
+            var ch = text[i];
+            if (ch == ' ' && i > 0 && i + 1 < text.Length)
+            {
+                var prev = text[i - 1];
+                var next = text[i + 1];
+                if (IsCjkChar(prev) && IsCjkChar(next))
+                {
+                    continue;
+                }
+            }
+
+            sb.Append(ch);
+        }
+
+        return sb.ToString();
+    }
+
+    private static bool IsCjkChar(char ch) => ch >= '\u4e00' && ch <= '\u9fff';
+
+    private static string CollapseBlankLines(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return string.Empty;
+        }
+
+        var lines = text.Split('\n')
+            .Select(l => l.Trim())
+            .Where(l => !string.IsNullOrWhiteSpace(l));
+        return string.Join(Environment.NewLine, lines);
     }
 
     private static void BuildPreprocessedImage(string sourcePath, string targetPath, bool strongBinarize)
@@ -317,6 +522,53 @@ public static class TesseractOcr
             {
                 ctx.BinaryThreshold(0.70f);
             }
+        });
+
+        image.SaveAsPng(targetPath, new PngEncoder
+        {
+            CompressionLevel = PngCompressionLevel.BestCompression
+        });
+    }
+
+    private static bool IsDarkDominantImage(string sourcePath)
+    {
+        using var image = Image.Load<Rgba32>(sourcePath);
+        long sum = 0;
+        long count = 0;
+        for (var y = 0; y < image.Height; y += 6)
+        {
+            for (var x = 0; x < image.Width; x += 6)
+            {
+                var p = image[x, y];
+                sum += (p.R + p.G + p.B) / 3;
+                count++;
+            }
+        }
+
+        return count > 0 && sum / (double)count < 105;
+    }
+
+    /// <summary>
+    /// 深色背景 + 浅色文字时反色，可显著提升 Tesseract 识别率。
+    /// </summary>
+    private static void BuildInvertedImage(string sourcePath, string targetPath)
+    {
+        using var image = Image.Load<Rgba32>(sourcePath);
+        var maxSide = Math.Max(image.Width, image.Height);
+        var scale = maxSide < 2000 ? Math.Min(2f, 2000f / Math.Max(1, maxSide)) : 1f;
+
+        image.Mutate(ctx =>
+        {
+            if (scale > 1f)
+            {
+                var newW = Math.Max(1, (int)Math.Round(image.Width * scale));
+                var newH = Math.Max(1, (int)Math.Round(image.Height * scale));
+                ctx.Resize(newW, newH, KnownResamplers.Lanczos3);
+            }
+
+            ctx.Grayscale();
+            ctx.Invert();
+            ctx.Contrast(1.15f);
         });
 
         image.SaveAsPng(targetPath, new PngEncoder
@@ -350,15 +602,27 @@ public static class TesseractOcr
         });
     }
 
-    private static void AddIfNotEmpty(List<string> list, string text)
+    private static void AddCandidate(List<OcrCandidate> list, OcrCandidate candidate)
     {
-        if (!string.IsNullOrWhiteSpace(text))
+        if (!string.IsNullOrWhiteSpace(candidate.Text))
         {
-            list.Add(text.Trim());
+            list.Add(new OcrCandidate
+            {
+                Text = candidate.Text.Trim(),
+                MeanConfidence = candidate.MeanConfidence
+            });
         }
     }
 
-    private static string PickBestText(List<string> candidates, string languages)
+    private static void AddCandidate(List<OcrCandidate> list, string text)
+    {
+        if (!string.IsNullOrWhiteSpace(text))
+        {
+            list.Add(new OcrCandidate { Text = text.Trim() });
+        }
+    }
+
+    private static string PickBestText(List<OcrCandidate> candidates, string languages)
     {
         if (candidates.Count == 0)
         {
@@ -366,16 +630,72 @@ public static class TesseractOcr
         }
 
         return candidates
-            .OrderByDescending(s => RankCandidate(s, languages))
-            .ThenByDescending(s => s.Length)
-            .FirstOrDefault() ?? string.Empty;
+            .OrderByDescending(c => RankCandidate(c, languages))
+            .ThenByDescending(c => c.MeanConfidence)
+            .FirstOrDefault()?.Text ?? string.Empty;
     }
 
     /// <summary>
     /// 语言包含中文时，优先含汉字的候选；避免纯拉丁乱码因“字母分高”被选中。
     /// </summary>
-    private static int RankCandidate(string text, string languages)
+    private static bool? _tesseractCliAvailable;
+
+    private static bool IsTesseractCliAvailable()
     {
+        if (_tesseractCliAvailable.HasValue)
+        {
+            return _tesseractCliAvailable.Value;
+        }
+
+        try
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = "tesseract",
+                ArgumentList = { "--version" },
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            using var proc = Process.Start(psi);
+            if (proc == null)
+            {
+                _tesseractCliAvailable = false;
+                return false;
+            }
+
+            proc.WaitForExit(3000);
+            _tesseractCliAvailable = proc.ExitCode == 0;
+        }
+        catch
+        {
+            _tesseractCliAvailable = false;
+        }
+
+        return _tesseractCliAvailable.Value;
+    }
+
+    private static bool IsGoodEnough(string text, string languages)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return false;
+        }
+
+        if (ExpectsChinese(languages))
+        {
+            return CountCjk(text) >= 2
+                && GetCjkLetterRatio(text) >= 0.45
+                && RankCandidate(new OcrCandidate { Text = text }, languages) >= 120;
+        }
+
+        return RankCandidate(new OcrCandidate { Text = text }, languages) >= 80;
+    }
+
+    private static int RankCandidate(OcrCandidate candidate, string languages)
+    {
+        var text = candidate.Text;
         if (string.IsNullOrWhiteSpace(text))
         {
             return 0;
@@ -383,19 +703,59 @@ public static class TesseractOcr
 
         var wantsChinese = ExpectsChinese(languages);
         var cjk = CountCjk(text);
-        var baseScore = ScoreText(text);
+        var score = ScoreText(text) + (int)candidate.MeanConfidence;
 
         if (wantsChinese)
         {
             if (cjk == 0)
             {
-                return Math.Max(0, baseScore / 10 - 500);
+                return Math.Max(0, score / 10 - 500);
             }
 
-            return baseScore + cjk * 50;
+            score += cjk * 40;
+            score += (int)(GetCjkLetterRatio(text) * 250);
+
+            var lines = text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            if (lines.Length > 6)
+            {
+                score -= (lines.Length - 6) * 25;
+            }
+
+            foreach (var line in lines)
+            {
+                if (line.Length <= 4 && CountCjk(line) == 0 && line.Any(char.IsLetter))
+                {
+                    score -= 40;
+                }
+            }
+
+            if (text.Length > 120 && GetCjkLetterRatio(text) < 0.35)
+            {
+                score -= 350;
+            }
         }
 
-        return baseScore;
+        return score;
+    }
+
+    private static double GetCjkLetterRatio(string text)
+    {
+        var cjk = 0;
+        var letters = 0;
+        foreach (var ch in text)
+        {
+            if (ch >= '\u4e00' && ch <= '\u9fff')
+            {
+                cjk++;
+            }
+            else if (char.IsLetter(ch))
+            {
+                letters++;
+            }
+        }
+
+        var total = cjk + letters;
+        return total == 0 ? 0 : (double)cjk / total;
     }
 
     private static bool ExpectsChinese(string languages)

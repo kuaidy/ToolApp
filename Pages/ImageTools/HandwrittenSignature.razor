@@ -10,7 +10,7 @@
 </HeadContent>
 
 <div class="tool-page">
-    <FluentLabel Typo="Typography.H2">@L["PageTitle"]</FluentLabel>
+    <h2>@L["PageTitle"]</h2>
     <p class="tool-lead">@L["Lead"]</p>
 
     <div class="tool-section">
@@ -20,7 +20,7 @@
             <div class="col-12 col-sm-6 col-lg-4">
                 <div class="tool-field-col">
                     <span class="tool-form-label">@L["LabelPenColor"]</span>
-                    <input type="color" class="form-control form-control-color" style="width:100%;max-width:8rem;height:2.5rem;" @bind="DrawPenColor" @bind:after="SyncDrawStrokeToJs" />
+                    <input type="color" class="form-control form-control-color tool-color-input" @bind="DrawPenColor" @bind:after="SyncDrawStrokeToJs" />
                 </div>
             </div>
             <div class="col-12 col-sm-6 col-lg-4">
@@ -38,17 +38,19 @@
                     </label>
                     @if (!DrawPadTransparentBg)
                     {
-                        <input type="color" class="form-control form-control-color mt-2" style="width:100%;max-width:8rem;height:2.5rem;" @bind="DrawPadBgColor" @bind:after="OnDrawPadBackgroundChangedAsync" />
+                        <input type="color" class="form-control form-control-color tool-color-input mt-2" @bind="DrawPadBgColor" @bind:after="OnDrawPadBackgroundChangedAsync" />
                     }
                 </div>
             </div>
         </div>
         <div class="tool-btn-row mt-section">
-            <FluentButton OnClick="ClearDrawPadAsync">@L["ClearDraw"]</FluentButton>
-            <FluentButton Appearance="Appearance.Accent" OnClick="DownloadDrawAsync">@L["DownloadDrawPng"]</FluentButton>
+            <button type="button" class="btn btn-primary"
+                    @onclick="DownloadDrawAsync">@L["DownloadDrawPng"]</button>
+            <button type="button" class="btn btn-outline-secondary"
+                    @onclick="ClearDrawPadAsync">@L["ClearDraw"]</button>
         </div>
-        <div class="tool-checkerboard mt-3" style="cursor:crosshair;justify-content:flex-start;">
-            <canvas id="@DrawPadId" width="@DrawPadWidth" height="@DrawPadHeight" style="width:100%;max-width:@(DrawPadWidth)px;height:auto;"></canvas>
+        <div class="tool-checkerboard signature-draw-pad signature-bordered mt-3" style="cursor:crosshair;">
+            <canvas id="@DrawPadId" width="@DrawPadWidth" height="@DrawPadHeight"></canvas>
         </div>
     </div>
 
@@ -60,10 +62,15 @@
     <div class="tool-section">
         <div class="tool-section-title">@L["SectionText"]</div>
         <div class="row g-3 align-items-end">
-            <div class="col-12 col-md-6">
+            <div class="col-12">
                 <div class="tool-field-col">
                     <span class="tool-form-label">@L["LabelSignatureText"]</span>
-                    <FluentTextField @bind-Value="SignatureText" Placeholder="@L["PlaceholderName"]" Style="width:100%;" />
+                    <input type="text"
+                           class="form-control"
+                           placeholder="@L["PlaceholderName"]"
+                           maxlength="40"
+                           @bind="SignatureText"
+                           @bind:event="oninput" />
                 </div>
             </div>
             <div class="col-12 col-md-6">
@@ -86,30 +93,37 @@
             <div class="col-12 col-sm-6 col-md-4">
                 <div class="tool-field-col">
                     <span class="tool-form-label">@L["LabelInkColor"]</span>
-                    <input type="color" class="form-control form-control-color" style="width:100%;max-width:8rem;height:2.5rem;" @bind="TextColor" />
+                    <input type="color" class="form-control form-control-color tool-color-input" @bind="TextColor" />
                 </div>
             </div>
             <div class="col-12 col-sm-6 col-md-4">
                 <div class="tool-field-col">
                     <span class="tool-form-label">@L["LabelBackground"]</span>
-                    <FluentCheckbox @bind-Value="TransparentBackground" Label="@L["TransparentBgDoc"]" />
+                    <label class="form-check d-flex align-items-center gap-2 mb-0">
+                        <input type="checkbox" class="form-check-input mt-0" @bind="TransparentBackground" />
+                        <span>@L["TransparentBgDoc"]</span>
+                    </label>
                     @if (!TransparentBackground)
                     {
-                        <input type="color" class="form-control form-control-color mt-2" style="width:100%;max-width:8rem;height:2.5rem;" @bind="BackgroundColor" />
+                        <input type="color" class="form-control form-control-color tool-color-input mt-2" @bind="BackgroundColor" />
                     }
                 </div>
             </div>
         </div>
         <div class="tool-btn-row mt-section">
-            <FluentButton Appearance="Appearance.Accent" OnClick="GenerateAsync">@L["BtnGenerate"]</FluentButton>
-            <FluentButton OnClick="DownloadAsync" Disabled="@(!HasPreview)">@L["BtnDownloadPng"]</FluentButton>
-            <FluentButton OnClick="ClearTextSection">@L["BtnClearText"]</FluentButton>
+            <button type="button" class="btn btn-primary"
+                    @onclick="GenerateAsync">@L["BtnGenerate"]</button>
+            <button type="button" class="btn btn-outline-secondary"
+                    @onclick="DownloadAsync"
+                    disabled="@(!HasPreview)">@L["BtnDownloadPng"]</button>
+            <button type="button" class="btn btn-outline-secondary"
+                    @onclick="ClearTextSection">@L["BtnClearText"]</button>
         </div>
         @if (!HasPreview)
         {
             <p class="text-muted small mt-2 mb-0">@L["HintAfterGenerate"]</p>
         }
-        <div class="tool-preview-wrap mt-2">
+        <div class="tool-preview-wrap signature-preview-box mt-2">
             <canvas id="@CanvasId" width="0" height="0" style="max-width:100%;display:block;"></canvas>
         </div>
     </div>

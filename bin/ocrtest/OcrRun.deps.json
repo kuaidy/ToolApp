@@ -1,0 +1,101 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "OcrRun/1.0.0": {
+        "dependencies": {
+          "SixLabors.ImageSharp": "3.0.0.0",
+          "Tesseract": "5.2.0.0",
+          "ToolApp": "1.0.0.0"
+        },
+        "runtime": {
+          "OcrRun.dll": {}
+        }
+      },
+      "SixLabors.ImageSharp/3.0.0.0": {
+        "runtime": {
+          "SixLabors.ImageSharp.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.1.12.0"
+          }
+        }
+      },
+      "Tesseract/5.2.0.0": {
+        "runtime": {
+          "Tesseract.dll": {
+            "assemblyVersion": "5.2.0.0",
+            "fileVersion": "5.2.0.0"
+          }
+        }
+      },
+      "ToolApp/1.0.0.0": {
+        "runtime": {
+          "ToolApp.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        },
+        "resources": {
+          "en/ToolApp.resources.dll": {
+            "locale": "en"
+          },
+          "zh/ToolApp.resources.dll": {
+            "locale": "zh"
+          }
+        }
+      },
+      "Microsoft.FluentUI.AspNetCore.Components/4.9.3.24205": {
+        "runtime": {
+          "Microsoft.FluentUI.AspNetCore.Components.dll": {
+            "assemblyVersion": "4.9.3.24205",
+            "fileVersion": "4.9.3.24205"
+          }
+        }
+      },
+      "Markdig/0.37.0.0": {
+        "runtime": {
+          "Markdig.dll": {
+            "assemblyVersion": "0.37.0.0",
+            "fileVersion": "0.37.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "OcrRun/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "SixLabors.ImageSharp/3.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Tesseract/5.2.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ToolApp/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.FluentUI.AspNetCore.Components/4.9.3.24205": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Markdig/0.37.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

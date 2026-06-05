@@ -4,371 +4,395 @@
 @using ToolApp.Common
 @using ToolApp.Models
 @using ToolApp.Pages.Common
-@inject IMessageService MessageService
-@inject IJSRuntime JS;
+@inject IJSRuntime JS
+@implements IAsyncDisposable
 
 <div class="tool-page">
-<FluentGrid Spacing="3" Justify="JustifyContent.FlexStart">
-    <FluentGridItem xs="12">
-        <FluentLabel Typo="Typography.H2">番茄钟</FluentLabel>
-    </FluentGridItem>
-    <FluentGridItem xs="12">
-        <FluentStack Style="align-items: center;">
-            <FluentLabel>分钟</FluentLabel>
-            <FluentNumberField @bind-Value="MinuteCount" />
-        </FluentStack>
-    </FluentGridItem>
-    <FluentGridItem xs="12">
-        <FluentStack Style="align-items: center;">
-            <FluentLabel>备注</FluentLabel>
-            <FluentTextField @bind-Value="Remark" Style="width:200px;"></FluentTextField>
-        </FluentStack>
-    </FluentGridItem>
-    <FluentGridItem xs="12">
-        <FluentButton OnClick="@StartOrEnd">@m_StartOrEndText</FluentButton>
-        <FluentButton OnClick="@PauseOrResume">@m_PauseOrResumeText</FluentButton>
-    </FluentGridItem>
-    <FluentGridItem xs="12">
-        <FluentLabel Typo="Typography.H1">@TimeLeft</FluentLabel>
-    </FluentGridItem>
-    <FluentGridItem xs="12">
-        <FluentProgress Min="0" Max="AllCount" Value="CurrenCount"></FluentProgress>
-    </FluentGridItem>
-    <FluentGridItem xs="12">
-        <FluentMessageBarProvider Section="MESSAGE_SECTION" Format="MessageFormat.Notification" MaxMessageCount="100" />
-    </FluentGridItem>
-    <FluentGridItem xs="12">
-        <FluentStack Style="border:1px #ccc solid;padding:10px;">
-            <table>
-                <tr>
-                    <td style="height:15px;text-align: center;"></td>
-                </tr>
-                <tr>
-                    <td style="height:15px;text-align: center;">M</td>
-                </tr>
-                <tr>
-                    <td style="height:7px;text-align: center;"></td>
-                </tr>
-                <tr>
-                    <td style="height:15px;text-align: center;">W</td>
-                </tr>
-                <tr>
-                    <td style="height:7px;text-align: center;"></td>
-                </tr>
-                <tr>
-                    <td style="height:15px;text-align: center;">F</td>
-                </tr>
-                <tr>
-                    <td style="height:15px;text-align: center;"></td>
-                </tr>
+    <h2>番茄钟</h2>
+    <p class="tool-lead">设定专注时长与备注，开始计时；完成后记录会保存在本机浏览器中，可在下方日历查看。</p>
+
+    <div class="tool-section">
+        <div class="tool-section-title">计时设置</div>
+        <div class="row g-3 align-items-end">
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="tool-field-col">
+                    <span class="tool-form-label">分钟（1–120）</span>
+                    <input type="number"
+                           class="form-control"
+                           min="1"
+                           max="120"
+                           step="1"
+                           @bind="MinuteCount"
+                           @bind:event="onchange"
+                           disabled="@IsSessionActive" />
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-8">
+                <div class="tool-field-col">
+                    <span class="tool-form-label">备注</span>
+                    <input type="text"
+                           class="form-control"
+                           placeholder="本次专注要做什么？"
+                           @bind="Remark"
+                           @bind:event="oninput" />
+                </div>
+            </div>
+        </div>
+
+        <div class="pomodoro-timer-wrap mt-4">
+            <div class="pomodoro-timer" aria-live="polite">@TimeLeft</div>
+            @if (AllCount > 0)
+            {
+                <div class="progress pomodoro-progress" role="progressbar"
+                     aria-valuenow="@CurrenCount" aria-valuemin="0" aria-valuemax="@AllCount">
+                    <div class="progress-bar" style="width:@ProgressPercent%"></div>
+                </div>
+            }
+        </div>
+
+        <div class="tool-btn-row mt-section">
+            @if (m_StartOrEndText == "开始")
+            {
+                <button type="button" class="btn btn-primary" @onclick="StartOrEndAsync">开始</button>
+            }
+            else
+            {
+                <button type="button" class="btn btn-danger" @onclick="StartOrEndAsync">结束</button>
+                <button type="button" class="btn btn-outline-secondary" @onclick="PauseOrResume">
+                    @m_PauseOrResumeText
+                </button>
+            }
+        </div>
+
+        @if (!string.IsNullOrEmpty(StatusMessage))
+        {
+            <div class="tool-message @StatusMessageClass mt-3" role="status">@StatusMessage</div>
+        }
+    </div>
+
+    <div class="tool-section">
+        <div class="tool-section-title">专注记录</div>
+        <div class="pomodoro-heatmap-wrap">
+            <table class="pomodoro-heatmap-labels" aria-hidden="true">
+                <tr><td></td></tr>
+                <tr><td>一</td></tr>
+                <tr><td></td></tr>
+                <tr><td>三</td></tr>
+                <tr><td></td></tr>
+                <tr><td>五</td></tr>
+                <tr><td></td></tr>
             </table>
-            <table style="border-collapse: separate;">
-                @for (int i = 0; i < 7; ++i)
+            <table class="pomodoro-heatmap">
+                @for (var i = 0; i < 7; i++)
                 {
-                    <tr style="">
-                        @for (int j = 1; j <= weeks; ++j)
+                    <tr>
+                        @for (var j = 1; j <= weeks; j++)
                         {
-                            DateInfo dateInfo = DateInfos.Find(x => x.X == j && x.Y == i);
+                            var dateInfo = DateInfos.Find(x => x.X == j && x.Y == i);
                             if (dateInfo != null)
                             {
-                                <td style="width:15px;height:15px;background-color:@dateInfo.Color;margin:1px;cursor:pointer;" title="@dateInfo.Day @dateInfo.Count" @onclick="()=>{SelectedDay(dateInfo);}"></td>
+                                <td class="pomodoro-heatmap-cell"
+                                    style="background-color:@dateInfo.Color"
+                                    title="@($"{dateInfo.Day}：{dateInfo.Count} 个番茄")"
+                                    @onclick="() => SelectedDay(dateInfo)"></td>
                             }
                             else
                             {
-                                <td style="width:15px;height:15px;background-color:none;margin:1px;cursor:pointer;"></td>
+                                <td class="pomodoro-heatmap-cell pomodoro-heatmap-cell--empty"></td>
                             }
                         }
                     </tr>
                 }
             </table>
-        </FluentStack>
-    </FluentGridItem>
-    <FluentGridItem xs="12">
-        @if (m_toDayPomodoreRecords != null && m_toDayPomodoreRecords.Count > 0)
+        </div>
+        <p class="tool-note mt-2 mb-0">点击色块查看当天记录；颜色越深表示当天完成的番茄越多。</p>
+
+        @if (m_toDayPomodoreRecords is { Count: > 0 })
         {
-            <FluentListbox TOption="PomodoreRecord"
-                           Items="@m_toDayPomodoreRecords"
-                           OptionText="@(p => (p.Remark==null?"":p.Remark)+" "+$"{p.StartTime}-{p.EndTime}计时结束了,共专注{Math.Round((p.EndTime - p.StartTime).TotalMinutes, 0)}分钟。")"
-                           OptionValue="@(p=>p.Guid)" />
+            <ul class="list-group mt-3">
+                @foreach (var record in m_toDayPomodoreRecords.OrderByDescending(r => r.StartTime))
+                {
+                    <li class="list-group-item">
+                        <div class="fw-semibold">@(string.IsNullOrWhiteSpace(record.Remark) ? "未填写备注" : record.Remark)</div>
+                        <div class="text-muted small">@FormatRecordSummary(record)</div>
+                    </li>
+                }
+            </ul>
         }
-    </FluentGridItem>
-</FluentGrid>
-<Description DescFileName="Productivity/Pomodoro.md"></Description>
+        else if (!string.IsNullOrEmpty(SelectedDayLabel))
+        {
+            <p class="text-muted small mt-3 mb-0">@SelectedDayLabel 暂无记录。</p>
+        }
+    </div>
+
+    <Description DescFileName="Productivity/Pomodoro.md"></Description>
 </div>
+
 @code {
-    private int m_MinuteCount = 25;
-    public int MinuteCount
-    {
-        get
-        {
-            return m_MinuteCount;
-        }
-        set
-        {
-            m_MinuteCount = value;
-            TimeLeft = $"{m_MinuteCount}:00";
-            CurrenCount = AllCount = m_MinuteCount * 60;
-        }
+    private const string DbName = "ToolAppDb";
+    private const string DbVersion = "1";
+    private const string ObjectStoreName = "PomodoroRecord";
 
-    }
-    private string m_TimeLeft = "25:00";
-    public string TimeLeft
-    {
-        get
-        {
-            return m_TimeLeft;
-        }
-        set
-        {
-            m_TimeLeft = value;
-        }
-    }
-    private int m_CurrenCount;
-
-    public int CurrenCount
-    {
-        get
-        {
-            return m_CurrenCount;
-        }
-        set
-        {
-            m_CurrenCount = value;
-        }
-    }
-    private int m_AllCount = 0;
-    public int AllCount
-    {
-        get
-        {
-            return m_AllCount;
-        }
-        set
-        {
-            m_AllCount = value;
-        }
-    }
-
-    private string m_Remark;
-    public string Remark
-    {
-        get
-        {
-            return m_Remark;
-        }
-        set
-        {
-            m_Remark = value;
-        }
-    }
+    private int MinuteCount { get; set; } = 25;
+    private string Remark { get; set; } = "";
+    private string TimeLeft { get; set; } = "25:00";
+    private int CurrenCount { get; set; }
+    private int AllCount { get; set; }
+    private string StatusMessage { get; set; } = "";
+    private string StatusMessageClass { get; set; } = "tool-message--busy";
+    private string SelectedDayLabel { get; set; } = "";
 
     private DateTime m_StartTime;
     private DateTime m_EndTime;
-    private int weeks = 0;
-    private List<DateInfo> DateInfos = new List<DateInfo>();
-    List<PomodoreRecord> m_PomodoreRecords = new List<PomodoreRecord>();
-    private List<PomodoreRecord> m_toDayPomodoreRecords = new List<PomodoreRecord>();
+    private int weeks;
+    private readonly List<DateInfo> DateInfos = new();
+    private List<PomodoreRecord> m_PomodoreRecords = new();
+    private List<PomodoreRecord> m_toDayPomodoreRecords = new();
 
-    private Timer timer;
-    private bool isRunning = false;
-
-    string dbName = "ToolAppDb";
-    string version = "1";
-    string objectStoreName = "PomodoroRecord";
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender) 
-        {
-            await JS.InvokeVoidAsync("MyIndexedDB.Create", dbName, version, objectStoreName);
-            await Statistic(DateTime.Now.Year);
-        }
-    }
-
-    private void StartTimer()
-    {
-        if (!isRunning)
-        {
-            timer = new Timer(TimerCallback, null, 0, 1000); // 第一次延迟 0 毫秒，之后每隔 1 秒触发一次
-            isRunning = true;
-            m_StartTime = DateTime.Now;
-        }
-    }
-
-    private void PauseTimer()
-    {
-        if (isRunning)
-        {
-            timer.Change(Timeout.Infinite, Timeout.Infinite); // 暂停计时器
-            isRunning = false;
-        }
-    }
-
-    private void ResumeTimer()
-    {
-        if (!isRunning)
-        {
-            timer.Change(0, 1000); // 恢复计时器
-            isRunning = true;
-        }
-    }
-
-    private async Task StopTimer()
-    {
-        if (timer != null)
-        {
-            timer.Dispose(); // 清理计时器资源
-            timer = null;
-            isRunning = false;
-            m_EndTime = DateTime.Now;
-            DisplayMessage();
-            await AddPomodoroRecord();
-            await Statistic(DateTime.Now.Year);
-        }
-    }
-    private async void TimerCallback(object state)
-    {
-        CurrenCount--;
-        if (CurrenCount == 0)
-        {
-            await StopTimer();
-            m_StartOrEndText = "开始";
-        }
-        int m = CurrenCount / 60;
-        int s = CurrenCount % 60;
-        TimeLeft = $"{m}:{s}";
-        InvokeAsync(StateHasChanged);
-    }
+    private Timer? timer;
+    private bool isRunning;
 
     private string m_StartOrEndText = "开始";
     private string m_PauseOrResumeText = "暂停";
 
-    async Task StartOrEnd()
+    private bool IsSessionActive => timer != null;
+
+    private int ProgressPercent =>
+        AllCount > 0 ? (int)Math.Round(CurrenCount * 100.0 / AllCount) : 0;
+
+    protected override void OnInitialized()
     {
-        if (m_StartOrEndText == "开始")
+        ResetCountdownFromMinutes();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
         {
-            CurrenCount = AllCount = MinuteCount * 60;
-            StartTimer();
-            m_StartOrEndText = "结束";
-        }
-        else if (m_StartOrEndText == "结束")
-        {
-            StopTimer();
-            m_StartOrEndText = "开始";
+            await JS.InvokeVoidAsync("MyIndexedDB.Create", DbName, DbVersion, ObjectStoreName);
+            await StatisticAsync(DateTime.Now.Year);
         }
     }
-    async Task PauseOrResume()
+
+    private void ResetCountdownFromMinutes()
+    {
+        MinuteCount = Math.Clamp(MinuteCount, 1, 120);
+        AllCount = MinuteCount * 60;
+        CurrenCount = AllCount;
+        UpdateTimeDisplay();
+    }
+
+    private void UpdateTimeDisplay()
+    {
+        var m = Math.Max(0, CurrenCount) / 60;
+        var s = Math.Max(0, CurrenCount) % 60;
+        TimeLeft = $"{m:D2}:{s:D2}";
+    }
+
+    private void StartTimer()
+    {
+        if (timer != null)
+        {
+            return;
+        }
+
+        timer = new Timer(TimerCallback, null, 0, 1000);
+        isRunning = true;
+        m_StartTime = DateTime.Now;
+    }
+
+    private void PauseTimer()
+    {
+        if (timer == null || !isRunning)
+        {
+            return;
+        }
+
+        timer.Change(Timeout.Infinite, Timeout.Infinite);
+        isRunning = false;
+    }
+
+    private void ResumeTimer()
+    {
+        if (timer == null || isRunning)
+        {
+            return;
+        }
+
+        timer.Change(0, 1000);
+        isRunning = true;
+    }
+
+    private async Task StopTimerAsync()
+    {
+        if (timer == null)
+        {
+            return;
+        }
+
+        await timer.DisposeAsync();
+        timer = null;
+        isRunning = false;
+        m_EndTime = DateTime.Now;
+        ShowCompletionMessage();
+        await AddPomodoroRecordAsync();
+        await StatisticAsync(DateTime.Now.Year);
+        ResetCountdownFromMinutes();
+    }
+
+    private void TimerCallback(object? state)
+    {
+        if (CurrenCount <= 0)
+        {
+            return;
+        }
+
+        CurrenCount--;
+        UpdateTimeDisplay();
+
+        if (CurrenCount <= 0)
+        {
+            _ = InvokeAsync(async () =>
+            {
+                await StopTimerAsync();
+                m_StartOrEndText = "开始";
+                m_PauseOrResumeText = "暂停";
+            });
+            return;
+        }
+
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private async Task StartOrEndAsync()
+    {
+        StatusMessage = "";
+        if (m_StartOrEndText == "开始")
+        {
+            ResetCountdownFromMinutes();
+            StartTimer();
+            m_StartOrEndText = "结束";
+            m_PauseOrResumeText = "暂停";
+        }
+        else
+        {
+            await StopTimerAsync();
+            m_StartOrEndText = "开始";
+            m_PauseOrResumeText = "暂停";
+        }
+    }
+
+    private void PauseOrResume()
     {
         if (m_PauseOrResumeText == "暂停")
         {
             PauseTimer();
             m_PauseOrResumeText = "继续";
         }
-        else if (m_PauseOrResumeText == "继续")
+        else
         {
             ResumeTimer();
             m_PauseOrResumeText = "暂停";
         }
     }
-    void DisplayMessage()
-    {
-        MessageService.ShowMessageBar(options =>
-        {
-            options.Section = "MESSAGE_SECTION";
-            options.Title = $"{Remark}";
-            options.Body = $"{m_StartTime}-{m_EndTime}计时结束了,共专注{Math.Round((m_EndTime - m_StartTime).TotalMinutes, 0)}分钟。";
-            options.Intent = MessageIntent.Info;
-            options.Icon = null;
-            options.ClearAfterNavigation = true;
-            options.OnClose = (e) => { return Task.CompletedTask; };
-            options.Link = null;
-            options.PrimaryAction = null;
-            options.SecondaryAction = null;
 
-        });
+    private void ShowCompletionMessage()
+    {
+        var minutes = Math.Max(1, (int)Math.Round((m_EndTime - m_StartTime).TotalMinutes));
+        var title = string.IsNullOrWhiteSpace(Remark) ? "本次专注已完成" : Remark.Trim();
+        StatusMessageClass = "tool-message--success";
+        StatusMessage = $"{title}：{m_StartTime:HH:mm}–{m_EndTime:HH:mm}，共专注 {minutes} 分钟。";
     }
-    async Task AddPomodoroRecord()
+
+    private async Task AddPomodoroRecordAsync()
     {
         try
         {
-            PomodoreRecord pomodoreRecord = new PomodoreRecord();
-            pomodoreRecord.Guid = Guid.NewGuid().ToString();
-            pomodoreRecord.StartTime = m_StartTime;
-            pomodoreRecord.EndTime = m_EndTime;
-            pomodoreRecord.Remark = Remark;
-            m_PomodoreRecords.Add(pomodoreRecord);
-            await JS.InvokeVoidAsync("MyIndexedDB.Add", dbName, version, objectStoreName, pomodoreRecord);
-        }
-        catch (Exception ex)
-        {
-            MessageService.ShowMessageBar(options =>
+            var record = new PomodoreRecord
             {
-                options.Section = "MESSAGE_SECTION";
-                options.Title = $"错误";
-                options.Body = $"保存失败。";
-                options.Intent = MessageIntent.Error;
-                options.Icon = null;
-                options.ClearAfterNavigation = true;
-                options.OnClose = (e) => { return Task.CompletedTask; };
-                options.Link = null;
-                options.PrimaryAction = null;
-                options.SecondaryAction = null;
-            });
+                Guid = Guid.NewGuid().ToString(),
+                StartTime = m_StartTime,
+                EndTime = m_EndTime,
+                Remark = Remark?.Trim() ?? ""
+            };
+            m_PomodoreRecords.Add(record);
+            await JS.InvokeVoidAsync("MyIndexedDB.Add", DbName, DbVersion, ObjectStoreName, record);
+        }
+        catch
+        {
+            StatusMessageClass = "tool-message--error";
+            StatusMessage = "记录保存失败，请检查浏览器是否允许本地存储。";
         }
     }
 
-    public async Task Statistic(int year)
+    private async Task StatisticAsync(int year)
     {
-        string dbName = "ToolAppDb";
-        string version = "1";
-        string objectStoreName = "PomodoroRecord";
-
-        var data = await JS.InvokeAsync<string>("MyIndexedDB.GetAll", dbName, version, objectStoreName);
+        var data = await JS.InvokeAsync<string>("MyIndexedDB.GetAll", DbName, DbVersion, ObjectStoreName);
         if (!string.IsNullOrEmpty(data))
         {
             var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                    Converters = { new JsonDateTimeConverter() }
-                };
-            m_PomodoreRecords = JsonSerializer.Deserialize<List<PomodoreRecord>>(data, options);
+            {
+                PropertyNameCaseInsensitive = true,
+                Converters = { new JsonDateTimeConverter() }
+            };
+            m_PomodoreRecords = JsonSerializer.Deserialize<List<PomodoreRecord>>(data, options) ?? new List<PomodoreRecord>();
         }
-        int dayCount = DateTime.IsLeapYear(year) ? 366 : 365;
-        DateTime firstDay = new DateTime(year, 1, 1);
-        DateInfos.Clear();
-        for (int i = 0; i < dayCount; ++i)
+        else
         {
-            DateTime tempDay = firstDay.AddDays(i);
-            DateInfo dateInfo = new DateInfo();
-            dateInfo.Day = tempDay.ToString("yyyy-MM-dd");
-            dateInfo.Y = Convert.ToInt32(tempDay.DayOfWeek);
-            int tempDayCount = i + Convert.ToInt32(firstDay.DayOfWeek + 1);
-            //获取大于或等于最小整数
-            dateInfo.X = (int)Math.Ceiling(tempDayCount / 7.0);
-            dateInfo.Count = m_PomodoreRecords.Where(x => Convert.ToDateTime(x.StartTime).ToString("yyyy-MM-dd") == dateInfo.Day).Count();
-            if (dateInfo.Count > 0 && dateInfo.Count <= 5)
+            m_PomodoreRecords = new List<PomodoreRecord>();
+        }
+
+        var dayCount = DateTime.IsLeapYear(year) ? 366 : 365;
+        var firstDay = new DateTime(year, 1, 1);
+        DateInfos.Clear();
+        weeks = 0;
+
+        for (var i = 0; i < dayCount; i++)
+        {
+            var tempDay = firstDay.AddDays(i);
+            var dateInfo = new DateInfo
             {
-                dateInfo.Color = "#0e4429";
-            }
-            else if (dateInfo.Count > 5 && dateInfo.Count <= 10)
+                Day = tempDay.ToString("yyyy-MM-dd"),
+                Y = (int)tempDay.DayOfWeek,
+                X = (int)Math.Ceiling((i + (int)firstDay.DayOfWeek + 1) / 7.0),
+                Count = m_PomodoreRecords.Count(x => x.StartTime.ToString("yyyy-MM-dd") == tempDay.ToString("yyyy-MM-dd"))
+            };
+
+            dateInfo.Color = dateInfo.Count switch
             {
-                dateInfo.Color = "#006d32";
-            }
-            else if (dateInfo.Count > 10 && dateInfo.Count <= 15)
-            {
-                dateInfo.Color = "#26a641";
-            }
-            else if (dateInfo.Count > 15)
-            {
-                dateInfo.Color = "#39d353";
-            }
-            weeks = dateInfo.X;
+                > 0 and <= 5 => "#0e4429",
+                > 5 and <= 10 => "#006d32",
+                > 10 and <= 15 => "#26a641",
+                > 15 => "#39d353",
+                _ => "#ebedf0"
+            };
+
+            weeks = Math.Max(weeks, dateInfo.X);
             DateInfos.Add(dateInfo);
         }
-        InvokeAsync(StateHasChanged);
+
+        await InvokeAsync(StateHasChanged);
     }
-    public async void SelectedDay(DateInfo dateInfo)
+
+    private void SelectedDay(DateInfo dateInfo)
     {
-        m_toDayPomodoreRecords = m_PomodoreRecords.Where(x => x.StartTime.ToString("yyyy-MM-dd") == dateInfo.Day).ToList();
+        SelectedDayLabel = dateInfo.Day;
+        m_toDayPomodoreRecords = m_PomodoreRecords
+            .Where(x => x.StartTime.ToString("yyyy-MM-dd") == dateInfo.Day)
+            .ToList();
+    }
+
+    private static string FormatRecordSummary(PomodoreRecord record)
+    {
+        var minutes = Math.Max(1, (int)Math.Round((record.EndTime - record.StartTime).TotalMinutes));
+        return $"{record.StartTime:HH:mm}–{record.EndTime:HH:mm}，专注 {minutes} 分钟";
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (timer != null)
+        {
+            await timer.DisposeAsync();
+        }
     }
 }

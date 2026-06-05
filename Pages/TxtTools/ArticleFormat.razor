@@ -1,35 +1,94 @@
 ﻿@page "/txttools/articleformat"
+@using ToolApp.Common
+@inject IJSRuntime JS
+
 <div class="tool-page">
-<FluentGrid Spacing="3" Justify="JustifyContent.FlexStart">
-    <FluentGridItem xs="12">
-        <FluentLabel Typo="Typography.H2">文章中英文排版</FluentLabel>
-    </FluentGridItem>
-    <FluentGridItem xs="6">
-        <FluentTextArea Placeholder="请输入需要格式化的内容" Style="width:100%;" Rows="10" @bind-Value="m_OriginalContent"></FluentTextArea>
-    </FluentGridItem>
-    <FluentGridItem xs="6">
-        <FluentTextArea Placeholder="" Style="width:100%;" Rows="10" @bind-Value="m_TargetContent"></FluentTextArea>
-    </FluentGridItem>
-    <FluentGridItem xs="12">
-        <FluentButton OnClick="FormatHandle">格式化</FluentButton>
-        <FluentButton OnClick="CopyHandle">复制结果</FluentButton>
-        <FluentButton OnClick="ClearHandle">清空</FluentButton>
-    </FluentGridItem>
-</FluentGrid>
+    <h2>文章中英文排版</h2>
+    <p class="tool-lead">
+        自动在中英文、中文与数字/符号之间添加空格，并将常见全角字符规范为半角，让混排文章更易读。
+        示例：<code>你好World2024年</code> → <code>你好 World 2024 年</code>
+    </p>
+
+    <div class="tool-section">
+        <div class="tool-section-title">输入与结果</div>
+        <div class="row g-3">
+            <div class="col-12 col-lg-6">
+                <div class="tool-field-col">
+                    <span class="tool-form-label">原文</span>
+                    <textarea class="form-control font-monospace"
+                              rows="16"
+                              placeholder="请粘贴或输入需要排版的文章内容"
+                              @bind="OriginalContent"
+                              @bind:event="oninput"></textarea>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="tool-field-col">
+                    <span class="tool-form-label">排版结果</span>
+                    <textarea class="form-control font-monospace"
+                              rows="16"
+                              placeholder="点击「格式化」后在此显示结果"
+                              readonly
+                              @bind="FormattedContent"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="tool-btn-row mt-section">
+            <button type="button" class="btn btn-primary" @onclick="FormatHandle">格式化</button>
+            <button type="button" class="btn btn-outline-secondary"
+                    @onclick="CopyHandle"
+                    disabled="@string.IsNullOrEmpty(FormattedContent)">复制结果</button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="ClearHandle">清空</button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(StatusMessage))
+        {
+            <div class="tool-message tool-message--error mt-3" role="alert">@StatusMessage</div>
+        }
+    </div>
 </div>
+
 @code {
-    private string m_OriginalContent;
-    private string m_TargetContent;
+    private string OriginalContent { get; set; } = "";
+    private string FormattedContent { get; set; } = "";
+    private string StatusMessage { get; set; } = "";
+
     private void FormatHandle()
     {
+        StatusMessage = "";
+        if (string.IsNullOrWhiteSpace(OriginalContent))
+        {
+            FormattedContent = "";
+            StatusMessage = "请先输入需要排版的内容。";
+            return;
+        }
 
+        FormattedContent = ArticleTypography.Format(OriginalContent);
     }
-    private void CopyHandle()
+
+    private async Task CopyHandle()
     {
+        StatusMessage = "";
+        if (string.IsNullOrWhiteSpace(FormattedContent))
+        {
+            return;
+        }
 
+        try
+        {
+            await JS.InvokeVoidAsync("navigator.clipboard.writeText", FormattedContent);
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = "复制失败：" + ex.Message;
+        }
     }
+
     private void ClearHandle()
     {
-        
+        OriginalContent = "";
+        FormattedContent = "";
+        StatusMessage = "";
     }
 }

@@ -98,6 +98,80 @@
   border: 1px solid #c7e0f4;
 }
 
+.tool-message--success {
+  color: #0f6b3f;
+  background: #edf9f1;
+  border: 1px solid #b8e6cb;
+}
+
+.pomodoro-timer-wrap {
+  text-align: center;
+}
+
+.pomodoro-timer {
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  color: #1a1a1a;
+  line-height: 1.1;
+}
+
+.pomodoro-progress {
+  height: 8px;
+  margin: 1rem auto 0;
+  max-width: 28rem;
+  border-radius: 999px;
+  background: #f0f0f0;
+}
+
+.pomodoro-progress .progress-bar {
+  background: #0d6efd;
+  border-radius: 999px;
+  transition: width 0.35s linear;
+}
+
+.pomodoro-heatmap-wrap {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.pomodoro-heatmap-labels {
+  border-collapse: separate;
+  border-spacing: 0 3px;
+  font-size: 0.7rem;
+  color: #888;
+  flex: 0 0 auto;
+}
+
+.pomodoro-heatmap-labels td {
+  height: 12px;
+  line-height: 12px;
+  padding: 0;
+  text-align: center;
+}
+
+.pomodoro-heatmap {
+  border-collapse: separate;
+  border-spacing: 3px;
+  flex: 0 0 auto;
+}
+
+.pomodoro-heatmap-cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.pomodoro-heatmap-cell--empty {
+  background: transparent;
+  cursor: default;
+}
+
 .tool-preview-wrap {
   border: 1px solid #e8e8e8;
   border-radius: 8px;
@@ -131,6 +205,36 @@
   max-width: 100%;
   height: auto;
   display: block;
+}
+
+/* 手写签名绘制区：画布铺满容器宽度 */
+.signature-draw-pad {
+  width: 100%;
+  display: block;
+  padding: 0;
+  overflow: hidden;
+}
+
+.signature-bordered,
+.signature-preview-box {
+  border: 1px solid #ced4da !important;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.signature-preview-box {
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.signature-draw-pad canvas {
+  width: 100%;
+  max-width: none;
+  height: auto;
+  display: block;
+  vertical-align: top;
 }
 
 .tool-radio-row {
@@ -201,8 +305,26 @@
 .tool-page .form-control,
 .tool-page .form-select,
 .tool-page textarea {
+  border: 1px solid #ced4da;
   border-radius: 6px;
-  border-color: #d9d9d9;
+  background: #fff;
+}
+
+.tool-page .form-control:focus,
+.tool-page .form-select:focus,
+.tool-page textarea:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+.tool-page .tool-color-input {
+  width: 100%;
+  max-width: 8rem;
+  height: 2.5rem;
+  padding: 0.2rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  background: #fff;
 }
 
 .container > .text-left .btn,

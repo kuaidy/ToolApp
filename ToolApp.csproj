@@ -98,4 +98,10 @@
     </Content>
   </ItemGroup>
 
+  <!-- Tesseract 托管层在应用根目录查找原生 DLL，NuGet 默认仅复制到 x64/ 子目录 -->
+  <ItemGroup>
+    <Content Include="$(NuGetPackageRoot)tesseract\5.2.0\x64\leptonica-1.82.0.dll" Link="leptonica-1.82.0.dll" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="$(NuGetPackageRoot)tesseract\5.2.0\x64\tesseract50.dll" Link="tesseract50.dll" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

@@ -24,15 +24,17 @@ internal static class TesseractNativeResolver
 
         _initialized = true;
 
-        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            return;
+            EnsureWindowsNativeAliasesInAppBase();
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            EnsureLinuxNativeAliasesInAppBase();
         }
 
-        EnsureLinuxNativeAliasesInAppBase();
-
         var asm = typeof(TesseractEngine).Assembly;
-        NativeLibrary.SetDllImportResolver(asm, ResolveLinuxLibrary);
+        NativeLibrary.SetDllImportResolver(asm, ResolveNativeLibrary);
     }
 
     public static string GetDiagnostics()
@@ -43,7 +45,15 @@ internal static class TesseractNativeResolver
         sb.Append(", os=").Append(RuntimeInformation.OSDescription);
         sb.Append(", appBase=").Append(appBase);
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            var arch = Environment.Is64BitProcess ? "x64" : "x86";
+            AppendPathState(sb, Path.Combine(appBase, "leptonica-1.82.0.dll"));
+            AppendPathState(sb, Path.Combine(appBase, "tesseract50.dll"));
+            AppendPathState(sb, Path.Combine(appBase, arch, "leptonica-1.82.0.dll"));
+            AppendPathState(sb, Path.Combine(appBase, arch, "tesseract50.dll"));
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
             AppendPathState(sb, Path.Combine(appBase, "libleptonica-1.82.0.so"));
             AppendPathState(sb, Path.Combine(appBase, "libtesseract-5.so"));
@@ -62,6 +72,21 @@ internal static class TesseractNativeResolver
         sb.Append(path);
         sb.Append("=");
         sb.Append(File.Exists(path) ? "exists" : "missing");
+    }
+
+    private static void EnsureWindowsNativeAliasesInAppBase()
+    {
+        var appBase = AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar);
+        var arch = Environment.Is64BitProcess ? "x64" : "x86";
+        var nativeDir = Path.Combine(appBase, arch);
+
+        EnsureAlias(
+            aliasPath: Path.Combine(appBase, "leptonica-1.82.0.dll"),
+            candidates: new[] { Path.Combine(nativeDir, "leptonica-1.82.0.dll") });
+
+        EnsureAlias(
+            aliasPath: Path.Combine(appBase, "tesseract50.dll"),
+            candidates: new[] { Path.Combine(nativeDir, "tesseract50.dll") });
     }
 
     private static void EnsureLinuxNativeAliasesInAppBase()
@@ -131,9 +156,8 @@ internal static class TesseractNativeResolver
         }
     }
 
-    private static IntPtr ResolveLinuxLibrary(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
+    private static IntPtr ResolveNativeLibrary(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
     {
-        // 先让运行时按默认规则尝试，避免影响正常环境。
         if (NativeLibrary.TryLoad(libraryName, assembly, searchPath, out var handle))
         {
             return handle;
@@ -141,7 +165,48 @@ internal static class TesseractNativeResolver
 
         var appBase = AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar);
 
-        // Tesseract 5.x 常见差异：包装层固定找 libleptonica-1.82.0.so，但系统实际只有 liblept.so.5。
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            var arch = Environment.Is64BitProcess ? "x64" : "x86";
+            var nativeDir = Path.Combine(appBase, arch);
+
+            if (libraryName.Contains("leptonica", StringComparison.OrdinalIgnoreCase) ||
+                libraryName.Contains("liblept", StringComparison.OrdinalIgnoreCase))
+            {
+                if (TryLoadAny(
+                    new[]
+                    {
+                        Path.Combine(appBase, "leptonica-1.82.0.dll"),
+                        Path.Combine(nativeDir, "leptonica-1.82.0.dll")
+                    },
+                    out handle))
+                {
+                    return handle;
+                }
+            }
+
+            if (libraryName.Contains("tesseract", StringComparison.OrdinalIgnoreCase))
+            {
+                if (TryLoadAny(
+                    new[]
+                    {
+                        Path.Combine(appBase, "tesseract50.dll"),
+                        Path.Combine(nativeDir, "tesseract50.dll")
+                    },
+                    out handle))
+                {
+                    return handle;
+                }
+            }
+
+            return IntPtr.Zero;
+        }
+
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            return IntPtr.Zero;
+        }
+
         if (libraryName.Contains("libleptonica", StringComparison.OrdinalIgnoreCase) ||
             libraryName.Contains("liblept", StringComparison.OrdinalIgnoreCase))
         {
@@ -163,7 +228,6 @@ internal static class TesseractNativeResolver
             }
         }
 
-        // 部分发行版只提供 libtesseract.so.4（或其他版本）。
         if (libraryName.Contains("tesseract", StringComparison.OrdinalIgnoreCase))
         {
             if (TryLoadAny(

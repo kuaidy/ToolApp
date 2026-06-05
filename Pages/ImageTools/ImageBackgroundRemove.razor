@@ -76,18 +76,16 @@
         </div>
 
         <div class="tool-btn-row mt-section">
-            <FluentButton Appearance="Appearance.Accent" OnClick="RemoveBackgroundAsync" Disabled="@(Busy || !HasImage)">
-                @if (Mode == "ai")
-                {
-                    <text>@L["BtnAiRemove"]</text>
-                }
-                else
-                {
-                    <text>@L["BtnQuickRemove"]</text>
-                }
-            </FluentButton>
-            <FluentButton OnClick="DownloadAsync" Disabled="@(Busy || !HasResult)">@L["BtnDownloadPng"]</FluentButton>
-            <FluentButton OnClick="ClearAll">@L["BtnClear"]</FluentButton>
+            <button type="button" class="btn btn-primary"
+                    @onclick="RemoveBackgroundAsync"
+                    disabled="@(Busy || !HasImage)">
+                @(Mode == "ai" ? L["BtnAiRemove"] : L["BtnQuickRemove"])
+            </button>
+            <button type="button" class="btn btn-outline-secondary"
+                    @onclick="DownloadAsync"
+                    disabled="@(Busy || !HasResult)">@L["BtnDownloadPng"]</button>
+            <button type="button" class="btn btn-outline-secondary"
+                    @onclick="ClearAll">@L["BtnClear"]</button>
         </div>
     </div>
 

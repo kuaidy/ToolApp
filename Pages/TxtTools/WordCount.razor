@@ -4,44 +4,42 @@
 
     <div class="row">
         <div class="col">
-            <h3>×ÖÊýÍ³¼Æ</h3>
-            <p>ÎÄÕÂ×ÖÊýÍ³¼Æ¹¤¾ß£¬ÊÇÒ»¿î¿ìËÙ¼ÆËãÒ»ÆªÎÄÕÂÖÐ×Ö·ûÊýµÄ¹¤¾ß£»±¾¹¤¾ßÖ§³Ö¼ÆËãÎÄÕÂ×Ü×Ö·ûÊý¡¢Ó¢ÎÄµ¥´Ê¸öÊý¡¢±êµã·ûºÅ¸öÊýÒÔ¼°ÖÐÎÄ×ÖÊýµÈÊµÓÃ¹¦ÄÜ£¬ÊÇÍøÕ¾±à¼­¡¢²©¿Í×÷Õß¡¢ÎÄÕÂ×÷¼Ò¡¢ÂÛÎÄÐ´×÷Õß¡¢×ÔÃ½ÌåÈËµÈÎÄ×Ö¹¤×÷ÕßµÄ±Ø±¸¸¨Öú¹¤¾ßÖ®Ò»¡£</p>
+            <h3>å­—æ•°ç»Ÿè®¡</h3>
+            <p>æ–‡ç« å­—æ•°ç»Ÿè®¡å·¥å…·ï¼Œæ˜¯ä¸€æ¬¾å¿«é€Ÿè®¡ç®—ä¸€ç¯‡æ–‡ç« ä¸­å­—ç¬¦æ•°çš„å·¥å…·ï¼›æœ¬å·¥å…·æ”¯æŒè®¡ç®—æ–‡ç« æ€»å­—ç¬¦æ•°ã€è‹±æ–‡å•è¯ä¸ªæ•°ã€æ ‡ç‚¹ç¬¦å·ä¸ªæ•°ä»¥åŠä¸­æ–‡å­—æ•°ç­‰å®žç”¨åŠŸèƒ½ï¼Œæ˜¯ç½‘ç«™ç¼–è¾‘ã€åšå®¢ä½œè€…ã€æ–‡ç« ä½œå®¶ã€è®ºæ–‡å†™ä½œè€…ã€è‡ªåª’ä½“äººç­‰æ–‡å­—å·¥ä½œè€…çš„å¿…å¤‡è¾…åŠ©å·¥å…·ä¹‹ä¸€ã€‚</p>
         </div>
     </div>
     <div class="row">
         <div class="col-md-8">
-            <textarea class="form-control" rows="20" placeholder="ÇëÔÚÕâÀïÊäÈëÎÄÕÂÄÚÈÝ" @bind="Result" @bind:event="oninput"></textarea>
+            <textarea class="form-control" rows="20" placeholder="è¯·åœ¨è¿™é‡Œè¾“å…¥æ–‡ç« å†…å®¹" @bind="Result" @bind:event="oninput"></textarea>
         </div>
         <div class="col-md-4">
             <ul class="list-group">
-                <li class="list-group-item">
-                    <span>×Ü×ÖÊý</span>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>æ€»å­—æ•°</span>
                     <span>@AllCount</span>
                 </li>
-                <li class="list-group-item">
-                    <span>Ó¢ÎÄ</span>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>è‹±æ–‡</span>
                     <span>@ECount</span>
                 </li>
-                <li class="list-group-item">
-                    <span>±êµã·ûºÅ</span>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>æ ‡ç‚¹ç¬¦å·</span>
                     <span>@SCount</span>
                 </li>
-                <li class="list-group-item">
-                    <span>Êý×Ö</span>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>æ•°å­—</span>
                     <span>@NCount</span>
                 </li>
-                <li class="list-group-item">
-                    <span>ÖÐÎÄ</span>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>ä¸­æ–‡</span>
                     <span>@CCount</span>
                 </li>
-
-                
             </ul>
         </div>
     </div>
-    <div class="row">
+    <div class="row mt-3">
         <div class="col">
-            <button type="button" class="btn btn-primary" @onclick="Clear">Çå¿Õ</button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="Clear">æ¸…ç©º</button>
         </div>
     </div>
 </div>
@@ -50,10 +48,7 @@
     private string m_Result = "";
     public string Result
     {
-        get
-        {
-            return m_Result;
-        }
+        get => m_Result;
         set
         {
             m_Result = value;
@@ -65,10 +60,7 @@
     public int CCount;
     public int NCount;
     public int SCount;
-    protected override async Task OnInitializedAsync()
-    {
 
-    }
     private void Count(string value)
     {
         AllCount = 0;
@@ -83,7 +75,7 @@
             {
                 NCount++;
             }
-            if (char.IsLetter(item) && !(item >= 0x4e00 && item <= 0x9fbb))
+            if (char.IsLetter(item) && !IsCjk(item))
             {
                 ECount++;
             }
@@ -91,12 +83,15 @@
             {
                 SCount++;
             }
-            if (item >= 0x4e00 && item <= 0x9fbb)
+            if (IsCjk(item))
             {
                 CCount++;
             }
         }
     }
+
+    private static bool IsCjk(char ch) => ch >= '\u4e00' && ch <= '\u9fff';
+
     private void Clear()
     {
         Result = "";

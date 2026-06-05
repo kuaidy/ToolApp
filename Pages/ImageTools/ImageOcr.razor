@@ -39,9 +39,14 @@
         </div>
 
         <div class="tool-btn-row mt-section">
-            <FluentButton Appearance="Appearance.Accent" OnClick="RecognizeAgainAsync" Disabled="@(Recognizing || UploadedBytes.Length == 0)">@L["BtnRecognizeAgain"]</FluentButton>
-            <FluentButton OnClick="CopyResultAsync" Disabled="@(Recognizing || string.IsNullOrWhiteSpace(ResultText))">@L["BtnCopy"]</FluentButton>
-            <FluentButton OnClick="ClearAll">@L["BtnClear"]</FluentButton>
+            <button type="button" class="btn btn-primary"
+                    @onclick="RecognizeAgainAsync"
+                    disabled="@(Recognizing || UploadedBytes.Length == 0)">@L["BtnRecognizeAgain"]</button>
+            <button type="button" class="btn btn-outline-secondary"
+                    @onclick="CopyResultAsync"
+                    disabled="@(Recognizing || string.IsNullOrWhiteSpace(ResultText))">@L["BtnCopy"]</button>
+            <button type="button" class="btn btn-outline-secondary"
+                    @onclick="ClearAll">@L["BtnClear"]</button>
         </div>
     </div>
 
@@ -88,8 +93,8 @@
                           rows="14"
                           placeholder="@(Recognizing ? L["PlaceholderRecognizing"].Value : L["ResultPlaceholder"].Value)"
                           style="width:100%;min-height:280px;white-space:pre-wrap;"
-                          @bind="ResultText"
-                          @bind:event="oninput"
+                          value="@ResultText"
+                          @oninput="OnResultInput"
                           @key="ResultRevision"></textarea>
             </div>
         </div>
@@ -114,7 +119,20 @@
     private byte[] UploadedBytes { get; set; } = Array.Empty<byte>();
     private string UploadedContentType { get; set; } = "image/png";
 
-    private string TessDataPath => Path.Combine(Env.ContentRootPath, "tessdata");
+    private string TessDataPath
+    {
+        get
+        {
+            var fromBase = Path.Combine(AppContext.BaseDirectory, "tessdata");
+            if (Directory.Exists(fromBase))
+            {
+                return fromBase;
+            }
+
+            var fromContentRoot = Path.Combine(Env.ContentRootPath, "tessdata");
+            return Directory.Exists(fromContentRoot) ? fromContentRoot : fromBase;
+        }
+    }
 
     private async Task OnFileSelectedAsync(InputFileChangeEventArgs e)
     {
@@ -149,7 +167,7 @@
 
             await InvokeAsync(StateHasChanged);
 
-            _ = RunOcrForSessionAsync(session);
+            await RunOcrForSessionAsync(session);
         }
         catch (Exception ex)
         {
@@ -226,6 +244,11 @@
 
             await InvokeAsync(StateHasChanged);
         }
+    }
+
+    private void OnResultInput(ChangeEventArgs e)
+    {
+        ResultText = e.Value?.ToString() ?? "";
     }
 
     private async Task CopyResultAsync()

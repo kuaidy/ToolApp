@@ -64,15 +64,34 @@
       return { ok: false };
     }
 
+    function fitCanvasBitmap(refWidth, refHeight) {
+      canvas.style.width = '100%';
+      canvas.style.display = 'block';
+      canvas.style.aspectRatio = refWidth + ' / ' + refHeight;
+      const parent = canvas.parentElement;
+      const rect = canvas.getBoundingClientRect();
+      const cssWidth = rect.width > 0
+        ? rect.width
+        : (parent && parent.clientWidth > 0 ? parent.clientWidth : refWidth);
+      const cssHeight = rect.height > 0
+        ? rect.height
+        : Math.max(100, Math.round(cssWidth * (refHeight / refWidth)));
+      const dpr = window.devicePixelRatio || 1;
+      const bitmapW = Math.max(1, Math.floor(cssWidth * dpr));
+      const bitmapH = Math.max(1, Math.floor(cssHeight * dpr));
+      canvas.width = bitmapW;
+      canvas.height = bitmapH;
+      return { bitmapW: bitmapW, bitmapH: bitmapH };
+    }
+
     const ctx = canvas.getContext('2d');
-    canvas.width = width;
-    canvas.height = height;
+    const size = fitCanvasBitmap(width, height);
 
     if (transparent) {
-      ctx.clearRect(0, 0, width, height);
+      ctx.clearRect(0, 0, size.bitmapW, size.bitmapH);
     } else {
       ctx.fillStyle = bgColor || '#ffffff';
-      ctx.fillRect(0, 0, width, height);
+      ctx.fillRect(0, 0, size.bitmapW, size.bitmapH);
     }
 
     if (drawPadRegistry[canvasId]) {
@@ -150,6 +169,40 @@
 
     canvas.style.touchAction = 'none';
 
+    let resizeTimer = null;
+    function onResize() {
+      if (resizeTimer) {
+        clearTimeout(resizeTimer);
+      }
+      resizeTimer = setTimeout(function () {
+        const hadInk = state.hasInk;
+        let snapshot = null;
+        if (hadInk) {
+          try {
+            snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          } catch (_) { /* ignore */ }
+        }
+        const prevW = canvas.width;
+        const prevH = canvas.height;
+        const next = fitCanvasBitmap(width, height);
+        if (transparent) {
+          ctx.clearRect(0, 0, next.bitmapW, next.bitmapH);
+        } else {
+          ctx.fillStyle = bgColor || '#ffffff';
+          ctx.fillRect(0, 0, next.bitmapW, next.bitmapH);
+        }
+        if (snapshot && hadInk) {
+          const off = document.createElement('canvas');
+          off.width = prevW;
+          off.height = prevH;
+          off.getContext('2d').putImageData(snapshot, 0, 0);
+          ctx.drawImage(off, 0, 0, next.bitmapW, next.bitmapH);
+        }
+      }, 150);
+    }
+
+    window.addEventListener('resize', onResize);
+
     canvas.addEventListener('mousedown', start);
     canvas.addEventListener('mousemove', move);
     canvas.addEventListener('mouseup', end);
@@ -182,6 +235,10 @@
         return state.hasInk;
       },
       cleanup: function () {
+        if (resizeTimer) {
+          clearTimeout(resizeTimer);
+        }
+        window.removeEventListener('resize', onResize);
         canvas.removeEventListener('mousedown', start);
         canvas.removeEventListener('mousemove', move);
         canvas.removeEventListener('mouseup', end);

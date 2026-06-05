@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ToolApp.Common;
 
 namespace ToolApp
 {
@@ -12,6 +13,7 @@ namespace ToolApp
     {
         public static void Main(string[] args)
         {
+            TesseractOcr.EnsureNativeLibraries();
             CreateHostBuilder(args).Build().Run();
         }
 
