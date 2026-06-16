@@ -3,76 +3,84 @@
 @{
     ViewData["Title"] = "商品卡片生成";
 }
-<div class="text-left">
-    <h3>@ViewData["Title"]</h3>
-    <div class="color-content">
-        <strong>用来生成商品卡片，可放置到文章内容页</strong>
-        <div class="div-input" style="display:flex;flex-direction: column;width: 200px;">
-            <span>标题</span>
-            <input type="text" name="" placeholder="请输入标题" id="title"  value="">
-            <span>描述</span>
-            <input type="text" name="" placeholder="请输入标题" id="desc" value="">
-            <span>来源</span>
-            <input type="text" name="" placeholder="请输入来源" id="source" value="">
-            <span>商品图片</span>
-            <input type="text" name="" placeholder="请输入商品图片地址" id="shopImage" value="">
-            <span>优惠信息</span>
-            <input type="text" name="" placeholder="请输入优惠信息" id="discount" value="">
-            <span>购买地址</span>
-            <input type="text" name="" placeholder="请输入购买地址" id="shopSite" value="">
-            <span>购买地址描述</span>
-            <input type="text" name="" placeholder="请输入购买地址描述" id="shopSiteDesc" value="">
-            <button onclick="CodeGeneration()" style="width:50px;margin-top:10px;">生成</button>
+<div class="tool-page it-page ct-page">
+    <header class="it-hero">
+        <h1>@ViewData["Title"]</h1>
+        <p>填写商品信息，生成可嵌入文章页的 HTML 卡片代码。</p>
+    </header>
+
+    <div class="it-studio">
+        <div class="it-toolbar">
+            <div class="it-toolbar-fields">
+                <span class="it-meta mb-0">左侧填写字段，右侧实时预览卡片效果。</span>
+            </div>
+            <div class="it-toolbar-actions">
+                <button type="button" class="it-btn it-btn-primary" onclick="CodeGeneration()">生成</button>
+                <button type="button" class="it-btn it-btn-outline" onclick="ClearGood()">清空</button>
+            </div>
         </div>
-        <strong>生成结果</strong>
-        <div class="div-output">
-            <textarea id="outCode" style="height:300px;"></textarea>
-        </div>
-        <strong>效果预览</strong>
-        <div id="preview">
-            <div style="
-                 display: flex;
-                 border: 1px solid #ccc;
-                 border-radius: 5px;
-                 padding: 10px;">
-                <div style="display:flex; width:30%;">
-                    <img class="shopImage" style="width: 100%;" src="https://www.rdonly.com/wp-content/uploads/2022/10/image-4.png" />
+
+        <div class="tt-split">
+            <div class="ct-create-grid">
+                <div class="ct-field">
+                    <label class="ct-field-label" for="title">标题</label>
+                    <input type="text" class="form-control" id="title" placeholder="请输入标题" />
                 </div>
-                <div style="
-                    width: 70%;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: space-between;
-                    margin-left: 10px;
-                    
-                ">
-                    <div>
-                        <div class="">
-                            <span class="source" style="
-                                      background-color: red;
-                                      padding: 0 10px;
-                                      color: #fff;
-                                      border-radius: 3px;
-                                  ">京东</span>
-                            <span>
-                                <a class="title" href="https://u.jd.com/xdnUU1Y" style="text-decoration: none;color: #000;">哔哩哔哩大会员12个月仅 88 元</a>
-                            </span>
-                        </div>
-                        <div class="desc" style="
-                                color: #afafaf;
-                            ">
-                            原价233
-                        </div>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;align-items: center;">
-                        <div class="discount" style="color:red;">券后88元</div>
-                        <div style="
-                            background-color: red;
-                            color: #fff;
-                            border-radius: 3px;
-                            padding: 2px 10px;
-                        ">
-                            <a class="shopSite" href="https://u.jd.com/xdnUU1Y" style="text-decoration: none;color: #fff;">直达链接</a>
+                <div class="ct-field">
+                    <label class="ct-field-label" for="source">来源</label>
+                    <input type="text" class="form-control" id="source" placeholder="如：京东" />
+                </div>
+                <div class="ct-field">
+                    <label class="ct-field-label" for="desc">描述</label>
+                    <input type="text" class="form-control" id="desc" placeholder="请输入描述" />
+                </div>
+                <div class="ct-field">
+                    <label class="ct-field-label" for="discount">优惠信息</label>
+                    <input type="text" class="form-control" id="discount" placeholder="如：券后 88 元" />
+                </div>
+                <div class="ct-field" style="grid-column:1/-1;">
+                    <label class="ct-field-label" for="shopImage">商品图片地址</label>
+                    <input type="text" class="form-control" id="shopImage" placeholder="https://..." />
+                </div>
+                <div class="ct-field">
+                    <label class="ct-field-label" for="shopSite">购买地址</label>
+                    <input type="text" class="form-control" id="shopSite" placeholder="https://..." />
+                </div>
+                <div class="ct-field">
+                    <label class="ct-field-label" for="shopSiteDesc">购买按钮文字</label>
+                    <input type="text" class="form-control" id="shopSiteDesc" placeholder="如：直达链接" />
+                </div>
+            </div>
+
+            <div>
+                <div class="ct-output">
+                    <span class="ct-field-label">HTML 代码</span>
+                    <textarea id="outCode" readonly placeholder="点击「生成」后复制代码"></textarea>
+                </div>
+                <div class="ct-preview-box">
+                    <span class="ct-field-label">效果预览</span>
+                    <div id="preview">
+                        <div style="display:flex;border:1px solid #ccc;border-radius:5px;padding:10px;">
+                            <div style="display:flex;width:30%;">
+                                <img class="shopImage" style="width:100%;" src="https://www.rdonly.com/wp-content/uploads/2022/10/image-4.png" alt="" />
+                            </div>
+                            <div style="width:70%;display:flex;flex-direction:column;justify-content:space-between;margin-left:10px;">
+                                <div>
+                                    <div>
+                                        <span class="source" style="background-color:red;padding:0 10px;color:#fff;border-radius:3px;">京东</span>
+                                        <span>
+                                            <a class="title" href="https://u.jd.com/xdnUU1Y" style="text-decoration:none;color:#000;">哔哩哔哩大会员12个月仅 88 元</a>
+                                        </span>
+                                    </div>
+                                    <div class="desc" style="color:#afafaf;">原价233</div>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;">
+                                    <div class="discount" style="color:red;">券后88元</div>
+                                    <div style="background-color:red;color:#fff;border-radius:3px;padding:2px 10px;">
+                                        <a class="shopSite" href="https://u.jd.com/xdnUU1Y" style="text-decoration:none;color:#fff;">直达链接</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -93,12 +101,15 @@
         $("img.shopImage").attr("src", shopImage);
         $("span.source").text(source);
         $("a.title").text(title);
-        $("a.title").attr("href",shopSite);
+        $("a.title").attr("href", shopSite);
         $("div.desc").text(desc);
         $("div.discount").text(discount);
         $("a.shopSite").attr("href", shopSite);
         $("a.shopSite").text(shopSiteDesc);
-        var html = $("#preview").html();
-        $("#outCode").val(html);
+        $("#outCode").val($("#preview").html());
+    }
+    function ClearGood() {
+        $("#title,#desc,#source,#shopImage,#discount,#shopSite,#shopSiteDesc").val("");
+        $("#outCode").val("");
     }
 </script>

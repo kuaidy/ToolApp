@@ -6,6 +6,8 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="PageTitle" xml:space="preserve"><value>图片压缩</value></data>
   <data name="Lead" xml:space="preserve"><value>由服务器使用 SixLabors.ImageSharp 压缩：图片会上传到当前站点处理并返回。压缩共 10 个档位（滑块 10 格）；档位越高，JPEG/WebP 压缩越强、文件越小；PNG 仍为无损，档位越高 zlib 越强、通常文件越小。</value></data>
+  <data name="LeadShort" xml:space="preserve"><value>在线压缩图片，支持 JPEG / WebP / PNG，十档可调。</value></data>
+  <data name="DropzoneHint" xml:space="preserve"><value>* 支持 JPG、PNG、WebP，单张最大 20MB</value></data>
   <data name="SectionUpload" xml:space="preserve"><value>选择图片</value></data>
   <data name="LabelPickImage" xml:space="preserve"><value>上传文件</value></data>
   <data name="OriginalInfo" xml:space="preserve"><value>原始：{0} × {1} 像素，约 {2}</value></data>

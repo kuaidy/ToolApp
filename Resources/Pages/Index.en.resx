@@ -249,6 +249,9 @@
   <data name="Image HD upscale" xml:space="preserve">
     <value>Image upscale (HD)</value>
   </data>
+  <data name="Image merge" xml:space="preserve">
+    <value>Image merge</value>
+  </data>
   <data name="HomeHeroHeadline" xml:space="preserve">
     <value>🚀 Free online toolbox</value>
   </data>

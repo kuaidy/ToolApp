@@ -6,6 +6,7 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="PageTitle" xml:space="preserve"><value>Handwritten signature</value></data>
   <data name="Lead" xml:space="preserve"><value>Prefer the drawing area above: draw with a mouse or touch. For a quick image, use “Generate from text” below. Both export to PNG.</value></data>
+  <data name="LeadShort" xml:space="preserve"><value>Draw or type a signature with many fonts — export transparent PNG.</value></data>
   <data name="SectionDraw" xml:space="preserve"><value>Drawing area (recommended)</value></data>
   <data name="NoteDraw" xml:space="preserve"><value>Click and drag in the canvas; touch screens work too. With a transparent background, untouched areas stay transparent for overlays on documents.</value></data>
   <data name="LabelPenColor" xml:space="preserve"><value>Stroke color</value></data>

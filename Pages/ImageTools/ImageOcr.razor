@@ -9,96 +9,99 @@
 @inject IJSRuntime JS
 @inject IStringLocalizer<ImageOcr> L
 
-<div class="tool-page">
-    <FluentLabel Typo="Typography.H2">@L["PageTitle"]</FluentLabel>
-    <p class="tool-lead">@L["Lead"]</p>
+<div class="tool-page it-page">
+    <header class="it-hero">
+        <h1>@L["PageTitle"]</h1>
+        <p>@L["LeadShort"]</p>
+    </header>
 
-    <div class="tool-section">
-        <div class="tool-section-title">@L["SectionUpload"]</div>
-        <div class="row g-3 align-items-end">
-            <div class="col-12 col-md-6">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">@L["LabelLanguage"]</span>
-                    <select class="form-select" @bind="SelectedLanguage" disabled="@Recognizing">
-                        <option value="chi_sim+eng">@L["LangChiSimEng"]</option>
-                        <option value="chi_sim">@L["LangChiSim"]</option>
-                        <option value="chi_tra+eng">@L["LangChiTraEng"]</option>
-                        <option value="chi_tra">@L["LangChiTra"]</option>
-                        <option value="eng">@L["LangEng"]</option>
-                        <option value="jpn">@L["LangJpn"]</option>
-                        <option value="kor">@L["LangKor"]</option>
-                    </select>
+    <div class="it-studio">
+        @if (UploadedBytes.Length == 0)
+        {
+            <label class="it-dropzone it-dropzone--in-studio @(Recognizing ? "it-dropzone--disabled" : "")">
+                <span class="it-dropzone-icon" aria-hidden="true">+</span>
+                <span class="it-dropzone-title">@L["PageTitle"]</span>
+                <span class="it-dropzone-hint">@L["DropzoneHint"]</span>
+                <InputFile OnChange="OnFileSelectedAsync" accept="image/*" class="it-dropzone-input" disabled="@Recognizing" />
+            </label>
+        }
+        else
+        {
+            <div class="it-toolbar">
+                <div class="it-toolbar-fields">
+                    <div class="it-field">
+                        <span class="it-field-label">@L["LabelLanguage"]</span>
+                        <select class="form-select form-select-sm" @bind="SelectedLanguage" @bind:after="OnLanguageChanged" disabled="@Recognizing">
+                            <option value="chi_sim+eng">@L["LangChiSimEng"]</option>
+                            <option value="chi_sim">@L["LangChiSim"]</option>
+                            <option value="chi_tra+eng">@L["LangChiTraEng"]</option>
+                            <option value="chi_tra">@L["LangChiTra"]</option>
+                            <option value="eng">@L["LangEng"]</option>
+                            <option value="jpn">@L["LangJpn"]</option>
+                            <option value="kor">@L["LangKor"]</option>
+                        </select>
+                    </div>
+                    <span class="it-meta mb-0">@L["LanguageHint"]</span>
+                </div>
+                <div class="it-toolbar-actions">
+                    <button type="button" class="it-btn it-btn-outline"
+                            @onclick="RecognizeAgainAsync"
+                            disabled="@Recognizing">@L["BtnRecognizeAgain"]</button>
+                    <button type="button" class="it-btn it-btn-outline"
+                            @onclick="CopyResultAsync"
+                            disabled="@(Recognizing || string.IsNullOrWhiteSpace(ResultText))">@L["BtnCopy"]</button>
+                    <button type="button" class="it-btn it-btn-outline"
+                            @onclick="ClearAll">@L["BtnClear"]</button>
                 </div>
             </div>
-            <div class="col-12 col-md-6">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">@L["LabelPickImage"]</span>
-                    <InputFile OnChange="OnFileSelectedAsync" accept="image/*" class="form-control" />
+
+            @if (Recognizing)
+            {
+                <div class="it-message it-message--busy" role="status">@L["BusyRecognizing"]</div>
+            }
+            @if (!string.IsNullOrEmpty(StatusMessage))
+            {
+                <div class="it-message it-message--error" role="alert">@StatusMessage</div>
+            }
+
+            <div class="it-split">
+                <div class="it-panel">
+                    <div class="it-panel-head">@L["PreviewHeading"]</div>
+                    <div class="it-panel-body">
+                        @if (PreviewBusy)
+                        {
+                            <span class="it-viewport-empty">@L["PreviewGenerating"]</span>
+                        }
+                        else if (!string.IsNullOrEmpty(PreviewDataUrl))
+                        {
+                            <img src="@PreviewDataUrl" alt="@L["PreviewAlt"]" decoding="async" />
+                        }
+                        else
+                        {
+                            <span class="it-viewport-empty">@L["PreviewEmpty"]</span>
+                        }
+                    </div>
+                </div>
+                <div class="it-panel">
+                    <div class="it-panel-head">@L["ResultHeading"]</div>
+                    <div class="it-panel-body" style="align-items:stretch;">
+                        <textarea id="ocr-result-text"
+                                  class="font-monospace"
+                                  rows="14"
+                                  placeholder="@(Recognizing ? L["PlaceholderRecognizing"].Value : L["ResultPlaceholder"].Value)"
+                                  style="white-space:pre-wrap;"
+                                  value="@ResultText"
+                                  @oninput="OnResultInput"
+                                  @key="ResultRevision"></textarea>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="tool-btn-row mt-section">
-            <button type="button" class="btn btn-primary"
-                    @onclick="RecognizeAgainAsync"
-                    disabled="@(Recognizing || UploadedBytes.Length == 0)">@L["BtnRecognizeAgain"]</button>
-            <button type="button" class="btn btn-outline-secondary"
-                    @onclick="CopyResultAsync"
-                    disabled="@(Recognizing || string.IsNullOrWhiteSpace(ResultText))">@L["BtnCopy"]</button>
-            <button type="button" class="btn btn-outline-secondary"
-                    @onclick="ClearAll">@L["BtnClear"]</button>
-        </div>
+        }
     </div>
 
-    @if (Recognizing)
-    {
-        <div class="tool-message tool-message--busy" role="status">@L["BusyRecognizing"]</div>
-    }
-
-    @if (!string.IsNullOrEmpty(StatusMessage))
-    {
-        <div class="tool-message tool-message--error" role="alert">@StatusMessage</div>
-    }
-
-    <div class="tool-split-row">
-        <div class="tool-preview-col">
-            <div class="tool-section h-100 mb-0 d-flex flex-column">
-                <div class="tool-preview-heading">@L["PreviewHeading"]</div>
-                @if (PreviewBusy)
-                {
-                    <div class="tool-preview-wrap flex-grow-1 d-flex align-items-center justify-content-center text-muted small" style="min-height:120px;">
-                        @L["PreviewGenerating"]
-                    </div>
-                }
-                else if (!string.IsNullOrEmpty(PreviewDataUrl))
-                {
-                    <div class="tool-preview-wrap flex-grow-1">
-                        <img src="@PreviewDataUrl" alt="@L["PreviewAlt"]" class="img-fluid rounded d-block mx-auto" style="max-height:420px;object-fit:contain;" decoding="async" />
-                    </div>
-                }
-                else if (!PreviewBusy)
-                {
-                    <div class="tool-preview-wrap flex-grow-1 d-flex align-items-center justify-content-center" style="min-height:200px;">
-                        <span class="text-muted small">@L["PreviewEmpty"]</span>
-                    </div>
-                }
-            </div>
-        </div>
-        <div class="tool-preview-col">
-            <div class="tool-section h-100 mb-0 d-flex flex-column">
-                <div class="tool-preview-heading">@L["ResultHeading"]</div>
-                @* FluentTextArea 在 Blazor Server 下由代码赋值时有时不同步，改用原生 textarea *@
-                <textarea id="ocr-result-text"
-                          class="form-control font-monospace"
-                          rows="14"
-                          placeholder="@(Recognizing ? L["PlaceholderRecognizing"].Value : L["ResultPlaceholder"].Value)"
-                          style="width:100%;min-height:280px;white-space:pre-wrap;"
-                          value="@ResultText"
-                          @oninput="OnResultInput"
-                          @key="ResultRevision"></textarea>
-            </div>
-        </div>
-    </div>
+    <section class="it-features">
+        <p class="it-features-desc">@L["Lead"]</p>
+    </section>
 </div>
 
 @code {
@@ -189,6 +192,14 @@
 
         var session = BeginNewOcrSession();
         await RunOcrForSessionAsync(session);
+    }
+
+    private void OnLanguageChanged()
+    {
+        if (UploadedBytes.Length > 0 && !Recognizing)
+        {
+            _ = RecognizeAgainAsync();
+        }
     }
 
     private async Task RunOcrForSessionAsync(long session)

@@ -3,12 +3,29 @@
 @{
     ViewData["Title"] = "Guid生成";
 }
-<div class="text-left">
-    <h3>@ViewData["Title"]</h3>
-    <div>
-        <form action="" method="post">
-            <input style="width:350px;" type="text" readonly="readonly" value='@ViewData["Guid"]'>
-            <button>生成</button>
+<div class="tool-page it-page ct-page">
+    <header class="it-hero">
+        <h1>@ViewData["Title"]</h1>
+        <p>一键生成全局唯一标识符（GUID / UUID）。</p>
+    </header>
+
+    <div class="it-studio">
+        <form method="post">
+            <div class="it-toolbar">
+                <div class="it-toolbar-fields" style="flex:1 1 100%;">
+                    <div class="ct-field" style="width:100%;">
+                        <span class="ct-field-label">生成的 GUID</span>
+                        <input class="form-control ct-guid-display" type="text" readonly value="@ViewData["Guid"]" />
+                    </div>
+                </div>
+                <div class="it-toolbar-actions">
+                    <button type="submit" class="it-btn it-btn-primary">生成</button>
+                </div>
+            </div>
         </form>
     </div>
+
+    <section class="it-features">
+        <p class="it-features-desc">点击「生成」即可获得新的 GUID，可直接复制用于数据库主键、接口请求标识等场景。</p>
+    </section>
 </div>

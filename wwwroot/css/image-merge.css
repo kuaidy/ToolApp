@@ -1,0 +1,575 @@
+/* Image merge — docsmall-inspired layout */
+
+.merge-page {
+  max-width: 920px;
+  margin: 0 auto;
+  padding-bottom: 3rem;
+}
+
+.merge-hero {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.merge-hero h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 0.65rem;
+}
+
+.merge-hero p {
+  font-size: 0.9375rem;
+  color: #666;
+  line-height: 1.65;
+  margin: 0 auto;
+  max-width: 36rem;
+}
+
+.merge-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 2.5rem 1.5rem;
+  margin: 0 auto 2.5rem;
+  background: linear-gradient(180deg, #45b07a 0%, #3a9d6c 100%);
+  border: 2px dashed rgba(255, 255, 255, 0.85);
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.merge-dropzone:hover {
+  filter: brightness(1.03);
+}
+
+.merge-dropzone.merge-dropzone--disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.merge-dropzone-input,
+.merge-dropzone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  font-size: 0;
+  z-index: 2;
+}
+
+.merge-add-input,
+.merge-add-link input[type="file"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  font-size: 0;
+}
+
+.merge-dropzone-icon {
+  font-size: 2.75rem;
+  font-weight: 300;
+  line-height: 1;
+  margin-bottom: 0.35rem;
+  opacity: 0.95;
+}
+
+.merge-dropzone-title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+}
+
+.merge-dropzone-hint {
+  font-size: 0.75rem;
+  opacity: 0.88;
+  text-align: center;
+  max-width: 28rem;
+  line-height: 1.5;
+}
+
+.merge-studio {
+  /* border/padding from .it-studio on same element */
+  margin-bottom: 0;
+}
+
+.merge-page .it-studio.merge-studio {
+  margin-bottom: 1.5rem;
+}
+
+.merge-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 0.85rem;
+}
+
+.merge-toolbar-fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.65rem 1rem;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.merge-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.merge-field-label {
+  font-size: 0.8125rem;
+  color: #555;
+  white-space: nowrap;
+}
+
+.merge-field .form-select,
+.merge-field .form-control {
+  font-size: 0.875rem;
+  min-width: 5.5rem;
+  border-color: #ddd;
+  border-radius: 3px;
+}
+
+.merge-field .form-select-sm,
+.merge-field .form-control-sm {
+  height: 1.875rem;
+  min-height: 1.875rem;
+  padding: 0.15rem 0.5rem;
+  line-height: 1.25;
+}
+
+.merge-field--gap .form-range {
+  width: 120px;
+  margin: 0.35rem 0 0;
+}
+
+.merge-field--narrow .form-control-sm {
+  width: 3.5rem;
+  min-width: 3.5rem;
+  padding-left: 0.35rem;
+  padding-right: 0.35rem;
+  text-align: center;
+}
+
+.merge-field--narrow input[type="number"].form-control-sm {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.merge-field--narrow input[type="number"].form-control-sm::-webkit-inner-spin-button,
+.merge-field--narrow input[type="number"].form-control-sm::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.merge-toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.merge-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.45rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.merge-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.merge-btn-outline {
+  background: #fff;
+  border-color: #3a9d6c;
+  color: #3a9d6c;
+}
+
+.merge-btn-outline:hover:not(:disabled) {
+  background: #f3faf6;
+}
+
+.merge-btn-primary {
+  background: #3a9d6c;
+  border-color: #3a9d6c;
+  color: #fff;
+}
+
+.merge-btn-primary:hover:not(:disabled) {
+  background: #338f62;
+  border-color: #338f62;
+}
+
+.merge-add-row {
+  margin-bottom: 0.75rem;
+}
+
+.merge-add-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8125rem;
+  color: #3a9d6c;
+  cursor: pointer;
+  position: relative;
+  margin: 0;
+  padding: 0.15rem 0;
+}
+
+.merge-add-link:hover {
+  color: #2d7d55;
+}
+
+.merge-thumbs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.35rem;
+  margin-bottom: 0.75rem;
+  scrollbar-width: thin;
+}
+
+.merge-thumb {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 72px;
+  padding: 0.35rem;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  background: #fafafa;
+}
+
+.merge-thumb img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  border-radius: 2px;
+  background: #fff;
+}
+
+.merge-thumb-index {
+  font-size: 0.6875rem;
+  color: #999;
+  margin-top: 0.2rem;
+}
+
+.merge-thumb-actions {
+  display: flex;
+  gap: 0.15rem;
+  margin-top: 0.25rem;
+}
+
+.merge-thumb-actions button {
+  padding: 0 0.35rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  background: #fff;
+  color: #666;
+  cursor: pointer;
+}
+
+.merge-thumb-actions button:hover:not(:disabled) {
+  border-color: #3a9d6c;
+  color: #3a9d6c;
+}
+
+.merge-thumb-actions button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.merge-more {
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.merge-more summary {
+  cursor: pointer;
+  color: #3a9d6c;
+  user-select: none;
+  margin-bottom: 0.5rem;
+}
+
+.merge-more-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 1.5rem;
+  padding: 0.65rem 0.85rem;
+  margin-top: 0.35rem;
+  background: #f9faf9;
+  border: 1px solid #e8ece9;
+  border-radius: 4px;
+}
+
+.merge-more-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.merge-more-label {
+  font-size: 0.8125rem;
+  color: #555;
+  white-space: nowrap;
+}
+
+.merge-more-color {
+  width: 2rem;
+  height: 1.875rem;
+  padding: 0.125rem;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  background: #fff;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.merge-more-color:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.merge-more-body .form-select-sm {
+  height: 1.875rem;
+  min-height: 1.875rem;
+  width: auto;
+  min-width: 5rem;
+  font-size: 0.875rem;
+  border-color: #ddd;
+  border-radius: 3px;
+}
+
+.merge-more-check {
+  margin: 0;
+}
+
+.merge-page .form-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+  position: static;
+}
+
+.merge-page .form-check-input {
+  position: static;
+  float: none;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.merge-page .form-check-label {
+  white-space: nowrap;
+  font-size: 0.875rem;
+}
+
+.merge-preview-panel {
+  margin-top: 0.25rem;
+  border-top: 1px solid #eee;
+  padding-top: 0.75rem;
+}
+
+.merge-preview-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding: 0 0 0.65rem;
+  margin-bottom: 0;
+  font-size: 0.8125rem;
+  color: #888;
+  border-top: none;
+}
+
+.merge-preview-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.85rem;
+  min-width: 0;
+}
+
+.merge-preview-busy {
+  color: #3a9d6c;
+}
+
+.merge-preview-bar .merge-zoom-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.merge-zoom-group button {
+  min-width: 1.75rem;
+  padding: 0.15rem 0.4rem;
+  font-size: 0.8125rem;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  background: #fff;
+  color: #555;
+  cursor: pointer;
+}
+
+.merge-zoom-group button:hover:not(:disabled) {
+  border-color: #3a9d6c;
+  color: #3a9d6c;
+}
+
+.merge-zoom-group button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.merge-zoom-label {
+  min-width: 2.75rem;
+  text-align: center;
+  color: #666;
+}
+
+.merge-viewport {
+  position: relative;
+  min-height: 360px;
+  background: repeating-conic-gradient(#ebebeb 0% 25%, #fff 0% 50%) 50% / 14px 14px;
+  border: 1px solid #e8e8e8;
+  border-radius: 2px;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+}
+
+.merge-viewport.is-panning {
+  cursor: grabbing;
+}
+
+.merge-viewport .tool-merge-stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+}
+
+.merge-viewport canvas {
+  display: block;
+  max-width: none;
+}
+
+.merge-viewport-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.65);
+  color: #555;
+  font-size: 0.875rem;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.merge-viewport-hint {
+  position: absolute;
+  left: 0.5rem;
+  bottom: 0.4rem;
+  font-size: 0.6875rem;
+  color: #888;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.merge-message {
+  max-width: 920px;
+  margin: 0 auto 1rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.merge-message--error {
+  color: #a4262c;
+  background: #fdf3f4;
+  border: 1px solid #f1bbbc;
+}
+
+.merge-message--busy {
+  color: #2d7d55;
+  background: #f0faf4;
+  border: 1px solid #b8e6cb;
+}
+
+.merge-features {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 0.5rem;
+}
+
+.merge-features-desc {
+  font-size: 0.9375rem;
+  color: #555;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.merge-features-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.merge-features-list li {
+  position: relative;
+  padding-left: 1.35rem;
+  margin-bottom: 0.65rem;
+  font-size: 0.9375rem;
+  color: #444;
+  line-height: 1.55;
+}
+
+.merge-features-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #3a9d6c;
+}

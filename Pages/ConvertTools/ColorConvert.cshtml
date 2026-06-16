@@ -1,26 +1,53 @@
 @page
-@model EncodeDecodeModel
+@model ColorConvertModel
 @{
     ViewData["Title"] = "颜色值转换";
 }
-<div class="text-left">
-    <h3>@ViewData["Title"]</h3>
-    <div class="color-content">
-        <strong>输入颜色值</strong>
-        <div class="div-input">
-            <input type="text" name="" id="ip-colorvalue" class="ip-colorvalue">
-            <button onclick="ColorConvert()">转换</button>
+<div class="tool-page it-page ct-page">
+    <header class="it-hero">
+        <h1>@ViewData["Title"]</h1>
+        <p>在 HEX 与 RGB 之间转换，并实时预览颜色效果。</p>
+    </header>
+
+    <div class="it-studio">
+        <div class="it-toolbar">
+            <div class="it-toolbar-fields">
+                <span class="it-meta mb-0">支持 #RGB、#RRGGBB 或 rgb(r,g,b) 格式输入。</span>
+            </div>
+            <div class="it-toolbar-actions">
+                <button type="button" class="it-btn it-btn-primary" onclick="ColorConvert()">转换</button>
+                <button type="button" class="it-btn it-btn-outline" onclick="ClearColor()">清空</button>
+            </div>
         </div>
-        <strong>转换结果</strong>
-        <div class="div-output">
-            <span class="div-outspan" >十六进制</span>
-            <input type="text" class="ip-colorvalue" id="ip-coloroutput16" readonly="readonly">
-            <span class="div-outspan" >RGB颜色值</span>
-            <input type="text" class="ip-colorvalue" id="ip-coloroutputrgb" readonly="readonly">
-            <span>颜色预览</span>
-            <input type="color" class="ip-colorvalue" id="ip-colorview" readonly="readonly">
+
+        <div class="ct-color-workspace">
+            <div class="ct-field">
+                <label class="ct-field-label" for="ip-colorvalue">输入颜色值</label>
+                <input type="text" id="ip-colorvalue" class="form-control" placeholder="#336699 或 rgb(51,102,153)" autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="ct-stack">
+                <div class="ct-field">
+                    <label class="ct-field-label" for="ip-coloroutput16">十六进制</label>
+                    <input type="text" class="form-control" id="ip-coloroutput16" readonly />
+                </div>
+                <div class="ct-field">
+                    <label class="ct-field-label" for="ip-coloroutputrgb">RGB 颜色值</label>
+                    <input type="text" class="form-control" id="ip-coloroutputrgb" readonly />
+                </div>
+                <div class="ct-field">
+                    <span class="ct-field-label">颜色预览</span>
+                    <div class="ct-color-preview-row">
+                        <input type="color" id="ip-colorview" value="#ffffff" disabled />
+                        <span class="it-meta mb-0">转换成功后显示预览</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <section class="it-features">
+        <p class="it-features-desc">输入十六进制颜色（如 #336699）或 RGB 值（如 rgb(51,102,153)），即可转换为另一种格式并预览颜色。</p>
+    </section>
 </div>
 
 <script>
@@ -32,11 +59,8 @@
             var colorr=inputColor.substring(0,2);
             var colorg=inputColor.substring(2,4);
             var colorb=inputColor.substring(4,6);
-            console.log(colorr);
-            console.log(colorg);
-            console.log(colorb);
             $("#ip-coloroutput16").val("#"+colorr+colorg+colorb);
-            $("#ip-colorview").val("#"+colorr+colorg+colorb);
+            $("#ip-colorview").prop("disabled", false).val("#"+colorr+colorg+colorb);
             colorr=parseInt(colorr,16).toString(10);
             colorg=parseInt(colorg,16).toString(10);
             colorb=parseInt(colorb,16).toString(10);
@@ -50,8 +74,8 @@
             var relcolorg=colorg+colorg;
             var relcolorb=colorb+colorb;
             $("#ip-coloroutput16").val("#"+relcolorr+relcolorg+relcolorb);
-            $("#ip-colorview").val("#"+relcolorr+relcolorg+relcolorb);
-            relcolorr=parseInt(relcolorr,16).toString(10);    
+            $("#ip-colorview").prop("disabled", false).val("#"+relcolorr+relcolorg+relcolorb);
+            relcolorr=parseInt(relcolorr,16).toString(10);
             relcolorg=parseInt(relcolorg,16).toString(10);
             relcolorb=parseInt(relcolorb,16).toString(10);
             $("#ip-coloroutputrgb").val("rgb("+relcolorr+","+relcolorg+","+relcolorb+")");
@@ -66,13 +90,20 @@
             var relcolorg=parseInt(colorArr[1],10).toString(16);
             if(relcolorg.length==1){
                 relcolorg="0"+relcolorg;
-            } 
+            }
             var relcolorb=parseInt(colorArr[2],10).toString(16);
             if(relcolorb.length==1){
                 relcolorb="0"+relcolorb;
-            } 
+            }
             $("#ip-coloroutput16").val("#"+relcolorr+relcolorg+relcolorb);
-            $("#ip-colorview").val("#"+relcolorr+relcolorg+relcolorb);
+            $("#ip-colorview").prop("disabled", false).val("#"+relcolorr+relcolorg+relcolorb);
         }
+    }
+
+    function ClearColor() {
+        $("#ip-colorvalue").val("");
+        $("#ip-coloroutput16").val("");
+        $("#ip-coloroutputrgb").val("");
+        $("#ip-colorview").prop("disabled", true).val("#ffffff");
     }
 </script>

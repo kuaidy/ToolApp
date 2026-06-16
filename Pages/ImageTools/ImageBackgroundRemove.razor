@@ -6,112 +6,113 @@
 @inject IJSRuntime JS
 @inject IStringLocalizer<ImageBackgroundRemove> L
 
-<div class="tool-page">
-    <FluentLabel Typo="Typography.H2">@L["PageTitle"]</FluentLabel>
-    <p class="tool-lead">@L["Lead"]</p>
+<div class="tool-page it-page">
+    <header class="it-hero">
+        <h1>@L["PageTitle"]</h1>
+        <p>@L["LeadShort"]</p>
+    </header>
 
-    <div class="tool-section">
-        <div class="tool-section-title">@L["SectionMode"]</div>
-        <div class="tool-radio-row">
-            <label class="form-check">
-                <input class="form-check-input" type="radio" name="bgmode" checked="@(Mode == "quick")" @onchange="@(_ => Mode = "quick")" disabled="@Busy" />
-                <span>@L["ModeQuick"]</span>
+    <div class="it-studio">
+        @if (!HasImage)
+        {
+            <label class="it-dropzone it-dropzone--in-studio @(Busy ? "it-dropzone--disabled" : "")">
+                <span class="it-dropzone-icon" aria-hidden="true">+</span>
+                <span class="it-dropzone-title">@L["PageTitle"]</span>
+                <span class="it-dropzone-hint">@L["DropzoneHint"]</span>
+                <InputFile OnChange="OnFileSelectedAsync" accept="image/*" class="it-dropzone-input" disabled="@Busy" />
             </label>
-            <label class="form-check">
-                <input class="form-check-input" type="radio" name="bgmode" checked="@(Mode == "color")" @onchange="@(_ => Mode = "color")" disabled="@Busy" />
-                <span>@L["ModeColor"]</span>
-            </label>
-            <label class="form-check">
-                <input class="form-check-input" type="radio" name="bgmode" checked="@(Mode == "ai")" @onchange="@(_ => Mode = "ai")" disabled="@Busy" />
-                <span>@L["ModeAi"]</span>
-            </label>
-        </div>
-    </div>
+        }
+        else
+        {
+            <div class="it-toolbar">
+                <div class="it-toolbar-fields">
+                    <div class="it-field">
+                        <span class="it-field-label">@L["SectionMode"]</span>
+                        <div class="it-radio-row">
+                            <label class="form-check">
+                                <input class="form-check-input" type="radio" name="bgmode" checked="@(Mode == "quick")" @onchange="@(_ => Mode = "quick")" disabled="@Busy" />
+                                <span>@L["ModeQuick"]</span>
+                            </label>
+                            <label class="form-check">
+                                <input class="form-check-input" type="radio" name="bgmode" checked="@(Mode == "color")" @onchange="@(_ => Mode = "color")" disabled="@Busy" />
+                                <span>@L["ModeColor"]</span>
+                            </label>
+                            <label class="form-check">
+                                <input class="form-check-input" type="radio" name="bgmode" checked="@(Mode == "ai")" @onchange="@(_ => Mode = "ai")" disabled="@Busy" />
+                                <span>@L["ModeAi"]</span>
+                            </label>
+                        </div>
+                    </div>
 
-    <div class="tool-section">
-        <div class="tool-section-title">@L["SectionImageParams"]</div>
-        <div class="row g-3 align-items-end">
-            <div class="col-12 col-md-6">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">@L["LabelPickImage"]</span>
-                    <InputFile OnChange="OnFileSelectedAsync" accept="image/*" class="form-control" disabled="@Busy" />
+                    @if (Mode == "quick")
+                    {
+                        <div class="it-field it-field--gap">
+                            <span class="it-field-label">@L["LabelTolerance", Tolerance]</span>
+                            <input type="range" class="form-range" min="1" max="100" step="1" @bind="Tolerance" @bind:event="oninput" disabled="@Busy" />
+                        </div>
+                    }
+                    else if (Mode == "color")
+                    {
+                        <div class="it-options-row">
+                            <span class="it-options-label">@L["LabelKeyColor"]</span>
+                            <input type="color" class="it-color-input" @bind="KeyColor" disabled="@Busy" />
+                        </div>
+                        <div class="it-field it-field--gap">
+                            <span class="it-field-label">@L["LabelTolerance", Tolerance]</span>
+                            <input type="range" class="form-range" min="1" max="100" step="1" @bind="Tolerance" @bind:event="oninput" disabled="@Busy" />
+                        </div>
+                        <div class="it-field it-field--gap">
+                            <span class="it-field-label">@L["LabelSoftBand", SoftBand]</span>
+                            <input type="range" class="form-range" min="0" max="60" step="1" @bind="SoftBand" @bind:event="oninput" disabled="@Busy" />
+                        </div>
+                    }
+                    else
+                    {
+                        <span class="it-meta mb-0">@L["AiNoteShort"]</span>
+                    }
+                </div>
+
+                <div class="it-toolbar-actions">
+                    <button type="button" class="it-btn it-btn-primary"
+                            @onclick="RemoveBackgroundAsync"
+                            disabled="@Busy">
+                        @(Mode == "ai" ? L["BtnAiRemove"] : L["BtnQuickRemove"])
+                    </button>
+                    <button type="button" class="it-btn it-btn-outline"
+                            @onclick="DownloadAsync"
+                            disabled="@(Busy || !HasResult)">@L["BtnDownloadPng"]</button>
+                    <button type="button" class="it-btn it-btn-outline"
+                            @onclick="ClearAll">@L["BtnClear"]</button>
                 </div>
             </div>
-            @if (Mode == "quick")
+
+            @if (Busy)
             {
-                <div class="col-12 col-md-6">
-                    <div class="tool-field-col">
-                        <span class="tool-form-label">@L["LabelTolerance", Tolerance]</span>
-                        <input type="range" class="form-range tool-range" min="1" max="100" step="1" @bind="Tolerance" @bind:event="oninput" disabled="@Busy" />
-                    </div>
+                <div class="it-message it-message--busy" role="status">
+                    @(Mode == "ai" ? L["BusyAi"] : L["BusyQuick"])
                 </div>
             }
-            else if (Mode == "color")
+            @if (!string.IsNullOrEmpty(StatusMessage))
             {
-                <div class="col-12 col-sm-6 col-lg-4">
-                    <div class="tool-field-col">
-                        <span class="tool-form-label">@L["LabelKeyColor"]</span>
-                        <input type="color" class="form-control form-control-color" style="width:100%;max-width:8rem;height:2.5rem;" @bind="KeyColor" disabled="@Busy" />
-                    </div>
-                </div>
-                <div class="col-12 col-sm-6 col-lg-4">
-                    <div class="tool-field-col">
-                        <span class="tool-form-label">@L["LabelTolerance", Tolerance]</span>
-                        <input type="range" class="form-range tool-range" min="1" max="100" step="1" @bind="Tolerance" @bind:event="oninput" disabled="@Busy" />
-                    </div>
-                </div>
-                <div class="col-12 col-sm-12 col-lg-4">
-                    <div class="tool-field-col">
-                        <span class="tool-form-label">@L["LabelSoftBand", SoftBand]</span>
-                        <input type="range" class="form-range tool-range" min="0" max="60" step="1" @bind="SoftBand" @bind:event="oninput" disabled="@Busy" />
-                    </div>
-                </div>
+                <div class="it-message it-message--error" role="alert">@StatusMessage</div>
             }
-            else
-            {
-                <div class="col-12">
-                    <p class="tool-note mb-0">@L["AiNote"]</p>
-                </div>
-            }
-        </div>
+        }
 
-        <div class="tool-btn-row mt-section">
-            <button type="button" class="btn btn-primary"
-                    @onclick="RemoveBackgroundAsync"
-                    disabled="@(Busy || !HasImage)">
-                @(Mode == "ai" ? L["BtnAiRemove"] : L["BtnQuickRemove"])
-            </button>
-            <button type="button" class="btn btn-outline-secondary"
-                    @onclick="DownloadAsync"
-                    disabled="@(Busy || !HasResult)">@L["BtnDownloadPng"]</button>
-            <button type="button" class="btn btn-outline-secondary"
-                    @onclick="ClearAll">@L["BtnClear"]</button>
-        </div>
-    </div>
-
-    @if (Busy)
-    {
-        <div class="tool-message tool-message--busy" role="status">
-            @(Mode == "ai" ? L["BusyAi"] : L["BusyQuick"])
-        </div>
-    }
-
-    @if (!string.IsNullOrEmpty(StatusMessage))
-    {
-        <div class="tool-message tool-message--error" role="alert">@StatusMessage</div>
-    }
-
-    <div class="tool-section mb-0">
-        <div class="tool-section-title">@L["SectionPreview"]</div>
         @* canvas 必须始终在 DOM 中（固定 id），否则选图后先调 JS 再置 HasImage 会报 canvas not found *@
-        <div class="tool-checkerboard @(HasImage ? "" : "justify-content-center")" style="min-height:160px;">
-            <canvas id="@CanvasId" class="@(HasImage ? "" : "d-none")" style="max-width:100%;height:auto;"></canvas>
-            @if (!HasImage)
+        <div class="it-viewport it-viewport--checker @(HasImage ? "" : "it-viewport--hidden")">
+            <div class="it-viewport-canvas">
+                <canvas id="@CanvasId"></canvas>
+            </div>
+            @if (Busy && HasImage)
             {
-                <span class="text-muted small">@L["PreviewEmpty"]</span>
+                <div class="it-viewport-overlay it-viewport-overlay--light">@(Mode == "ai" ? L["BusyAi"] : L["BusyQuick"])</div>
             }
         </div>
     </div>
+
+    <section class="it-features">
+        <p class="it-features-desc">@L["Lead"]</p>
+    </section>
 </div>
 
 @code {

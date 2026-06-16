@@ -1,19 +1,55 @@
 ﻿@using Markdig;
-<article class="markdown-body tool-page tool-doc">
-    @(new MarkupString(Result))
-</article>
+
+@if (EmbedOnly)
+{
+    <article class="markdown-body tool-doc">
+        @(new MarkupString(Result))
+    </article>
+}
+else
+{
+    <div class="tool-page it-page ref-page">
+        @if (!string.IsNullOrEmpty(PageTitle))
+        {
+            <header class="it-hero">
+                <h1>@PageTitle</h1>
+                @if (!string.IsNullOrEmpty(Lead))
+                {
+                    <p>@Lead</p>
+                }
+            </header>
+        }
+
+        <div class="it-studio it-studio--doc">
+            <article class="markdown-body tool-doc">
+                @(new MarkupString(Result))
+            </article>
+        </div>
+    </div>
+}
 
 @code {
     [Parameter]
-    public string DescFileName{ get; set; }
-    public string Result{ get; set; }
+    public string DescFileName { get; set; } = "";
+
+    [Parameter]
+    public string PageTitle { get; set; } = "";
+
+    [Parameter]
+    public string Lead { get; set; } = "";
+
+    [Parameter]
+    public bool EmbedOnly { get; set; }
+
+    public string Result { get; set; } = "";
+
     protected override async Task OnInitializedAsync()
     {
         string filePath = $"{System.IO.Directory.GetCurrentDirectory()}/Content/{DescFileName}";
         string strContent = await FileHelp.GetFile(filePath);
         var pipeline = new MarkdownPipelineBuilder()
-                        .UseAdvancedExtensions()
-                        .Build();
+            .UseAdvancedExtensions()
+            .Build();
         Result = Markdig.Markdown.ToHtml(strContent, pipeline);
     }
 }

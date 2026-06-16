@@ -250,6 +250,9 @@
   <data name="Image HD upscale" xml:space="preserve">
     <value>图片变高清</value>
   </data>
+  <data name="Image merge" xml:space="preserve">
+    <value>图片合并</value>
+  </data>
   <data name="HomeHeroHeadline" xml:space="preserve">
     <value>🚀 免费的在线工具箱</value>
   </data>

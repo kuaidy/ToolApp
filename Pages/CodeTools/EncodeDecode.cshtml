@@ -3,35 +3,43 @@
 @{
     ViewData["Title"] = "编码解码";
 }
-<div class="text-left">
-    <h3>@ViewData["Title"]</h3>
-    <div class="Code_Option">
-        <strong>输入</strong>
-        <textarea name="CodeInput" id="CodeInput" cols="30" rows="10"></textarea>
-        <ul class="Code_OptionButton">
-            <li>
-                <button onclick="BtnClear()">清空内容</button>
-            </li>
-            <li>
-                <button onclick="UrlEncode()">URL编码</button>
-            </li>
-            <li>
-                <button onclick="UrlDecode()">URL解码</button>
-            </li>
-            <li>
-                <button onclick="BaseEncode()">BASE64编码</button>
-            </li>
-            <li>
-                <button onclick="BaseDecode()">BASE64解码</button>
-            </li>
-        </ul>
-        <strong>输出</strong>
-        <textarea name="CodeOutput" id="CodeOutput" cols="30" rows="10"></textarea>
+<div class="tool-page it-page tt-page ct-page">
+    <header class="it-hero">
+        <h1>@ViewData["Title"]</h1>
+        <p>URL 与 Base64 编码、解码，输入与输出左右对照。</p>
+    </header>
+
+    <div class="it-studio">
+        <div class="it-toolbar">
+            <div class="it-toolbar-fields">
+                <span class="it-meta mb-0">在左侧输入内容，点击对应按钮后在右侧查看结果。</span>
+            </div>
+            <div class="it-toolbar-actions">
+                <button type="button" class="it-btn it-btn-outline" onclick="BtnClear()">清空</button>
+                <button type="button" class="it-btn it-btn-outline" onclick="UrlEncode()">URL 编码</button>
+                <button type="button" class="it-btn it-btn-outline" onclick="UrlDecode()">URL 解码</button>
+                <button type="button" class="it-btn it-btn-primary" onclick="BaseEncode()">Base64 编码</button>
+                <button type="button" class="it-btn it-btn-outline" onclick="BaseDecode()">Base64 解码</button>
+            </div>
+        </div>
+
+        <div class="tt-split">
+            <div class="tt-field">
+                <span class="tt-field-label">输入</span>
+                <textarea id="CodeInput" placeholder="请输入要编码或解码的内容"></textarea>
+            </div>
+            <div class="tt-field">
+                <span class="tt-field-label">输出</span>
+                <textarea id="CodeOutput" readonly placeholder="结果将显示在这里"></textarea>
+            </div>
+        </div>
     </div>
-    <div id="content_view">      
-        <textarea id="content_editor" style="display:none;">@ViewData["Content"]</textarea>
-    </div>
+
+    <section class="it-features">
+        <p class="it-features-desc">支持 URL 编码/解码与 Base64 编码/解码，适用于链接参数处理与文本传输场景。</p>
+    </section>
 </div>
+
 <script>
     $inputObj=document.getElementById("CodeInput");
     $outputObj=document.getElementById("CodeOutput");
@@ -45,15 +53,12 @@
         $inputObj.value="";
         $outputObj.value="";
     }
-    //base64编码
     function BaseEncode(){
         $outputObj.value=Base64.encode($inputObj.value);
     }
-    //base64解码
     function BaseDecode(){
         $outputObj.value=Base64.decode($inputObj.value);
     }
-    //base64编码解码
     var Base64 = {
 	    _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
         encode: function(e) {

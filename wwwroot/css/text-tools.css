@@ -1,0 +1,194 @@
+/* Text tools — shared docsmall-style layout (uses it-* from image-tools.css) */
+
+.tt-page .it-studio {
+  margin-bottom: 1.5rem;
+}
+
+.tt-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+@media (min-width: 768px) {
+  .tt-split {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tt-split--editor {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+}
+
+.tt-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+  min-height: 0;
+}
+
+.tt-field-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.tt-field textarea,
+.tt-field .form-control {
+  width: 100%;
+  min-height: 320px;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 0.65rem 0.75rem;
+  resize: vertical;
+  background: #fff;
+  color: #222;
+}
+
+.tt-field textarea:focus,
+.tt-field .form-control:focus {
+  outline: none;
+  border-color: #3a9d6c;
+  box-shadow: 0 0 0 2px rgba(58, 157, 108, 0.2);
+}
+
+.tt-field textarea[readonly] {
+  background: #f9faf9;
+}
+
+.tt-field textarea.font-monospace,
+.tt-field .font-monospace {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.tt-stats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #e8ece9;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #f9faf9;
+  height: fit-content;
+}
+
+.tt-stats li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #e8ece9;
+  font-size: 0.875rem;
+  color: #444;
+}
+
+.tt-stats li:last-child {
+  border-bottom: none;
+}
+
+.tt-stats-value {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #3a9d6c;
+}
+
+.tt-json-workspace {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  min-height: 480px;
+}
+
+@media (min-width: 768px) {
+  .tt-json-workspace {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.tt-json-workspace textarea#jsoninput {
+  width: 100%;
+  min-height: 480px;
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 0.65rem 0.75rem;
+  resize: vertical;
+}
+
+.tt-json-workspace textarea#jsoninput:focus {
+  outline: none;
+  border-color: #3a9d6c;
+  box-shadow: 0 0 0 2px rgba(58, 157, 108, 0.2);
+}
+
+.tt-json-workspace #jsonview {
+  width: 100%;
+  min-height: 480px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.tt-json-workspace .jsoneditor {
+  border: none;
+  border-radius: 0;
+}
+
+.tt-page .it-studio > .tt-field + .tt-field {
+  margin-top: 0.85rem;
+}
+
+.tt-regex-pattern {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-top: 0.85rem;
+  margin-bottom: 0.85rem;
+}
+
+.tt-regex-pattern input {
+  flex: 1 1 12rem;
+  min-width: 0;
+  height: 1.875rem;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.875rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+
+.tt-regex-pattern input:focus {
+  outline: none;
+  border-color: #3a9d6c;
+  box-shadow: 0 0 0 2px rgba(58, 157, 108, 0.2);
+}
+
+.tt-editor-host {
+  min-height: 600px;
+}
+
+.tt-editor-host .editormd {
+  border: 1px solid #e8ece9;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.tt-editor-host .editormd-fullscreen {
+  z-index: 1040;
+}
+
+.tt-page .tool-doc.markdown-body {
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  background: transparent;
+}

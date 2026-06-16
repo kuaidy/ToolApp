@@ -2,51 +2,54 @@
 @using ToolApp.Common
 @inject IJSRuntime JS
 
-<div class="tool-page">
-    <h2>文章中英文排版</h2>
-    <p class="tool-lead">
-        自动在中英文、中文与数字/符号之间添加空格，并将常见全角字符规范为半角，让混排文章更易读。
-        示例：<code>你好World2024年</code> → <code>你好 World 2024 年</code>
-    </p>
+<div class="tool-page it-page tt-page">
+    <header class="it-hero">
+        <h1>文章中英文排版</h1>
+        <p>自动在中英文、中文与数字/符号之间添加空格，并将常见全角字符规范为半角。</p>
+    </header>
 
-    <div class="tool-section">
-        <div class="tool-section-title">输入与结果</div>
-        <div class="row g-3">
-            <div class="col-12 col-lg-6">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">原文</span>
-                    <textarea class="form-control font-monospace"
-                              rows="16"
-                              placeholder="请粘贴或输入需要排版的文章内容"
-                              @bind="OriginalContent"
-                              @bind:event="oninput"></textarea>
-                </div>
+    <div class="it-studio">
+        <div class="it-toolbar">
+            <div class="it-toolbar-fields">
+                <span class="it-meta mb-0">示例：<code>你好World2024年</code> → <code>你好 World 2024 年</code></span>
             </div>
-            <div class="col-12 col-lg-6">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">排版结果</span>
-                    <textarea class="form-control font-monospace"
-                              rows="16"
-                              placeholder="点击「格式化」后在此显示结果"
-                              readonly
-                              @bind="FormattedContent"></textarea>
-                </div>
+            <div class="it-toolbar-actions">
+                <button type="button" class="it-btn it-btn-primary" @onclick="FormatHandle">格式化</button>
+                <button type="button" class="it-btn it-btn-outline"
+                        @onclick="CopyHandle"
+                        disabled="@string.IsNullOrEmpty(FormattedContent)">复制结果</button>
+                <button type="button" class="it-btn it-btn-outline" @onclick="ClearHandle">清空</button>
             </div>
-        </div>
-
-        <div class="tool-btn-row mt-section">
-            <button type="button" class="btn btn-primary" @onclick="FormatHandle">格式化</button>
-            <button type="button" class="btn btn-outline-secondary"
-                    @onclick="CopyHandle"
-                    disabled="@string.IsNullOrEmpty(FormattedContent)">复制结果</button>
-            <button type="button" class="btn btn-outline-secondary" @onclick="ClearHandle">清空</button>
         </div>
 
         @if (!string.IsNullOrEmpty(StatusMessage))
         {
-            <div class="tool-message tool-message--error mt-3" role="alert">@StatusMessage</div>
+            <div class="it-message it-message--error" role="alert">@StatusMessage</div>
         }
+
+        <div class="tt-split">
+            <div class="tt-field">
+                <span class="tt-field-label">原文</span>
+                <textarea class="form-control font-monospace"
+                          placeholder="请粘贴或输入需要排版的文章内容"
+                          @bind="OriginalContent"
+                          @bind:event="oninput"></textarea>
+            </div>
+            <div class="tt-field">
+                <span class="tt-field-label">排版结果</span>
+                <textarea class="form-control font-monospace"
+                          placeholder="点击「格式化」后在此显示结果"
+                          readonly
+                          @bind="FormattedContent"></textarea>
+            </div>
+        </div>
     </div>
+
+    <section class="it-features">
+        <p class="it-features-desc">
+            自动在中英文、中文与数字/符号之间添加空格，并将常见全角字符规范为半角，让混排文章更易读。
+        </p>
+    </section>
 </div>
 
 @code {

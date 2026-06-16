@@ -6,6 +6,7 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="PageTitle" xml:space="preserve"><value>手写签名生成</value></data>
   <data name="Lead" xml:space="preserve"><value>优先使用上方手写区域，用鼠标或触摸屏书写；若需快速出图，可使用下方的「文字生成」。均可导出 PNG。</value></data>
+  <data name="LeadShort" xml:space="preserve"><value>手写或文字生成签名，支持多种字体，导出透明 PNG。</value></data>
   <data name="SectionDraw" xml:space="preserve"><value>手写区域（推荐）</value></data>
   <data name="NoteDraw" xml:space="preserve"><value>在画布内按住拖动书写；触摸屏可手指书写。透明背景时，未绘制区域为透明，便于叠在文档上。</value></data>
   <data name="LabelPenColor" xml:space="preserve"><value>笔迹颜色</value></data>

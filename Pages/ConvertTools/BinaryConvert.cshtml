@@ -3,65 +3,52 @@
 @{
     ViewData["Title"] = "进制转换";
 }
-<div class="text-left">
-    <h3>@ViewData["Title"]</h3>
-    @* <ul>
-        <li class="li_BConversion">
-            <span>2进制</span>
-            <input type="text" id="convert2" data-type="2" oninput="BinaryConvert2()">
-        </li>
-        <li class="li_BConversion">
-            <span>4进制</span>
-            <input type="text" id="convert4" data-type="4" oninput="BinaryConvert4()">
-        </li>
-        <li class="li_BConversion">
-            <span>8进制</span>
-            <input type="text" id="convert8" data-type="8" oninput="BinaryConvert8()">
-        </li>
-        <li class="li_BConversion">
-            <span>10进制</span>
-            <input type="text" id="convert10" data-type="8" oninput="BinaryConvert10()">
-        </li>
-        <li class="li_BConversion">
-            <span>16进制</span>
-            <input type="text" id="convert16" data-type="16" oninput="BinaryConvert16()">
-        </li>
-        <li>
-            <button type="button" onclick="ClearAll()">清空</button>
-        </li>
-    </ul> *@
-    <div class="form-group">
-        <label>2进制</label>
-        <input type="text" class="form-control" id="convert2" data-type="2" oninput="BinaryConvert2()">
-    </div>
-    <div class="form-group">
-        <label >4进制</label>
-        <input type="text" class="form-control" id="convert4" data-type="4" oninput="BinaryConvert4()">
-    </div>
-    <div class="form-group">
-        <label >8进制</label>
-        <input type="text" class="form-control" id="convert8" data-type="8" oninput="BinaryConvert8()">
-    </div>
-    <div class="form-group">
-        <label >10进制</label>
-        <input type="text" class="form-control" id="convert10" data-type="8" oninput="BinaryConvert10()">
-    </div>
-    <div class="form-group">
-        <label>16进制</label>
-        <input type="text" class="form-control" id="convert16" data-type="16" oninput="BinaryConvert16()">
-    </div>
-    <button type="submit" class="btn btn-primary" onclick="ClearAll()">清空</button>
+<div class="tool-page it-page ct-page">
+    <header class="it-hero">
+        <h1>@ViewData["Title"]</h1>
+        <p>在任意进制输入框中输入数值，其余进制将自动联动换算。</p>
+    </header>
 
-    <div>
-        <strong>使用说明</strong>
-        <p>
-            在对应的输入框中输入值，即可进行转换。
-        </p>
-        <strong>相关知识</strong>
-        <p>
-            进制也就是进位计数制，是人为定义的带进位的计数方法（有不带进位的计数方法，比如原始的结绳计数法，唱票时常用的“正”字计数法，以及类似的tally mark计数）。 对于任何一种进制---X进制，就表示每一位置上的数运算时都是逢X进一位。 十进制是逢十进一，十六进制是逢十六进一，二进制就是逢二进一，以此类推，x进制就是逢x进位。
-        </p>
+    <div class="it-studio">
+        <div class="it-toolbar">
+            <div class="it-toolbar-fields">
+                <span class="it-meta mb-0">支持 2 / 4 / 8 / 10 / 16 进制互转，输入合法数字后实时更新。</span>
+            </div>
+            <div class="it-toolbar-actions">
+                <button type="button" class="it-btn it-btn-outline" onclick="ClearAll()">清空</button>
+            </div>
+        </div>
+
+        <div class="ct-stack">
+            <div class="ct-field">
+                <label class="ct-field-label" for="convert2">2 进制</label>
+                <input type="text" class="form-control" id="convert2" data-type="2" oninput="BinaryConvert2()" autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="ct-field">
+                <label class="ct-field-label" for="convert4">4 进制</label>
+                <input type="text" class="form-control" id="convert4" data-type="4" oninput="BinaryConvert4()" autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="ct-field">
+                <label class="ct-field-label" for="convert8">8 进制</label>
+                <input type="text" class="form-control" id="convert8" data-type="8" oninput="BinaryConvert8()" autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="ct-field">
+                <label class="ct-field-label" for="convert10">10 进制</label>
+                <input type="text" class="form-control" id="convert10" data-type="10" oninput="BinaryConvert10()" autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="ct-field">
+                <label class="ct-field-label" for="convert16">16 进制</label>
+                <input type="text" class="form-control" id="convert16" data-type="16" oninput="BinaryConvert16()" autocomplete="off" spellcheck="false" />
+            </div>
+        </div>
     </div>
+
+    <section class="it-features">
+        <p class="it-features-desc">在对应的输入框中输入值，即可进行转换。</p>
+        <p class="it-features-desc">
+            进制也就是进位计数制，是人为定义的带进位的计数方法。对于任何一种 X 进制，就表示每一位置上的数运算时都是逢 X 进一位。十进制是逢十进一，十六进制是逢十六进一，二进制就是逢二进一，以此类推。
+        </p>
+    </section>
 </div>
 
 <script>
@@ -73,38 +60,38 @@
 
     function BinaryConvert2()
     {
-        $obj_convert4.value=parseInt($obj_convert2.value,2).toString(4);  
-        $obj_convert8.value=parseInt($obj_convert2.value,2).toString(8);  
-        $obj_convert10.value=parseInt($obj_convert2.value,2).toString(10);  
-        $obj_convert16.value=parseInt($obj_convert2.value,2).toString(16);     
+        $obj_convert4.value=parseInt($obj_convert2.value,2).toString(4);
+        $obj_convert8.value=parseInt($obj_convert2.value,2).toString(8);
+        $obj_convert10.value=parseInt($obj_convert2.value,2).toString(10);
+        $obj_convert16.value=parseInt($obj_convert2.value,2).toString(16);
     }
 
     function BinaryConvert4(){
-        $obj_convert2.value=parseInt($obj_convert4.value,4).toString(2);  
-        $obj_convert8.value=parseInt($obj_convert4.value,4).toString(8);  
-        $obj_convert10.value=parseInt($obj_convert4.value,4).toString(10);  
-        $obj_convert16.value=parseInt($obj_convert4.value,4).toString(16);     
+        $obj_convert2.value=parseInt($obj_convert4.value,4).toString(2);
+        $obj_convert8.value=parseInt($obj_convert4.value,4).toString(8);
+        $obj_convert10.value=parseInt($obj_convert4.value,4).toString(10);
+        $obj_convert16.value=parseInt($obj_convert4.value,4).toString(16);
     }
 
     function BinaryConvert8(){
-        $obj_convert2.value=parseInt($obj_convert8.value,8).toString(2);  
-        $obj_convert4.value=parseInt($obj_convert8.value,8).toString(4);  
-        $obj_convert10.value=parseInt($obj_convert8.value,8).toString(10);  
-        $obj_convert16.value=parseInt($obj_convert8.value,8).toString(16);  
+        $obj_convert2.value=parseInt($obj_convert8.value,8).toString(2);
+        $obj_convert4.value=parseInt($obj_convert8.value,8).toString(4);
+        $obj_convert10.value=parseInt($obj_convert8.value,8).toString(10);
+        $obj_convert16.value=parseInt($obj_convert8.value,8).toString(16);
     }
 
     function BinaryConvert10(){
-        $obj_convert2.value=parseInt($obj_convert10.value,10).toString(2);  
-        $obj_convert4.value=parseInt($obj_convert10.value,10).toString(4);  
-        $obj_convert8.value=parseInt($obj_convert10.value,10).toString(8);  
+        $obj_convert2.value=parseInt($obj_convert10.value,10).toString(2);
+        $obj_convert4.value=parseInt($obj_convert10.value,10).toString(4);
+        $obj_convert8.value=parseInt($obj_convert10.value,10).toString(8);
         $obj_convert16.value=parseInt($obj_convert10.value,10).toString(16);
     }
 
     function BinaryConvert16(){
-        $obj_convert2.value=parseInt($obj_convert16.value,16).toString(2);  
-        $obj_convert4.value=parseInt($obj_convert16.value,16).toString(4);  
-        $obj_convert8.value=parseInt($obj_convert16.value,16).toString(8);  
-        $obj_convert10.value=parseInt($obj_convert16.value,16).toString(10);       
+        $obj_convert2.value=parseInt($obj_convert16.value,16).toString(2);
+        $obj_convert4.value=parseInt($obj_convert16.value,16).toString(4);
+        $obj_convert8.value=parseInt($obj_convert16.value,16).toString(8);
+        $obj_convert10.value=parseInt($obj_convert16.value,16).toString(10);
     }
 
     function ClearAll()
@@ -113,7 +100,6 @@
         $obj_convert4.value="";
         $obj_convert8.value="";
         $obj_convert10.value="";
-        $obj_convert16.value=""; 
+        $obj_convert16.value="";
     }
-
 </script>

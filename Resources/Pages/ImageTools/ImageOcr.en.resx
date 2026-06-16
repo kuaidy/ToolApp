@@ -6,6 +6,9 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="PageTitle" xml:space="preserve"><value>Image OCR</value></data>
   <data name="Lead" xml:space="preserve"><value>Upload an image with text for local Tesseract OCR. Common formats (PNG, JPEG, TIFF) are supported. Max about 12MB per file.</value></data>
+  <data name="LeadShort" xml:space="preserve"><value>Pick a language, upload an image, and text is recognized automatically. Changing language re-runs OCR.</value></data>
+  <data name="DropzoneHint" xml:space="preserve"><value>* Auto-recognizes after upload; JPG, PNG, TIFF, etc.; max 12MB</value></data>
+  <data name="LanguageHint" xml:space="preserve"><value>Changing language re-runs recognition</value></data>
   <data name="SectionUpload" xml:space="preserve"><value>Upload &amp; language</value></data>
   <data name="LabelLanguage" xml:space="preserve"><value>Recognition language</value></data>
   <data name="LabelPickImage" xml:space="preserve"><value>Choose image</value></data>

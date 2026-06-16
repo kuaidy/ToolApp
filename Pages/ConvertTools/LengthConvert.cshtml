@@ -3,10 +3,15 @@
 @{
     ViewData["Title"] = "长度转换";
 }
-<div class="text-left">
-    <h3>@ViewData["Title"]</h3>
-    <div id="content_view">      
-        <textarea id="content_editor" style="display:none;">@ViewData["Content"]</textarea>
-    </div>
-</div>
+<div class="tool-page it-page ct-page">
+    <header class="it-hero">
+        <h1>@ViewData["Title"]</h1>
+        <p>常用长度单位之间的换算参考。</p>
+    </header>
 
+    <div class="it-studio">
+        <div id="content_view"></div>
+    </div>
+
+    <textarea id="content_editor" class="d-none">@ViewData["Content"]</textarea>
+</div>

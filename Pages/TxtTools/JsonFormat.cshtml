@@ -3,31 +3,57 @@
 @{
     ViewData["Title"] = "Json格式化";
 }
-<div class="text-left">
-    <h3>@ViewData["Title"]</h3>
-    <p>JSON 校验工具，可以检查输入的 JSON 字符串是否符合 JSON 规范。同时，本工具还集成了 JSON 代码格式化和压缩的功能，可以对符合规范的 JSON 字符串进行格式化和压缩；JSON 校验工具还提供了转义和生成对应 GET 参数的功能，它是开发人员必备的在线辅助工具之一。</p>
-    <div class="JsonConvert">
-        <textarea name="" id="jsoninput" cols="50" rows="10" oninput="JsonFormat()"></textarea>
-        <div id="jsonview" cols="50"></div>
+<div class="tool-page it-page tt-page">
+    <header class="it-hero">
+        <h1>@ViewData["Title"]</h1>
+        <p>校验 JSON 语法，并在左侧编辑、右侧树形预览中实时查看结构。</p>
+    </header>
+
+    <div class="it-studio">
+        <div class="it-toolbar">
+            <div class="it-toolbar-fields">
+                <span class="it-meta mb-0">输入合法 JSON 后自动格式化并展示；无效 JSON 会在右侧提示错误。</span>
+            </div>
+        </div>
+
+        <div class="tt-json-workspace">
+            <div class="tt-field">
+                <span class="tt-field-label">JSON 输入</span>
+                <textarea name="" id="jsoninput" placeholder="{ &quot;name&quot;: &quot;example&quot; }" oninput="JsonFormat()"></textarea>
+            </div>
+            <div class="tt-field">
+                <span class="tt-field-label">树形预览</span>
+                <div id="jsonview"></div>
+            </div>
+        </div>
     </div>
+
+    <section class="it-features">
+        <p class="it-features-desc">
+            JSON 校验工具，可以检查输入的 JSON 字符串是否符合 JSON 规范。同时，本工具还集成了 JSON 代码格式化和压缩的功能，可以对符合规范的 JSON 字符串进行格式化和压缩；JSON 校验工具还提供了转义和生成对应 GET 参数的功能，它是开发人员必备的在线辅助工具之一。
+        </p>
+    </section>
 </div>
 
-<div id="content_view">      
+<div id="content_view" class="d-none">
     <textarea id="content_editor" style="display:none;">@ViewData["Content"]</textarea>
 </div>
 
 <script>
-    // create the editor
     const container = document.getElementById("jsonview");
-    const options = {
-        mode: 'view'
-    };
-    const editor = new JSONEditor(container, options);
-    
-    function JsonFormat()
-    {
-        editor.set(JSON.parse($("#jsoninput").val()));
-        // get json
-        const updatedJson = editor.get();
+    const editor = new JSONEditor(container, { mode: "view" });
+
+    function JsonFormat() {
+        const raw = document.getElementById("jsoninput").value.trim();
+        if (!raw) {
+            editor.set({});
+            return;
+        }
+
+        try {
+            editor.set(JSON.parse(raw));
+        } catch (e) {
+            editor.set({ error: "JSON 解析失败", message: e.message });
+        }
     }
-    </script>
+</script>

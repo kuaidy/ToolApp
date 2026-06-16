@@ -6,6 +6,8 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="PageTitle" xml:space="preserve"><value>图片背景一键清除</value></data>
   <data name="Lead" xml:space="preserve"><value>提供三种方式：边缘推断（快，适合白底）、指定背景色（绿幕/纯色底更可控）、AI 抠图（效果通常最好，首次需联网下载模型）。均在浏览器内处理。</value></data>
+  <data name="LeadShort" xml:space="preserve"><value>一键去除图片背景，支持快速、指定色与 AI 三种模式，浏览器本地处理。</value></data>
+  <data name="DropzoneHint" xml:space="preserve"><value>* 支持 JPG、PNG、WebP，单张最大 12MB</value></data>
   <data name="SectionMode" xml:space="preserve"><value>处理方式</value></data>
   <data name="ModeQuick" xml:space="preserve"><value>边缘推断（快速）</value></data>
   <data name="ModeColor" xml:space="preserve"><value>指定背景色 + 柔边</value></data>
@@ -16,6 +18,7 @@
   <data name="LabelKeyColor" xml:space="preserve"><value>要去除的背景色</value></data>
   <data name="LabelSoftBand" xml:space="preserve"><value>柔边 ({0})</value></data>
   <data name="AiNote" xml:space="preserve"><value>AI 模式使用 @imgly/background-removal（浏览器内 ONNX）。首次使用会从网络加载 WASM/模型（约数十 MB，请稍候）。库为 AGPL 许可，用于生产请自行评估合规性。</value></data>
+  <data name="AiNoteShort" xml:space="preserve"><value>首次 AI 抠图需下载模型，请稍候</value></data>
   <data name="BtnAiRemove" xml:space="preserve"><value>AI 清除背景</value></data>
   <data name="BtnQuickRemove" xml:space="preserve"><value>一键清除背景</value></data>
   <data name="BtnDownloadPng" xml:space="preserve"><value>下载 PNG</value></data>

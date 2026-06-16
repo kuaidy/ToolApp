@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PageTitle" xml:space="preserve"><value>Image merge</value></data>
+  <data name="Lead" xml:space="preserve"><value>Combine multiple images into one. Supports horizontal, vertical, grid, and custom layouts. The preview updates automatically as you change options; export as PNG or JPEG. All processing runs locally in your browser.</value></data>
+  <data name="LeadShort" xml:space="preserve"><value>Merge multiple images horizontally, vertically, or in a grid. Live preview with PNG / JPEG download.</value></data>
+  <data name="DropzoneHint" xml:space="preserve"><value>* Multi-select images; JPG, WebP, PNG; max 12MB each, up to 20 files</value></data>
+  <data name="BtnAddMore" xml:space="preserve"><value>Add more images</value></data>
+  <data name="SectionMoreOptions" xml:space="preserve"><value>More options</value></data>
+  <data name="FeatureDesc" xml:space="preserve"><value>Combine photos into a strip or grid for social posts, product pages, or documents. The preview updates as you change layout; download when ready.</value></data>
+  <data name="Feature1" xml:space="preserve"><value>Horizontal, vertical, grid, and custom row/column layouts</value></data>
+  <data name="Feature2" xml:space="preserve"><value>Live preview with wheel zoom and drag to pan</value></data>
+  <data name="Feature3" xml:space="preserve"><value>Processed locally in your browser — nothing uploaded</value></data>
+  <data name="StatusError" xml:space="preserve"><value>{0}</value></data>
+  <data name="SectionUpload" xml:space="preserve"><value>Images &amp; order</value></data>
+  <data name="LabelPickImages" xml:space="preserve"><value>Upload files (multi-select, up to 20)</value></data>
+  <data name="BtnPickFiles" xml:space="preserve"><value>Choose images</value></data>
+  <data name="PickHint" xml:space="preserve"><value>Multi-select, up to 20</value></data>
+  <data name="ImageCount" xml:space="preserve"><value>{0} image(s) added</value></data>
+  <data name="SectionOrder" xml:space="preserve"><value>Order</value></data>
+  <data name="OrderHint" xml:space="preserve"><value>merge top to bottom — use ↑ ↓ to reorder, × to remove</value></data>
+  <data name="BtnMoveUp" xml:space="preserve"><value>Move left</value></data>
+  <data name="BtnMoveDown" xml:space="preserve"><value>Move right</value></data>
+  <data name="BtnRemove" xml:space="preserve"><value>Remove</value></data>
+  <data name="SectionLayout" xml:space="preserve"><value>Layout</value></data>
+  <data name="LabelLayoutMode" xml:space="preserve"><value>Arrangement</value></data>
+  <data name="Layout_horizontal" xml:space="preserve"><value>Horizontal strip</value></data>
+  <data name="Layout_vertical" xml:space="preserve"><value>Vertical stack</value></data>
+  <data name="Layout_grid" xml:space="preserve"><value>Grid (set columns)</value></data>
+  <data name="Layout_custom" xml:space="preserve"><value>Custom rows × columns</value></data>
+  <data name="LabelColumns" xml:space="preserve"><value>Columns</value></data>
+  <data name="LabelRows" xml:space="preserve"><value>Rows</value></data>
+  <data name="LabelGap" xml:space="preserve"><value>Gap ({0} px)</value></data>
+  <data name="LabelAlignVertical" xml:space="preserve"><value>Vertical align</value></data>
+  <data name="LabelAlignHorizontal" xml:space="preserve"><value>Horizontal align</value></data>
+  <data name="AlignTop" xml:space="preserve"><value>Top</value></data>
+  <data name="AlignCenter" xml:space="preserve"><value>Center</value></data>
+  <data name="AlignBottom" xml:space="preserve"><value>Bottom</value></data>
+  <data name="AlignLeft" xml:space="preserve"><value>Left</value></data>
+  <data name="AlignRight" xml:space="preserve"><value>Right</value></data>
+  <data name="LabelCellFit" xml:space="preserve"><value>Fit inside cell (keep aspect ratio)</value></data>
+  <data name="LabelBgColor" xml:space="preserve"><value>Background color</value></data>
+  <data name="LabelBgTransparent" xml:space="preserve"><value>Transparent background (PNG only)</value></data>
+  <data name="LabelOutputFormat" xml:space="preserve"><value>Download format</value></data>
+  <data name="BtnMerge" xml:space="preserve"><value>Merge preview</value></data>
+  <data name="BtnDownload" xml:space="preserve"><value>Download</value></data>
+  <data name="BtnClear" xml:space="preserve"><value>Clear</value></data>
+  <data name="ResultSize" xml:space="preserve"><value>Result: {0} × {1} px</value></data>
+  <data name="Busy" xml:space="preserve"><value>Processing…</value></data>
+  <data name="NoteNonPngAlpha" xml:space="preserve"><value>JPEG does not support transparency; transparent areas use the background color.</value></data>
+  <data name="SectionPreview" xml:space="preserve"><value>Preview</value></data>
+  <data name="PreviewEmpty" xml:space="preserve"><value>Add images to see a live preview</value></data>
+  <data name="PreviewUpdating" xml:space="preserve"><value>Updating preview…</value></data>
+  <data name="LabelZoom" xml:space="preserve"><value>Zoom</value></data>
+  <data name="BtnZoomFit" xml:space="preserve"><value>Fit</value></data>
+  <data name="PreviewZoomHint" xml:space="preserve"><value>Wheel to zoom · drag to pan · double-click to fit</value></data>
+  <data name="ErrTooMany" xml:space="preserve"><value>Maximum {0} images allowed.</value></data>
+  <data name="ErrReadImage" xml:space="preserve"><value>Failed to read image: {0}</value></data>
+  <data name="ErrLoad" xml:space="preserve"><value>Could not read "{0}" — skipped.</value></data>
+  <data name="ErrMerge" xml:space="preserve"><value>Merge failed: {0}</value></data>
+  <data name="ErrDownload" xml:space="preserve"><value>Download failed: {0}</value></data>
+</root>

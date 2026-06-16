@@ -3,9 +3,63 @@
 @{
     ViewData["Title"] = "IP归属地查询";
 }
-<div class="text-left">
-    <h3>@ViewData["Title"]</h3>
-    <div>
-        <span>@ViewData["ip"]</span>
+<div class="tool-page it-page ct-page">
+    <header class="it-hero">
+        <h1>@ViewData["Title"]</h1>
+        <p>查看当前网络的公网 IP 及归属地信息。</p>
+    </header>
+
+    <div class="it-studio">
+        @if (!string.IsNullOrEmpty(Model.LookupNote))
+        {
+            <div class="it-message it-message--info" role="status">@Model.LookupNote</div>
+        }
+        @if (Model.LookupOk)
+        {
+            <ul class="tt-stats ct-ip-stats">
+                <li>
+                    <span>IP 地址</span>
+                    <span class="tt-stats-value">@Model.Info.FlagEmoji @Model.Info.Ip</span>
+                </li>
+                <li>
+                    <span>国家 / 地区</span>
+                    <span class="tt-stats-value">@Model.Info.Country</span>
+                </li>
+                <li>
+                    <span>省份 / 州</span>
+                    <span class="tt-stats-value">@Model.Info.Region</span>
+                </li>
+                <li>
+                    <span>城市</span>
+                    <span class="tt-stats-value">@Model.Info.City</span>
+                </li>
+                <li>
+                    <span>运营商 (ISP)</span>
+                    <span class="tt-stats-value">@Model.Info.Isp</span>
+                </li>
+                <li>
+                    <span>组织</span>
+                    <span class="tt-stats-value">@Model.Info.Org</span>
+                </li>
+                <li>
+                    <span>时区</span>
+                    <span class="tt-stats-value">@Model.Info.Timezone</span>
+                </li>
+            </ul>
+        }
+        else if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="it-message it-message--error" role="alert">@Model.ErrorMessage</div>
+        }
+        else if (!string.IsNullOrEmpty(Model.ClientIp))
+        {
+            <div class="ct-result-card">
+                <strong>IP 地址：</strong>@Model.ClientIp
+            </div>
+        }
     </div>
+
+    <section class="it-features">
+        <p class="it-features-desc">页面加载时自动识别您的访问 IP 并查询归属地。若站点部署在反向代理之后，需正确传递 X-Forwarded-For 请求头。</p>
+    </section>
 </div>

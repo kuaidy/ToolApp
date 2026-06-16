@@ -6,6 +6,8 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="PageTitle" xml:space="preserve"><value>Compress image</value></data>
   <data name="Lead" xml:space="preserve"><value>Server-side compression (SixLabors.ImageSharp): images are uploaded, re-encoded, and returned. Ten tiers (slider steps): higher tier means stronger JPEG/WebP compression (smaller files); PNG stays lossless with stronger zlib at higher tiers.</value></data>
+  <data name="LeadShort" xml:space="preserve"><value>Compress images online — JPEG, WebP, or PNG with ten quality tiers.</value></data>
+  <data name="DropzoneHint" xml:space="preserve"><value>* JPG, PNG, WebP; max 20MB per file</value></data>
   <data name="SectionUpload" xml:space="preserve"><value>Image</value></data>
   <data name="LabelPickImage" xml:space="preserve"><value>Choose file</value></data>
   <data name="OriginalInfo" xml:space="preserve"><value>Original: {0} × {1} px, about {2}</value></data>

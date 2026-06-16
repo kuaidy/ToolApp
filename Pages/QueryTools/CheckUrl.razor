@@ -1,44 +1,55 @@
 ﻿@page "/QueryTools/CheckUrl"
 @using System.Text.RegularExpressions
 @using ToolApp.Models
-<div class="tool-page div-input">
-    <strong>请输入网址</strong>
-    <input type="text" name="" id="ip-colorvalue" class="ip-colorvalue" @bind-value="m_BaseUrl">
-    <button @onclick="BeginCheck">开始检测</button>
-    <input @bind-value="m_IsChecked" type="checkbox" />
-    <span>只显示站外链接</span>
-    <span>@message</span>
-    <table class="table table-bordered border-primary">
-        <thead>
-            <tr>
-                <th>链接</th>
-                <th>状态</th>
-                <th>结果</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (CheckUrlModel checkUrl in m_CheckUrls)
-            {
-                <tr>
-                    <td>@checkUrl.Url</td>
-                    @if (@checkUrl.Status == "OK")
-                    {
-                        <td style="color:green;">
-                            @checkUrl.Status
-                        </td>
-                    }
-                    else
-                    {
-                        <td style="color:red;">
-                            @checkUrl.Status
-                        </td>
-                    }
-                    <td>@checkUrl.Result</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+
+<div class="tool-page it-page ct-page">
+    <header class="it-hero">
+        <h1>网站链接检测</h1>
+        <p>输入网址后抓取页面链接并检测可访问性，可选仅显示站外链接。</p>
+    </header>
+
+    <div class="it-studio">
+        <div class="ct-check-bar">
+            <input type="text" class="form-control ct-check-url-input" placeholder="请输入网址，如 https://example.com" @bind="m_BaseUrl" />
+            <label class="form-check ct-check-option mb-0">
+                <input class="form-check-input" type="checkbox" @bind="m_IsChecked" />
+                <span class="form-check-label">只显示站外链接</span>
+            </label>
+            <button type="button" class="it-btn it-btn-primary ct-check-submit" @onclick="BeginCheck">开始检测</button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div class="it-message it-message--busy" role="status">@message</div>
+        }
+
+        @if (m_CheckUrls.Count > 0)
+        {
+            <div class="table-responsive ct-check-table-wrap">
+                <table class="table table-bordered ct-check-table mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ct-check-col-url">链接</th>
+                            <th class="ct-check-col-status">状态</th>
+                            <th class="ct-check-col-result">结果</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (CheckUrlModel checkUrl in m_CheckUrls)
+                        {
+                            <tr>
+                                <td class="ct-check-col-url">@checkUrl.Url</td>
+                                <td class="ct-check-col-status @(checkUrl.Status == "OK" ? "ct-status-ok" : "ct-status-err")">@checkUrl.Status</td>
+                                <td class="ct-check-col-result">@checkUrl.Result</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
 </div>
+
 @code {
     private string m_BaseUrl;
     private List<CheckUrlModel> m_CheckUrls = new List<CheckUrlModel>();
@@ -129,7 +140,7 @@
                                     StateHasChanged();
                                 }
                             }
-                            catch (Exception ex)
+                            catch (Exception)
                             {
                                 CheckUrlModel tmpCheckUrl = new CheckUrlModel();
                                 tmpCheckUrl.Url = tmpUrl;
@@ -180,7 +191,7 @@
                                     StateHasChanged();
                                 }
                             }
-                            catch (Exception ex)
+                            catch (Exception)
                             {
                                 CheckUrlModel tmpCheckUrl = new CheckUrlModel();
                                 tmpCheckUrl.Url = tmpUrl;

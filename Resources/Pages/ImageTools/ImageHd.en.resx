@@ -6,6 +6,8 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="PageTitle" xml:space="preserve"><value>Image upscale</value></data>
   <data name="Lead" xml:space="preserve"><value>Server-side upscale using Lanczos3 resampling plus optional sharpening. This is not AI super-resolution: it cannot recover lost detail, but often looks cleaner than a plain browser zoom. Output is capped around 8 megapixels.</value></data>
+  <data name="LeadShort" xml:space="preserve"><value>Upscale 2×–4× with optional sharpening; export PNG or JPEG.</value></data>
+  <data name="DropzoneHint" xml:space="preserve"><value>* JPG, PNG; max 20MB per file</value></data>
   <data name="SectionUpload" xml:space="preserve"><value>Image</value></data>
   <data name="LabelPickImage" xml:space="preserve"><value>Choose file</value></data>
   <data name="OriginalInfo" xml:space="preserve"><value>Original: {0} × {1} px, about {2}</value></data>

@@ -1,0 +1,351 @@
+/* Convert tools — shared docsmall-style layout (uses it-* from image-tools.css) */
+
+.ct-page .it-studio {
+  margin-bottom: 1.5rem;
+}
+
+.ct-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.ct-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.ct-field-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.ct-field input.form-control {
+  width: 100%;
+  height: 2.25rem;
+  min-height: 0;
+  font-size: 0.875rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 0.35rem 0.75rem;
+  background: #fff;
+  color: #222;
+}
+
+.ct-field input.form-control:focus {
+  outline: none;
+  border-color: #3a9d6c;
+  box-shadow: 0 0 0 2px rgba(58, 157, 108, 0.2);
+}
+
+.ct-field input.form-control[readonly] {
+  background: #f9faf9;
+}
+
+.ct-color-workspace {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .ct-color-workspace {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.ct-color-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.ct-create-grid .form-control,
+.ct-field .form-control:not(.ct-guid-display) {
+  width: 100%;
+  height: 2.25rem;
+  min-height: 0;
+  font-size: 0.875rem;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 0.35rem 0.75rem;
+  background: #fff;
+  color: #222;
+}
+
+.ct-create-grid .form-control:focus,
+.ct-field .form-control:focus {
+  outline: none;
+  border-color: #3a9d6c;
+  box-shadow: 0 0 0 2px rgba(58, 157, 108, 0.2);
+}
+
+.ct-color-preview-row input[type="color"] {
+  width: 3.5rem;
+  height: 2.5rem;
+  padding: 0.125rem;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  background: #fff;
+  cursor: pointer;
+}
+
+/* Reference / markdown docs inside studio */
+.ref-page .it-studio--doc {
+  padding: 1rem 1.15rem;
+}
+
+.ref-page .it-studio--doc .tool-doc {
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  background: transparent;
+}
+
+.ref-page .it-studio--doc .markdown-body {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+}
+
+.ref-page .it-studio--doc table {
+  width: 100%;
+  font-size: 0.875rem;
+}
+
+/* QR code generator */
+.ct-qrcode-workspace {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .ct-qrcode-workspace {
+    grid-template-columns: 1fr auto;
+    align-items: start;
+  }
+}
+
+.ct-qrcode-input textarea {
+  width: 100%;
+  min-height: 280px;
+  font-size: 0.875rem;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 0.65rem 0.75rem;
+  resize: vertical;
+}
+
+.ct-qrcode-input textarea:focus {
+  outline: none;
+  border-color: #3a9d6c;
+  box-shadow: 0 0 0 2px rgba(58, 157, 108, 0.2);
+}
+
+.ct-qrcode-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ct-qrcode-view #qrcode {
+  width: 240px;
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: repeating-conic-gradient(#ebebeb 0% 25%, #fff 0% 50%) 50% / 14px 14px;
+  border: 1px solid #e8e8e8;
+  border-radius: 3px;
+  padding: 0.5rem;
+}
+
+.ct-qrcode-view #qrcode img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Create-tool forms */
+.ct-create-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
+
+@media (min-width: 768px) {
+  .ct-create-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ct-create-grid--narrow {
+    max-width: 24rem;
+    grid-template-columns: 1fr;
+  }
+}
+
+.ct-output textarea {
+  width: 100%;
+  min-height: 160px;
+  font-size: 0.8125rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 0.65rem 0.75rem;
+  resize: vertical;
+  background: #f9faf9;
+}
+
+.ct-output textarea:focus {
+  outline: none;
+  border-color: #3a9d6c;
+  box-shadow: 0 0 0 2px rgba(58, 157, 108, 0.2);
+}
+
+.ct-preview-box {
+  margin-top: 0.85rem;
+  padding: 0.85rem;
+  border: 1px solid #e8ece9;
+  border-radius: 4px;
+  background: #f9faf9;
+}
+
+.ct-guid-display {
+  width: 100%;
+  max-width: 100%;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875rem;
+}
+
+/* Query tools */
+.ct-result-card {
+  padding: 1rem 1.15rem;
+  border: 1px solid #e8ece9;
+  border-radius: 4px;
+  background: #f9faf9;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  word-break: break-word;
+}
+
+.ct-page .table {
+  margin-bottom: 0;
+  font-size: 0.875rem;
+}
+
+.ct-page .table thead th {
+  background: #f9faf9;
+  font-weight: 600;
+  color: #555;
+  border-color: #e8ece9;
+}
+
+.ct-page .table td,
+.ct-page .table th {
+  border-color: #e8ece9;
+  vertical-align: middle;
+}
+
+.ct-ip-stats {
+  height: auto;
+}
+
+.ct-ip-stats .tt-stats-value {
+  text-align: right;
+  max-width: 65%;
+  word-break: break-word;
+}
+
+.ct-check-bar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 0.85rem;
+}
+
+.ct-check-url-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+  height: 2.35rem;
+  min-height: 2.35rem;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.875rem;
+  border-color: #ddd;
+  border-radius: 3px;
+}
+
+.ct-check-url-input:focus {
+  border-color: #3a9d6c;
+  box-shadow: 0 0 0 2px rgba(58, 157, 108, 0.2);
+}
+
+.ct-check-option {
+  flex-shrink: 0;
+}
+
+.ct-check-submit {
+  flex-shrink: 0;
+  height: 2.35rem;
+  min-height: 2.35rem;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.ct-check-table-wrap {
+  margin-top: 0.15rem;
+}
+
+.ct-check-table .ct-check-col-url {
+  word-break: break-all;
+}
+
+.ct-check-table .ct-check-col-status,
+.ct-check-table .ct-check-col-result {
+  width: 5.5rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.ct-check-table .ct-status-ok {
+  color: #2d7d55;
+  font-weight: 500;
+}
+
+.ct-check-table .ct-status-err {
+  color: #a4262c;
+  font-weight: 500;
+}
+
+/* Pomodoro inside it-studio */
+.pomodoro-page .it-studio {
+  margin-bottom: 1.25rem;
+}
+
+.pomodoro-page .pomodoro-timer-wrap {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.pomodoro-page .pomodoro-fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
+
+@media (min-width: 576px) {
+  .pomodoro-page .pomodoro-fields {
+    grid-template-columns: minmax(0, 8rem) minmax(0, 1fr);
+    align-items: end;
+  }
+}
+

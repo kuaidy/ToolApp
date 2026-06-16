@@ -1,4 +1,4 @@
-@page "/imagetools/imagecompress"
+﻿@page "/imagetools/imagecompress"
 @using System.IO
 @using System.Threading
 @using Microsoft.AspNetCore.Components
@@ -9,105 +9,100 @@
 @inject IJSRuntime JS
 @inject IStringLocalizer<ImageCompress> L
 
-<div class="tool-page">
-    <h2>@L["PageTitle"]</h2>
-    <p class="tool-lead">@L["Lead"]</p>
+<div class="tool-page it-page">
+    <header class="it-hero">
+        <h1>@L["PageTitle"]</h1>
+        <p>@L["LeadShort"]</p>
+    </header>
 
-    <div class="tool-section">
-        <div class="tool-section-title">@L["SectionUpload"]</div>
-        <div class="row g-3 align-items-end">
-            <div class="col-12 col-md-8">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">@L["LabelPickImage"]</span>
-                    <InputFile OnChange="OnFileSelectedAsync" accept="image/*" class="form-control" disabled="@Busy" />
-                </div>
-            </div>
-        </div>
-        @if (OrigW > 0)
+    <div class="it-studio">
+        @if (!HasImage)
         {
-            <p class="tool-note mt-3 mb-0">@L["OriginalInfo", OrigW, OrigH, FormatSize(OriginalBytes)]</p>
-        }
-    </div>
-
-    <div class="tool-section">
-        <div class="tool-section-title">@L["SectionOptions"]</div>
-        <div class="row g-3 align-items-end">
-            <div class="col-12 col-md-4">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">@L["LabelOutputFormat"]</span>
-                    <select class="form-select" value="@OutputMime" @onchange="OnOutputMimeChange" disabled="@(!HasImage || Busy)">
-                        <option value="image/jpeg">JPEG</option>
-                        <option value="image/webp">WebP</option>
-                        <option value="image/png">PNG</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-12 col-md-8">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">@L["LabelQuality", QualityPercent / 10]</span>
-                    <input type="range" class="form-range tool-range" min="10" max="100" step="10"
-                           @bind="QualityPercent" @bind:event="oninput" @bind:after="NormalizeQualityBinding"
-                           disabled="@(!HasImage || Busy)" />
-                </div>
-            </div>
-        </div>
-        @if (!IsPngOutput)
-        {
-            <label class="form-check d-block mt-3">
-                <InputCheckbox @bind-Value="FillWhiteBackground" class="form-check-input" disabled="@(!HasImage || Busy)" />
-                <span>@L["LabelFillWhite"]</span>
+            <label class="it-dropzone it-dropzone--in-studio @(Busy ? "it-dropzone--disabled" : "")">
+                <span class="it-dropzone-icon" aria-hidden="true">+</span>
+                <span class="it-dropzone-title">@L["PageTitle"]</span>
+                <span class="it-dropzone-hint">@L["DropzoneHint"]</span>
+                <InputFile OnChange="OnFileSelectedAsync" accept="image/*" class="it-dropzone-input" disabled="@Busy" />
             </label>
         }
-
-        <div class="tool-btn-row mt-section">
-            <button type="button" class="btn btn-primary"
-                    @onclick="CompressAsync"
-                    disabled="@(Busy || !HasImage)">@L["BtnCompress"]</button>
-            <button type="button" class="btn btn-outline-secondary"
-                    @onclick="RestorePreviewAsync"
-                    disabled="@(Busy || !HasImage)">@L["BtnRestorePreview"]</button>
-            <button type="button" class="btn btn-outline-secondary"
-                    @onclick="DownloadAsync"
-                    disabled="@(Busy || !HasImage || !HasCompressedPreview)">@L["BtnDownload"]</button>
-            <button type="button" class="btn btn-outline-secondary"
-                    @onclick="ClearAllAsync">@L["BtnClear"]</button>
-        </div>
-
-        @if (CompressedBytes.HasValue && OriginalBytes > 0)
+        else
         {
-            <p class="tool-note mt-3 mb-0">
-                @L["ResultStats", FormatSize(CompressedBytes.Value), FormatRatio(OriginalBytes, CompressedBytes.Value)]
-            </p>
-        }
-    </div>
+            <div class="it-toolbar">
+                <div class="it-toolbar-fields">
+                    <div class="it-field">
+                        <span class="it-field-label">@L["LabelOutputFormat"]</span>
+                        <select class="form-select form-select-sm" value="@OutputMime" @onchange="OnOutputMimeChange" disabled="@Busy">
+                            <option value="image/jpeg">JPEG</option>
+                            <option value="image/webp">WebP</option>
+                            <option value="image/png">PNG</option>
+                        </select>
+                    </div>
+                    <div class="it-field it-field--gap">
+                        <span class="it-field-label">@L["LabelQuality", QualityPercent / 10]</span>
+                        <input type="range" class="form-range" min="10" max="100" step="10"
+                               @bind="QualityPercent" @bind:event="oninput" @bind:after="NormalizeQualityBinding"
+                               disabled="@Busy" />
+                    </div>
+                    @if (!IsPngOutput)
+                    {
+                        <label class="form-check">
+                            <InputCheckbox @bind-Value="FillWhiteBackground" class="form-check-input" disabled="@Busy" />
+                            <span class="form-check-label">@L["LabelFillWhite"]</span>
+                        </label>
+                    }
+                </div>
+                <div class="it-toolbar-actions">
+                    <button type="button" class="it-btn it-btn-primary"
+                            @onclick="CompressAsync"
+                            disabled="@Busy">@L["BtnCompress"]</button>
+                    <button type="button" class="it-btn it-btn-outline"
+                            @onclick="RestorePreviewAsync"
+                            disabled="@Busy">@L["BtnRestorePreview"]</button>
+                    <button type="button" class="it-btn it-btn-outline"
+                            @onclick="DownloadAsync"
+                            disabled="@(Busy || !HasCompressedPreview)">@L["BtnDownload"]</button>
+                    <button type="button" class="it-btn it-btn-outline"
+                            @onclick="ClearAllAsync">@L["BtnClear"]</button>
+                </div>
+            </div>
 
-    @if (Busy)
-    {
-        <div class="tool-message tool-message--busy" role="status">@L["Busy"]</div>
-    }
-
-    @if (!string.IsNullOrEmpty(StatusMessage))
-    {
-        <div class="tool-message tool-message--error" role="alert">@StatusMessage</div>
-    }
-
-    @if (!IsPngOutput)
-    {
-        <p class="tool-note small">@L["NoteLossyAlpha"]</p>
-    }
-
-    <div class="tool-section mb-0">
-        <div class="tool-section-title">@L["SectionPreview"]</div>
-        <div class="tool-checkerboard @(HasImage ? "" : "justify-content-center")" style="min-height:160px;">
-            <canvas id="@CanvasId" class="@(HasImage ? "" : "d-none")" style="max-width:100%;height:auto;"></canvas>
-            @if (!HasImage)
+            @if (OrigW > 0)
             {
-                <span class="text-muted small">@L["PreviewEmpty"]</span>
+                <p class="it-meta mb-2">@L["OriginalInfo", OrigW, OrigH, FormatSize(OriginalBytes)]</p>
+            }
+            @if (CompressedBytes.HasValue && OriginalBytes > 0)
+            {
+                <p class="it-meta mb-2">@L["ResultStats", FormatSize(CompressedBytes.Value), FormatRatio(OriginalBytes, CompressedBytes.Value)]</p>
+            }
+            @if (Busy)
+            {
+                <div class="it-message it-message--busy" role="status">@L["Busy"]</div>
+            }
+            @if (!string.IsNullOrEmpty(StatusMessage))
+            {
+                <div class="it-message it-message--error" role="alert">@StatusMessage</div>
+            }
+            @if (!IsPngOutput)
+            {
+                <p class="it-note mb-2">@L["NoteLossyAlpha"]</p>
+            }
+        }
+
+        <div class="it-viewport it-viewport--checker @(HasImage ? "" : "it-viewport--hidden")">
+            <div class="it-viewport-canvas">
+                <canvas id="@CanvasId"></canvas>
+            </div>
+            @if (Busy && HasImage)
+            {
+                <div class="it-viewport-overlay it-viewport-overlay--light">@L["Busy"]</div>
             }
         </div>
     </div>
-</div>
 
+    <section class="it-features">
+        <p class="it-features-desc">@L["Lead"]</p>
+    </section>
+</div>
 @code {
     private const string CanvasId = "image-compress-canvas";
     private const long MaxFileSize = 20 * 1024 * 1024;
@@ -265,8 +260,7 @@
         Busy = true;
         try
         {
-            // 在同一进程内直接压缩，避免 Blazor Server 用 HttpClient 请求站点公网 URL（部署后易出现环路/代理中断，
-            // 表现为 “Error while copying content to a stream”）。
+            // Server-side in-process compress (avoid HttpClient loopback to public URL).
             var outputMime = string.IsNullOrWhiteSpace(OutputMime) ? "image/jpeg" : OutputMime.Trim();
             if (!IsAllowedOutputMime(outputMime))
             {

@@ -6,6 +6,8 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="PageTitle" xml:space="preserve"><value>Resize image</value></data>
   <data name="Lead" xml:space="preserve"><value>Change width and height in the browser, optionally keep aspect ratio, use quick scale presets, and download as PNG, JPEG, or WebP. Processing stays on your device.</value></data>
+  <data name="LeadShort" xml:space="preserve"><value>Resize in the browser with aspect lock and quick presets — processed locally.</value></data>
+  <data name="DropzoneHint" xml:space="preserve"><value>* JPG, PNG, WebP; max 12MB per file</value></data>
   <data name="SectionUpload" xml:space="preserve"><value>Image</value></data>
   <data name="LabelPickImage" xml:space="preserve"><value>Choose file</value></data>
   <data name="OriginalSize" xml:space="preserve"><value>Original size: {0} × {1} px</value></data>

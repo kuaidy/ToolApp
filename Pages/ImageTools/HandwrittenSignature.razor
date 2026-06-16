@@ -9,124 +9,110 @@
     <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&amp;family=Long+Cang&amp;family=ZCOOL+KuaiLe&amp;family=ZCOOL+XiaoWei&amp;family=ZCOOL+QingKe+HuangYou&amp;family=Zhi+Mang+Xing&amp;family=Liu+Jian+Mao+Cao&amp;family=Dancing+Script:wght@@400;700&amp;family=Great+Vibes&amp;family=Caveat:wght@@400;700&amp;family=Pacifico&amp;family=Satisfy&amp;family=Allura&amp;family=Sacramento&amp;family=Kalam:wght@@300;400;700&amp;family=Patrick+Hand&amp;family=Indie+Flower&amp;family=Permanent+Marker&amp;family=Rock+Salt&amp;family=Amatic+SC:wght@@400;700&amp;family=Homemade+Apple&amp;family=Marck+Script&amp;family=Berkshire+Swash&amp;family=Cookie&amp;family=Bad+Script&amp;family=Mr+Dafoe&amp;family=Allison&amp;family=Gloria+Hallelujah&amp;family=Reenie+Beanie&amp;family=Shadows+Into+Light&amp;family=Architects+Daughter&amp;display=swap" rel="stylesheet" />
 </HeadContent>
 
-<div class="tool-page">
-    <h2>@L["PageTitle"]</h2>
-    <p class="tool-lead">@L["Lead"]</p>
+<div class="tool-page it-page">
+    <header class="it-hero">
+        <h1>@L["PageTitle"]</h1>
+        <p>@L["LeadShort"]</p>
+    </header>
 
-    <div class="tool-section">
-        <div class="tool-section-title">@L["SectionDraw"]</div>
-        <p class="tool-note mb-3">@L["NoteDraw"]</p>
-        <div class="row g-3 align-items-end">
-            <div class="col-12 col-sm-6 col-lg-4">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">@L["LabelPenColor"]</span>
-                    <input type="color" class="form-control form-control-color tool-color-input" @bind="DrawPenColor" @bind:after="SyncDrawStrokeToJs" />
+    <div class="it-studio">
+        <div class="it-toolbar">
+            <div class="it-toolbar-fields">
+                <span class="it-field-label">@L["SectionDraw"]</span>
+                <div class="it-options-row">
+                    <span class="it-options-label">@L["LabelPenColor"]</span>
+                    <input type="color" class="it-color-input" @bind="DrawPenColor" @bind:after="SyncDrawStrokeToJs" />
                 </div>
+                <div class="it-field it-field--gap">
+                    <span class="it-field-label">@L["LabelStrokeWidth", DrawLineWidth]</span>
+                    <input type="range" class="form-range" min="1" max="16" step="1" @bind="DrawLineWidth" @bind:event="oninput" @bind:after="SyncDrawStrokeToJs" />
+                </div>
+                <label class="form-check">
+                    <input type="checkbox" class="form-check-input" @bind="DrawPadTransparentBg" @bind:after="OnDrawPadBackgroundChangedAsync" />
+                    <span class="form-check-label">@L["TransparentBg"]</span>
+                </label>
+                @if (!DrawPadTransparentBg)
+                {
+                    <div class="it-options-row">
+                        <span class="it-options-label">@L["LabelDrawBg"]</span>
+                        <input type="color" class="it-color-input" @bind="DrawPadBgColor" @bind:after="OnDrawPadBackgroundChangedAsync" />
+                    </div>
+                }
             </div>
-            <div class="col-12 col-sm-6 col-lg-4">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">@L["LabelStrokeWidth", DrawLineWidth]</span>
-                    <input type="range" class="form-range tool-range" min="1" max="16" step="1" @bind="DrawLineWidth" @bind:event="oninput" @bind:after="SyncDrawStrokeToJs" />
-                </div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">@L["LabelDrawBg"]</span>
-                    <label class="form-check d-flex align-items-center gap-2 mb-0">
-                        <input type="checkbox" class="form-check-input mt-0" @bind="DrawPadTransparentBg" @bind:after="OnDrawPadBackgroundChangedAsync" />
-                        <span>@L["TransparentBg"]</span>
-                    </label>
-                    @if (!DrawPadTransparentBg)
-                    {
-                        <input type="color" class="form-control form-control-color tool-color-input mt-2" @bind="DrawPadBgColor" @bind:after="OnDrawPadBackgroundChangedAsync" />
-                    }
-                </div>
+            <div class="it-toolbar-actions">
+                <button type="button" class="it-btn it-btn-primary" @onclick="DownloadDrawAsync">@L["DownloadDrawPng"]</button>
+                <button type="button" class="it-btn it-btn-outline" @onclick="ClearDrawPadAsync">@L["ClearDraw"]</button>
             </div>
         </div>
-        <div class="tool-btn-row mt-section">
-            <button type="button" class="btn btn-primary"
-                    @onclick="DownloadDrawAsync">@L["DownloadDrawPng"]</button>
-            <button type="button" class="btn btn-outline-secondary"
-                    @onclick="ClearDrawPadAsync">@L["ClearDraw"]</button>
-        </div>
-        <div class="tool-checkerboard signature-draw-pad signature-bordered mt-3" style="cursor:crosshair;">
+        <p class="it-note mb-2">@L["NoteDraw"]</p>
+        <div class="it-draw-pad">
             <canvas id="@DrawPadId" width="@DrawPadWidth" height="@DrawPadHeight"></canvas>
         </div>
     </div>
 
     @if (!string.IsNullOrEmpty(StatusMessage))
     {
-        <div class="tool-message tool-message--error" role="alert">@StatusMessage</div>
+        <div class="it-message it-message--error mx-auto" style="max-width:920px;" role="alert">@StatusMessage</div>
     }
 
-    <div class="tool-section">
-        <div class="tool-section-title">@L["SectionText"]</div>
-        <div class="row g-3 align-items-end">
-            <div class="col-12">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">@L["LabelSignatureText"]</span>
-                    <input type="text"
-                           class="form-control"
+    <div class="it-studio">
+        <div class="it-toolbar">
+            <div class="it-toolbar-fields">
+                <div class="it-field" style="min-width:12rem;flex:1 1 100%;">
+                    <span class="it-field-label">@L["LabelSignatureText"]</span>
+                    <input type="text" class="form-control form-control-sm"
                            placeholder="@L["PlaceholderName"]"
                            maxlength="40"
                            @bind="SignatureText"
                            @bind:event="oninput" />
                 </div>
-            </div>
-            <div class="col-12 col-md-6">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">@L["LabelFontStyle"]</span>
-                    <select class="form-select" @bind="SelectedFontKey">
+                <div class="it-field">
+                    <span class="it-field-label">@L["LabelFontStyle"]</span>
+                    <select class="form-select form-select-sm" @bind="SelectedFontKey">
                         @foreach (var key in FontKeyOrder)
                         {
                             <option value="@key">@FontOptionLabel(key)</option>
                         }
                     </select>
                 </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">@L["LabelFontSize", FontSize]</span>
-                    <input type="range" class="form-range tool-range" min="24" max="120" step="2" @bind="FontSize" @bind:event="oninput" />
+                <div class="it-field it-field--gap">
+                    <span class="it-field-label">@L["LabelFontSize", FontSize]</span>
+                    <input type="range" class="form-range" min="24" max="120" step="2" @bind="FontSize" @bind:event="oninput" />
                 </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">@L["LabelInkColor"]</span>
-                    <input type="color" class="form-control form-control-color tool-color-input" @bind="TextColor" />
+                <div class="it-options-row">
+                    <span class="it-options-label">@L["LabelInkColor"]</span>
+                    <input type="color" class="it-color-input" @bind="TextColor" />
                 </div>
+                <label class="form-check">
+                    <input type="checkbox" class="form-check-input" @bind="TransparentBackground" />
+                    <span class="form-check-label">@L["TransparentBgDoc"]</span>
+                </label>
+                @if (!TransparentBackground)
+                {
+                    <div class="it-options-row">
+                        <span class="it-options-label">@L["LabelBackground"]</span>
+                        <input type="color" class="it-color-input" @bind="BackgroundColor" />
+                    </div>
+                }
             </div>
-            <div class="col-12 col-sm-6 col-md-4">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">@L["LabelBackground"]</span>
-                    <label class="form-check d-flex align-items-center gap-2 mb-0">
-                        <input type="checkbox" class="form-check-input mt-0" @bind="TransparentBackground" />
-                        <span>@L["TransparentBgDoc"]</span>
-                    </label>
-                    @if (!TransparentBackground)
-                    {
-                        <input type="color" class="form-control form-control-color tool-color-input mt-2" @bind="BackgroundColor" />
-                    }
-                </div>
+            <div class="it-toolbar-actions">
+                <button type="button" class="it-btn it-btn-primary" @onclick="GenerateAsync">@L["BtnGenerate"]</button>
+                <button type="button" class="it-btn it-btn-outline" @onclick="DownloadAsync" disabled="@(!HasPreview)">@L["BtnDownloadPng"]</button>
+                <button type="button" class="it-btn it-btn-outline" @onclick="ClearTextSection">@L["BtnClearText"]</button>
             </div>
-        </div>
-        <div class="tool-btn-row mt-section">
-            <button type="button" class="btn btn-primary"
-                    @onclick="GenerateAsync">@L["BtnGenerate"]</button>
-            <button type="button" class="btn btn-outline-secondary"
-                    @onclick="DownloadAsync"
-                    disabled="@(!HasPreview)">@L["BtnDownloadPng"]</button>
-            <button type="button" class="btn btn-outline-secondary"
-                    @onclick="ClearTextSection">@L["BtnClearText"]</button>
         </div>
         @if (!HasPreview)
         {
-            <p class="text-muted small mt-2 mb-0">@L["HintAfterGenerate"]</p>
+            <p class="it-note">@L["HintAfterGenerate"]</p>
         }
-        <div class="tool-preview-wrap signature-preview-box mt-2">
+        <div class="it-signature-preview">
             <canvas id="@CanvasId" width="0" height="0" style="max-width:100%;display:block;"></canvas>
         </div>
     </div>
+
+    <section class="it-features">
+        <p class="it-features-desc">@L["Lead"]</p>
+    </section>
 </div>
 
 @code {

@@ -1,1 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="256" height="256"><path fill="#3E85FF" d="M128 256h192V128H128v128zm576 0V128H512v128h192zM128 768h192V576H128v192zm576 0V576H512v192h192zM384 384v256h256V384H384zm64 64h128v128H448V448z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+  <rect x="6" y="6" width="52" height="52" rx="12" fill="#E8F5EF"/>
+  <rect x="16" y="18" width="26" height="20" rx="3" fill="#fff" stroke="#3A9D6C" stroke-width="2.5"/>
+  <path d="M20 24h18M20 30h12" stroke="#6DD4A0" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="29" cy="33" r="3" fill="#6DD4A0"/>
+  <path d="M44 14V8M44 14H38" stroke="#2D7D55" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M50 20H56M50 20V14" stroke="#2D7D55" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M44 50V56M44 50H38" stroke="#2D7D55" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M20 50H14M20 50V56" stroke="#2D7D55" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M14 20V14M14 20H20" stroke="#2D7D55" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
@@ -32,8 +33,15 @@ namespace ToolApp
         public void ConfigureServices(IServiceCollection services)
         {
             //???blazor????
-            services.AddServerSideBlazor();
+            services.AddServerSideBlazor().AddHubOptions(o =>
+            {
+                o.MaximumReceiveMessageSize = 64 * 1024 * 1024;
+            });
             services.AddHttpClient();
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
             services.Configure<FormOptions>(o =>
             {
                 o.MultipartBodyLengthLimit = 22 * 1024 * 1024;
@@ -74,10 +82,11 @@ namespace ToolApp
             {
                 app.UseExceptionHandler("/Error");
             }
-            //???ùù?????ùù??
+            //??????????????
             var localizationOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(localizationOptions.Value);
 
+            app.UseForwardedHeaders();
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthorization();
@@ -121,7 +130,7 @@ namespace ToolApp
                         + urlset.ToString(SaveOptions.DisableFormatting));
                 });
                 endpoints.MapRazorPages();
-                // ???Blazorùù??
+                // ???Blazor????
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");

@@ -8,105 +8,98 @@
 @inject IJSRuntime JS
 @inject IStringLocalizer<ImageHd> L
 
-<div class="tool-page">
-    <h2>@L["PageTitle"]</h2>
-    <p class="tool-lead">@L["Lead"]</p>
+<div class="tool-page it-page">
+    <header class="it-hero">
+        <h1>@L["PageTitle"]</h1>
+        <p>@L["LeadShort"]</p>
+    </header>
 
-    <div class="tool-section">
-        <div class="tool-section-title">@L["SectionUpload"]</div>
-        <div class="row g-3 align-items-end">
-            <div class="col-12 col-md-8">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">@L["LabelPickImage"]</span>
-                    <InputFile OnChange="OnFileSelectedAsync" accept="image/*" class="form-control" disabled="@Busy" />
-                </div>
-            </div>
-        </div>
-        @if (OrigW > 0)
+    <div class="it-studio">
+        @if (!HasImage)
         {
-            <p class="tool-note mt-3 mb-0">@L["OriginalInfo", OrigW, OrigH, FormatSize(OriginalBytes)]</p>
+            <label class="it-dropzone it-dropzone--in-studio @(Busy ? "it-dropzone--disabled" : "")">
+                <span class="it-dropzone-icon" aria-hidden="true">+</span>
+                <span class="it-dropzone-title">@L["PageTitle"]</span>
+                <span class="it-dropzone-hint">@L["DropzoneHint"]</span>
+                <InputFile OnChange="OnFileSelectedAsync" accept="image/*" class="it-dropzone-input" disabled="@Busy" />
+            </label>
         }
-    </div>
-
-    <div class="tool-section">
-        <div class="tool-section-title">@L["SectionOptions"]</div>
-        <div class="row g-3 align-items-end">
-            <div class="col-12 col-md-4">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">@L["LabelScale"]</span>
-                    <select class="form-select" @bind="Scale" disabled="@(!HasImage || Busy)">
-                        <option value="2">2×</option>
-                        <option value="3">3×</option>
-                        <option value="4">4×</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">@L["LabelSharpen", Sharpen]</span>
-                    <input type="range" class="form-range tool-range" min="0" max="100" step="10"
-                           @bind="Sharpen" @bind:event="oninput" disabled="@(!HasImage || Busy)" />
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">@L["LabelOutputFormat"]</span>
-                    <select class="form-select" value="@OutputMime" @onchange="OnOutputMimeChange" disabled="@(!HasImage || Busy)">
-                        <option value="image/png">PNG</option>
-                        <option value="image/jpeg">JPEG</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        @if (IsJpegOutput)
+        else
         {
-            <div class="row g-3 align-items-end mt-3">
-                <div class="col-12 col-md-4">
-                    <div class="tool-field-col">
-                        <span class="tool-form-label">@L["LabelJpegQuality"]</span>
-                        <select class="form-select" @bind="JpegQuality" disabled="@(!HasImage || Busy)">
-                            <option value="85">85</option>
-                            <option value="90">90</option>
-                            <option value="95">95</option>
+            <div class="it-toolbar">
+                <div class="it-toolbar-fields">
+                    <div class="it-field">
+                        <span class="it-field-label">@L["LabelScale"]</span>
+                        <select class="form-select form-select-sm" @bind="Scale" disabled="@Busy">
+                            <option value="2">2×</option>
+                            <option value="3">3×</option>
+                            <option value="4">4×</option>
                         </select>
                     </div>
+                    <div class="it-field it-field--gap">
+                        <span class="it-field-label">@L["LabelSharpen", Sharpen]</span>
+                        <input type="range" class="form-range" min="0" max="100" step="10"
+                               @bind="Sharpen" @bind:event="oninput" disabled="@Busy" />
+                    </div>
+                    <div class="it-field">
+                        <span class="it-field-label">@L["LabelOutputFormat"]</span>
+                        <select class="form-select form-select-sm" value="@OutputMime" @onchange="OnOutputMimeChange" disabled="@Busy">
+                            <option value="image/png">PNG</option>
+                            <option value="image/jpeg">JPEG</option>
+                        </select>
+                    </div>
+                    @if (IsJpegOutput)
+                    {
+                        <div class="it-field">
+                            <span class="it-field-label">@L["LabelJpegQuality"]</span>
+                            <select class="form-select form-select-sm" @bind="JpegQuality" disabled="@Busy">
+                                <option value="85">85</option>
+                                <option value="90">90</option>
+                                <option value="95">95</option>
+                            </select>
+                        </div>
+                    }
+                </div>
+                <div class="it-toolbar-actions">
+                    <button type="button" class="it-btn it-btn-primary" @onclick="ProcessAsync" disabled="@Busy">@L["BtnProcess"]</button>
+                    <button type="button" class="it-btn it-btn-outline" @onclick="RestorePreviewAsync" disabled="@Busy">@L["BtnRestorePreview"]</button>
+                    <button type="button" class="it-btn it-btn-outline" @onclick="DownloadAsync" disabled="@(Busy || !HasResult)">@L["BtnDownload"]</button>
+                    <button type="button" class="it-btn it-btn-outline" @onclick="ClearAllAsync">@L["BtnClear"]</button>
                 </div>
             </div>
-        }
 
-        <div class="tool-btn-row mt-section">
-            <button type="button" class="btn btn-primary" @onclick="ProcessAsync" disabled="@(Busy || !HasImage)">@L["BtnProcess"]</button>
-            <button type="button" class="btn btn-outline-secondary" @onclick="RestorePreviewAsync" disabled="@(Busy || !HasImage)">@L["BtnRestorePreview"]</button>
-            <button type="button" class="btn btn-outline-secondary" @onclick="DownloadAsync" disabled="@(Busy || !HasImage || !HasResult)">@L["BtnDownload"]</button>
-            <button type="button" class="btn btn-outline-secondary" @onclick="ClearAllAsync">@L["BtnClear"]</button>
-        </div>
-
-        @if (HasResult && OutW > 0)
-        {
-            <p class="tool-note mt-3 mb-0">@L["ResultInfo", OutW, OutH, FormatSize(ResultBytes)]</p>
-        }
-    </div>
-
-    @if (Busy)
-    {
-        <div class="tool-message tool-message--busy" role="status">@L["Busy"]</div>
-    }
-
-    @if (!string.IsNullOrEmpty(StatusMessage))
-    {
-        <div class="tool-message tool-message--error" role="alert">@StatusMessage</div>
-    }
-
-    <div class="tool-section mb-0">
-        <div class="tool-section-title">@L["SectionPreview"]</div>
-        <div class="tool-checkerboard @(HasImage ? "" : "justify-content-center")" style="min-height:160px;">
-            <canvas id="@CanvasId" class="@(HasImage ? "" : "d-none")" style="max-width:100%;height:auto;"></canvas>
-            @if (!HasImage)
+            @if (OrigW > 0)
             {
-                <span class="text-muted small">@L["PreviewEmpty"]</span>
+                <p class="it-meta">@L["OriginalInfo", OrigW, OrigH, FormatSize(OriginalBytes)]</p>
+            }
+            @if (HasResult && OutW > 0)
+            {
+                <p class="it-meta">@L["ResultInfo", OutW, OutH, FormatSize(ResultBytes)]</p>
+            }
+            @if (Busy)
+            {
+                <div class="it-message it-message--busy" role="status">@L["Busy"]</div>
+            }
+            @if (!string.IsNullOrEmpty(StatusMessage))
+            {
+                <div class="it-message it-message--error" role="alert">@StatusMessage</div>
+            }
+        }
+
+        <div class="it-viewport it-viewport--checker @(HasImage ? "" : "it-viewport--hidden")">
+            <div class="it-viewport-canvas">
+                <canvas id="@CanvasId"></canvas>
+            </div>
+            @if (Busy && HasImage)
+            {
+                <div class="it-viewport-overlay it-viewport-overlay--light">@L["Busy"]</div>
             }
         </div>
     </div>
+
+    <section class="it-features">
+        <p class="it-features-desc">@L["Lead"]</p>
+    </section>
 </div>
 
 @code {

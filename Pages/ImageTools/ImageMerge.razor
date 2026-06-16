@@ -1,0 +1,629 @@
+@page "/imagetools/imagemerge"
+@using System.IO
+@using System.Threading
+@using Microsoft.AspNetCore.Components.Forms
+@using ToolApp.Common
+@implements IDisposable
+@inject IJSRuntime JS
+@inject IStringLocalizer<ImageMerge> L
+
+<div class="tool-page it-page merge-page">
+    <header class="it-hero">
+        <h1>@L["PageTitle"]</h1>
+        <p>@L["LeadShort"]</p>
+    </header>
+
+    <div class="it-studio merge-studio">
+        @if (Items.Count == 0)
+        {
+            <label class="it-dropzone it-dropzone--in-studio @(Busy ? "it-dropzone--disabled" : "")">
+                <span class="it-dropzone-icon" aria-hidden="true">+</span>
+                <span class="it-dropzone-title">@L["PageTitle"]</span>
+                <span class="it-dropzone-hint">@L["DropzoneHint"]</span>
+                <InputFile OnChange="OnFilesSelectedAsync" accept="image/*" multiple class="it-dropzone-input" disabled="@Busy" />
+            </label>
+        }
+        else
+        {
+            <div class="it-toolbar merge-toolbar">
+                <div class="it-toolbar-fields merge-toolbar-fields">
+                    <div class="it-field merge-field">
+                        <span class="it-field-label merge-field-label">@L["LabelLayoutMode"]</span>
+                        <select class="form-select form-select-sm" @bind="LayoutMode" @bind:after="QueueMergePreview" disabled="@Busy">
+                            <option value="horizontal">@L["Layout_horizontal"]</option>
+                            <option value="vertical">@L["Layout_vertical"]</option>
+                            <option value="grid">@L["Layout_grid"]</option>
+                            <option value="custom">@L["Layout_custom"]</option>
+                        </select>
+                    </div>
+
+                    @if (LayoutMode is "horizontal")
+                    {
+                        <div class="it-field merge-field">
+                            <span class="it-field-label merge-field-label">@L["LabelAlignVertical"]</span>
+                            <select class="form-select form-select-sm" @bind="CrossAlign" @bind:after="QueueMergePreview" disabled="@Busy">
+                                <option value="top">@L["AlignTop"]</option>
+                                <option value="center">@L["AlignCenter"]</option>
+                                <option value="bottom">@L["AlignBottom"]</option>
+                            </select>
+                        </div>
+                    }
+                    else if (LayoutMode is "vertical")
+                    {
+                        <div class="it-field merge-field">
+                            <span class="it-field-label merge-field-label">@L["LabelAlignHorizontal"]</span>
+                            <select class="form-select form-select-sm" @bind="CrossAlign" @bind:after="QueueMergePreview" disabled="@Busy">
+                                <option value="left">@L["AlignLeft"]</option>
+                                <option value="center">@L["AlignCenter"]</option>
+                                <option value="right">@L["AlignRight"]</option>
+                            </select>
+                        </div>
+                    }
+                    else if (LayoutMode is "grid" or "custom")
+                    {
+                        <div class="it-field it-field--narrow merge-field merge-field--narrow">
+                            <span class="it-field-label merge-field-label">@L["LabelColumns"]</span>
+                            <input type="number" class="form-control form-control-sm" min="1" max="10" step="1"
+                                   value="@GridCols" @oninput="OnColsInput" disabled="@Busy" />
+                        </div>
+                        @if (LayoutMode == "custom")
+                        {
+                            <div class="it-field it-field--narrow merge-field merge-field--narrow">
+                                <span class="it-field-label merge-field-label">@L["LabelRows"]</span>
+                                <input type="number" class="form-control form-control-sm" min="1" max="10" step="1"
+                                       value="@GridRows" @oninput="OnRowsInput" disabled="@Busy" />
+                            </div>
+                        }
+                    }
+
+                    <div class="it-field it-field--gap merge-field merge-field--gap">
+                        <span class="it-field-label merge-field-label">@L["LabelGap", GapPx]</span>
+                        <input type="range" class="form-range" min="0" max="80" step="4"
+                               @bind="GapPx" @bind:event="oninput" @bind:after="QueueMergePreviewDebounced" disabled="@Busy" />
+                    </div>
+                </div>
+
+                <div class="it-toolbar-actions merge-toolbar-actions">
+                    <button type="button" class="it-btn it-btn-outline merge-btn merge-btn-outline"
+                            @onclick="ClearAllAsync" disabled="@Busy">@L["BtnClear"]</button>
+                    <button type="button" class="it-btn it-btn-primary merge-btn merge-btn-primary"
+                            @onclick="DownloadAsync"
+                            disabled="@(Busy || !HasMerged)">@L["BtnDownload"]</button>
+                </div>
+            </div>
+
+            <div class="merge-add-row">
+                <label class="merge-add-link @(Busy ? "pe-none opacity-50" : "")">
+                    + @L["BtnAddMore"]
+                    <InputFile OnChange="OnFilesSelectedAsync" accept="image/*" multiple class="merge-add-input" disabled="@Busy" />
+                </label>
+                <span class="it-meta mb-0 ms-2">@L["ImageCount", Items.Count]</span>
+            </div>
+
+            <div class="merge-thumbs" role="list">
+                @for (var i = 0; i < Items.Count; i++)
+                {
+                    var idx = i;
+                    var item = Items[i];
+                    <div class="merge-thumb" role="listitem">
+                        <img src="@item.PreviewUrl" alt="" title="@item.Name" />
+                        <span class="merge-thumb-index">@(idx + 1)</span>
+                        <div class="merge-thumb-actions">
+                            <button type="button" title="@L["BtnMoveUp"]"
+                                    disabled="@(Busy || idx == 0)" @onclick="@(() => MoveItemAsync(idx, -1))">←</button>
+                            <button type="button" title="@L["BtnMoveDown"]"
+                                    disabled="@(Busy || idx == Items.Count - 1)" @onclick="@(() => MoveItemAsync(idx, 1))">→</button>
+                            <button type="button" title="@L["BtnRemove"]"
+                                    disabled="@Busy" @onclick="@(() => RemoveItemAsync(idx))">×</button>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <details class="merge-more">
+                <summary>@L["SectionMoreOptions"]</summary>
+                <div class="merge-more-body">
+                    @if (LayoutMode is "grid" or "custom")
+                    {
+                        <label class="form-check merge-more-check">
+                            <InputCheckbox @bind-Value="CellFitContain" @bind-Value:after="QueueMergePreview" class="form-check-input" disabled="@Busy" />
+                            <span class="form-check-label">@L["LabelCellFit"]</span>
+                        </label>
+                    }
+                    <div class="merge-more-row">
+                        <span class="merge-more-label">@L["LabelBgColor"]</span>
+                        <input type="color" class="merge-more-color"
+                               @bind="BgColor" @bind:after="QueueMergePreviewDebounced" disabled="@(Busy || BgTransparent)" />
+                    </div>
+                    <label class="form-check merge-more-check">
+                        <InputCheckbox @bind-Value="BgTransparent" @bind-Value:after="QueueBgTransparentChanged" class="form-check-input" disabled="@(Busy || OutputMime != "image/png")" />
+                        <span class="form-check-label">@L["LabelBgTransparent"]</span>
+                    </label>
+                    <div class="merge-more-row">
+                        <span class="merge-more-label">@L["LabelOutputFormat"]</span>
+                        <select class="form-select form-select-sm" @bind="OutputMime" @bind:after="QueueOutputMimeChanged" disabled="@Busy">
+                            <option value="image/png">PNG</option>
+                            <option value="image/jpeg">JPEG</option>
+                        </select>
+                    </div>
+                </div>
+            </details>
+
+            @if (Busy)
+            {
+                <div class="it-message it-message--busy" role="status">@L["Busy"]</div>
+            }
+            @if (!string.IsNullOrEmpty(StatusMessage))
+            {
+                <div class="it-message it-message--error" role="alert">@L["StatusError", StatusMessage]</div>
+            }
+
+            <div class="merge-preview-panel">
+                <div class="merge-preview-bar">
+                    <div class="merge-preview-meta">
+                        @if (MergedW > 0 && MergedH > 0)
+                        {
+                            <span>@L["ResultSize", MergedW, MergedH]</span>
+                        }
+                        @if (PreviewBusy)
+                        {
+                            <span class="merge-preview-busy">@L["PreviewUpdating"]</span>
+                        }
+                    </div>
+                    <div class="merge-zoom-group">
+                        <button type="button" @onclick="ZoomOutAsync" disabled="@(!HasMerged || PreviewBusy)">−</button>
+                        <span id="@ZoomLabelId" class="merge-zoom-label">100%</span>
+                        <button type="button" @onclick="ZoomInAsync" disabled="@(!HasMerged || PreviewBusy)">+</button>
+                        <button type="button" @onclick="ZoomFitAsync" disabled="@(!HasMerged || PreviewBusy)">@L["BtnZoomFit"]</button>
+                    </div>
+                </div>
+
+                <div id="@ViewportId" class="merge-viewport">
+                    <div class="tool-merge-stage">
+                        <canvas id="@CanvasId"></canvas>
+                    </div>
+                    @if (PreviewBusy && !HasMerged)
+                    {
+                        <div class="merge-viewport-overlay">@L["PreviewUpdating"]</div>
+                    }
+                    <span class="merge-viewport-hint">@L["PreviewZoomHint"]</span>
+                </div>
+            </div>
+        }
+    </div>
+
+    <section class="it-features merge-features">
+        <p class="merge-features-desc">@L["FeatureDesc"]</p>
+        <ul class="merge-features-list">
+            <li>@L["Feature1"]</li>
+            <li>@L["Feature2"]</li>
+            <li>@L["Feature3"]</li>
+        </ul>
+    </section>
+</div>
+
+@code {
+    private const string CanvasId = "image-merge-canvas";
+    private const string ViewportId = "image-merge-viewport";
+    private const string ZoomLabelId = "image-merge-zoom-label";
+    private const long MaxFileSize = 12 * 1024 * 1024;
+    private const int MaxImages = 20;
+    private const int MergeDebounceMs = 180;
+    private const int MergePreviewMaxEdge = 1200;
+
+    private bool Busy { get; set; }
+    private bool PreviewBusy { get; set; }
+    private bool HasMerged { get; set; }
+    private string StatusMessage { get; set; } = "";
+    private string LayoutMode { get; set; } = "horizontal";
+    private int GridCols { get; set; } = 2;
+    private int GridRows { get; set; } = 2;
+    private int GapPx { get; set; } = 8;
+    private string CrossAlign { get; set; } = "center";
+    private bool CellFitContain { get; set; } = true;
+    private string BgColor { get; set; } = "#ffffff";
+    private bool BgTransparent { get; set; }
+    private string OutputMime { get; set; } = "image/png";
+    private int MergedW { get; set; }
+    private int MergedH { get; set; }
+
+    private List<MergeItem> Items { get; } = [];
+    private CancellationTokenSource? _mergeDebounceCts;
+    private int _mergeGeneration;
+    private bool _previewViewportReady;
+    private bool _shouldFitPreview = true;
+    private bool _mergeAfterRender;
+    private int _mergeAfterRenderGeneration;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Items.Count == 0)
+        {
+            return;
+        }
+
+        if (!_previewViewportReady)
+        {
+            await JS.InvokeVoidAsync("imageMergePreview.init", ViewportId, CanvasId, ZoomLabelId);
+            _previewViewportReady = true;
+        }
+
+        if (_mergeAfterRender && _mergeAfterRenderGeneration == _mergeGeneration)
+        {
+            _mergeAfterRender = false;
+            await MergePreviewAsync(_mergeAfterRenderGeneration);
+        }
+    }
+
+    private async Task OnFilesSelectedAsync(InputFileChangeEventArgs e)
+    {
+        StatusMessage = "";
+        var files = e.GetMultipleFiles(MaxImages);
+        if (files.Count == 0)
+        {
+            return;
+        }
+
+        Busy = true;
+        try
+        {
+            foreach (var file in files)
+            {
+                if (Items.Count >= MaxImages)
+                {
+                    StatusMessage = L["ErrTooMany", MaxImages];
+                    break;
+                }
+
+                await using var stream = file.OpenReadStream(MaxFileSize);
+                using var ms = new MemoryStream();
+                await stream.CopyToAsync(ms);
+                var bytes = ms.ToArray();
+                var contentType = string.IsNullOrEmpty(file.ContentType) ? "image/png" : file.ContentType;
+
+                if (!ImagePreviewDataUrl.TryGetDimensions(bytes, out var w, out var h))
+                {
+                    StatusMessage = L["ErrLoad", file.Name];
+                    continue;
+                }
+
+                var (previewUrl, mergeSourceBytes) = await Task.Run(() =>
+                {
+                    var scaled = ImagePreviewDataUrl.CreateScaledJpegBytes(bytes, 960);
+                    var url = "data:image/jpeg;base64," + Convert.ToBase64String(scaled);
+                    return (url, scaled);
+                });
+                Items.Add(new MergeItem
+                {
+                    Name = file.Name,
+                    PreviewUrl = previewUrl,
+                    ImageBytes = bytes,
+                    MergeSourceBytes = mergeSourceBytes,
+                    ContentType = contentType,
+                    Width = w,
+                    Height = h
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrReadImage", ex.Message];
+        }
+        finally
+        {
+            Busy = false;
+        }
+
+        if (Items.Count > 0)
+        {
+            await ScheduleMergePreviewAsync();
+        }
+    }
+
+    private async Task MoveItemAsync(int index, int delta)
+    {
+        var newIndex = index + delta;
+        if (newIndex < 0 || newIndex >= Items.Count)
+        {
+            return;
+        }
+
+        (Items[index], Items[newIndex]) = (Items[newIndex], Items[index]);
+        await ScheduleMergePreviewAsync();
+    }
+
+    private async Task RemoveItemAsync(int index)
+    {
+        if (index < 0 || index >= Items.Count)
+        {
+            return;
+        }
+
+        Items.RemoveAt(index);
+        await ScheduleMergePreviewAsync();
+    }
+
+    private async Task OnColsInput(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var v))
+        {
+            GridCols = Math.Clamp(v, 1, 10);
+            await ScheduleMergePreviewDebouncedAsync();
+        }
+    }
+
+    private async Task OnRowsInput(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var v))
+        {
+            GridRows = Math.Clamp(v, 1, 10);
+            await ScheduleMergePreviewDebouncedAsync();
+        }
+    }
+
+    private async Task OnBgTransparentChangedAsync()
+    {
+        await ScheduleMergePreviewAsync();
+    }
+
+    private async Task OnOutputMimeChangedAsync()
+    {
+        if (OutputMime != "image/png")
+        {
+            BgTransparent = false;
+        }
+
+        await ScheduleMergePreviewAsync();
+    }
+
+    private void QueueMergePreview() => _ = ScheduleMergePreviewAsync();
+
+    private void QueueMergePreviewDebounced() => _ = ScheduleMergePreviewDebouncedAsync();
+
+    private void QueueBgTransparentChanged() => _ = OnBgTransparentChangedAsync();
+
+    private void QueueOutputMimeChanged() => _ = OnOutputMimeChangedAsync();
+
+    private Task ScheduleMergePreviewDebouncedAsync() => ScheduleMergePreviewAsync(MergeDebounceMs);
+
+    private async Task ScheduleMergePreviewAsync(int debounceMs = 0)
+    {
+        _mergeDebounceCts?.Cancel();
+        _mergeDebounceCts?.Dispose();
+        var cts = new CancellationTokenSource();
+        _mergeDebounceCts = cts;
+        var generation = ++_mergeGeneration;
+
+        if (Items.Count == 0)
+        {
+            HasMerged = false;
+            MergedW = MergedH = 0;
+            _shouldFitPreview = true;
+            _previewViewportReady = false;
+            _mergeAfterRender = false;
+            try
+            {
+                await JS.InvokeVoidAsync("imageMerge.reset", CanvasId);
+            }
+            catch
+            {
+                // ignore
+            }
+
+            return;
+        }
+
+        try
+        {
+            if (debounceMs > 0)
+            {
+                await Task.Delay(debounceMs, cts.Token);
+            }
+
+            if (cts.IsCancellationRequested || generation != _mergeGeneration)
+            {
+                return;
+            }
+
+            if (_previewViewportReady)
+            {
+                await MergePreviewAsync(generation);
+                return;
+            }
+
+            _mergeAfterRender = true;
+            _mergeAfterRenderGeneration = generation;
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (TaskCanceledException)
+        {
+            // superseded by a newer preview request
+        }
+    }
+
+    private async Task MergePreviewAsync(int expectedGeneration)
+    {
+        if (Items.Count == 0 || expectedGeneration != _mergeGeneration)
+        {
+            return;
+        }
+
+        StatusMessage = "";
+        PreviewBusy = true;
+        await InvokeAsync(StateHasChanged);
+        try
+        {
+            var fullOptions = BuildMergeOptions(forPreview: false);
+            var previewOptions = BuildMergeOptions(forPreview: true);
+
+            var imageBytes = Items.Select(i => i.MergeSourceBytes).ToList();
+            var mergeResult = await Task.Run(() =>
+            {
+                var bytes = ImageMergeService.Merge(imageBytes, previewOptions, out var ow, out var oh);
+                return (bytes, ow, oh);
+            });
+
+            if (expectedGeneration != _mergeGeneration)
+            {
+                return;
+            }
+
+            var (fullW, fullH) = ImageMergeService.GetOutputDimensions(
+                Items.Select(i => (i.Width, i.Height)).ToList(),
+                fullOptions);
+
+            var previewUrl = "data:image/jpeg;base64," + Convert.ToBase64String(mergeResult.bytes);
+            var res = await JS.InvokeAsync<MergeResult>("imageMerge.loadToCanvas", CanvasId, previewUrl);
+            if (expectedGeneration != _mergeGeneration)
+            {
+                return;
+            }
+
+            if (res == null || !res.ok)
+            {
+                StatusMessage = L["ErrMerge", res?.error ?? ""];
+                HasMerged = false;
+                MergedW = MergedH = 0;
+                return;
+            }
+
+            HasMerged = true;
+            MergedW = fullW;
+            MergedH = fullH;
+
+            if (_previewViewportReady)
+            {
+                await JS.InvokeVoidAsync("imageMergePreview.onCanvasUpdated", ViewportId, CanvasId, _shouldFitPreview);
+                _shouldFitPreview = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            if (expectedGeneration != _mergeGeneration)
+            {
+                return;
+            }
+
+            StatusMessage = L["ErrMerge", ex.Message];
+            HasMerged = false;
+            MergedW = MergedH = 0;
+        }
+        finally
+        {
+            if (expectedGeneration == _mergeGeneration)
+            {
+                PreviewBusy = false;
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+    }
+
+    private ImageMergeOptions BuildMergeOptions(bool forPreview)
+    {
+        var options = new ImageMergeOptions
+        {
+            Mode = LayoutMode,
+            Gap = GapPx,
+            BgColor = BgColor,
+            BgTransparent = BgTransparent && OutputMime == "image/png",
+            Cols = GridCols,
+            Rows = GridRows,
+            Align = CrossAlign,
+            CellFitContain = CellFitContain,
+            OutputMime = OutputMime
+        };
+
+        if (forPreview)
+        {
+            options.OutputMime = "image/jpeg";
+            options.JpegQuality = 78;
+            options.UseFastResize = true;
+            options.MaxOutputEdge = MergePreviewMaxEdge;
+            options.BgTransparent = false;
+        }
+
+        return options;
+    }
+
+    private async Task ZoomInAsync()
+    {
+        await JS.InvokeVoidAsync("imageMergePreview.zoomIn", ViewportId);
+    }
+
+    private async Task ZoomOutAsync()
+    {
+        await JS.InvokeVoidAsync("imageMergePreview.zoomOut", ViewportId);
+    }
+
+    private async Task ZoomFitAsync()
+    {
+        await JS.InvokeVoidAsync("imageMergePreview.fit", ViewportId);
+    }
+
+    private async Task DownloadAsync()
+    {
+        StatusMessage = "";
+        if (!HasMerged || Items.Count == 0)
+        {
+            return;
+        }
+
+        Busy = true;
+        try
+        {
+            var options = BuildMergeOptions(forPreview: false);
+            var imageBytes = Items.Select(i => i.ImageBytes).ToList();
+            var bytes = await Task.Run(() => ImageMergeService.Merge(imageBytes, options, out _, out _));
+
+            var ext = OutputMime == "image/jpeg" ? ".jpg" : ".png";
+            var name = $"merged-{DateTime.Now:yyyyMMdd-HHmmss}{ext}";
+            await JS.InvokeVoidAsync("imageMerge.downloadBase64", Convert.ToBase64String(bytes), OutputMime, name);
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrDownload", ex.Message];
+        }
+        finally
+        {
+            Busy = false;
+        }
+    }
+
+    private async Task ClearAllAsync()
+    {
+        _mergeDebounceCts?.Cancel();
+        StatusMessage = "";
+        Items.Clear();
+        HasMerged = false;
+        MergedW = MergedH = 0;
+        _shouldFitPreview = true;
+        _previewViewportReady = false;
+        _mergeAfterRender = false;
+        await ScheduleMergePreviewAsync();
+    }
+
+    public void Dispose()
+    {
+        _mergeDebounceCts?.Cancel();
+        _mergeDebounceCts?.Dispose();
+    }
+
+    private sealed class MergeItem
+    {
+        public string Name { get; set; } = "";
+        public string PreviewUrl { get; set; } = "";
+        public byte[] ImageBytes { get; set; } = Array.Empty<byte>();
+        public byte[] MergeSourceBytes { get; set; } = Array.Empty<byte>();
+        public string ContentType { get; set; } = "image/png";
+        public int Width { get; set; }
+        public int Height { get; set; }
+    }
+
+    private sealed class MergeResult
+    {
+        public bool ok { get; set; }
+        public int width { get; set; }
+        public int height { get; set; }
+        public string? error { get; set; }
+    }
+}

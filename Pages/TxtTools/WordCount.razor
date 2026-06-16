@@ -1,47 +1,59 @@
 @page "/TxtTools/WordCount"
 
-<div class="container tool-page">
+<div class="tool-page it-page tt-page">
+    <header class="it-hero">
+        <h1>字数统计</h1>
+        <p>实时统计总字符数、中文、英文、数字与标点，适合写作与编辑场景。</p>
+    </header>
 
-    <div class="row">
-        <div class="col">
-            <h3>字数统计</h3>
-            <p>文章字数统计工具，是一款快速计算一篇文章中字符数的工具；本工具支持计算文章总字符数、英文单词个数、标点符号个数以及中文字数等实用功能，是网站编辑、博客作者、文章作家、论文写作者、自媒体人等文字工作者的必备辅助工具之一。</p>
+    <div class="it-studio">
+        <div class="it-toolbar">
+            <div class="it-toolbar-fields">
+                <span class="it-meta mb-0">输入或粘贴文本后，右侧自动更新统计结果。</span>
+            </div>
+            <div class="it-toolbar-actions">
+                <button type="button" class="it-btn it-btn-outline" @onclick="Clear">清空</button>
+            </div>
+        </div>
+
+        <div class="tt-split tt-split--editor">
+            <div class="tt-field">
+                <span class="tt-field-label">文章内容</span>
+                <textarea class="form-control" placeholder="请在这里输入文章内容" @bind="Result" @bind:event="oninput"></textarea>
+            </div>
+            <div class="tt-field">
+                <span class="tt-field-label">统计结果</span>
+                <ul class="tt-stats">
+                    <li>
+                        <span>总字数</span>
+                        <span class="tt-stats-value">@AllCount</span>
+                    </li>
+                    <li>
+                        <span>中文</span>
+                        <span class="tt-stats-value">@CCount</span>
+                    </li>
+                    <li>
+                        <span>英文</span>
+                        <span class="tt-stats-value">@ECount</span>
+                    </li>
+                    <li>
+                        <span>数字</span>
+                        <span class="tt-stats-value">@NCount</span>
+                    </li>
+                    <li>
+                        <span>标点符号</span>
+                        <span class="tt-stats-value">@SCount</span>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-8">
-            <textarea class="form-control" rows="20" placeholder="请在这里输入文章内容" @bind="Result" @bind:event="oninput"></textarea>
-        </div>
-        <div class="col-md-4">
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>总字数</span>
-                    <span>@AllCount</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>英文</span>
-                    <span>@ECount</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>标点符号</span>
-                    <span>@SCount</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>数字</span>
-                    <span>@NCount</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>中文</span>
-                    <span>@CCount</span>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div class="row mt-3">
-        <div class="col">
-            <button type="button" class="btn btn-outline-secondary" @onclick="Clear">清空</button>
-        </div>
-    </div>
+
+    <section class="it-features">
+        <p class="it-features-desc">
+            文章字数统计工具，是一款快速计算一篇文章中字符数的工具；本工具支持计算文章总字符数、英文单词个数、标点符号个数以及中文字数等实用功能，是网站编辑、博客作者、文章作家、论文写作者、自媒体人等文字工作者的必备辅助工具之一。
+        </p>
+    </section>
 </div>
 
 @code {

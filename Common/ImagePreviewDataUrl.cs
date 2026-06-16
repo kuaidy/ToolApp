@@ -17,6 +17,38 @@ public static class ImagePreviewDataUrl
     private const int JpegQuality = 82;
 
     /// <summary>
+    /// 将图片缩小为 JPEG 字节，供预览合并使用（上传时生成一次即可）。
+    /// </summary>
+    public static byte[] CreateScaledJpegBytes(byte[] imageBytes, int maxEdge = 960, int quality = 78)
+    {
+        if (imageBytes == null || imageBytes.Length == 0)
+        {
+            return Array.Empty<byte>();
+        }
+
+        try
+        {
+            using var image = Image.Load<Rgba32>(imageBytes);
+            var maxSide = Math.Max(image.Width, image.Height);
+            if (maxSide > maxEdge)
+            {
+                var scale = maxEdge / (float)maxSide;
+                var nw = Math.Max(1, (int)Math.Round(image.Width * scale));
+                var nh = Math.Max(1, (int)Math.Round(image.Height * scale));
+                image.Mutate(ctx => ctx.Resize(nw, nh, KnownResamplers.Triangle));
+            }
+
+            using var ms = new MemoryStream();
+            image.SaveAsJpeg(ms, new JpegEncoder { Quality = quality });
+            return ms.ToArray();
+        }
+        catch
+        {
+            return imageBytes;
+        }
+    }
+
+    /// <summary>
     /// 将图片缩小并转为 JPEG data URL；失败时回退为原始 Base64 data URL。
     /// </summary>
     public static string Create(byte[] imageBytes, string? contentType)

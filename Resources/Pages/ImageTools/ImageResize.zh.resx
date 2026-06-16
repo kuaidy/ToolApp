@@ -6,6 +6,8 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="PageTitle" xml:space="preserve"><value>图片尺寸修改</value></data>
   <data name="Lead" xml:space="preserve"><value>在浏览器中调整图片像素宽高，可锁定宽高比、按比例快捷缩放，并导出为 PNG / JPEG / WebP。图片仅在本地处理，不会上传服务器。</value></data>
+  <data name="LeadShort" xml:space="preserve"><value>在浏览器中调整尺寸，支持锁定宽高比与快捷缩放，本地处理不上传。</value></data>
+  <data name="DropzoneHint" xml:space="preserve"><value>* 支持 JPG、PNG、WebP，单张最大 12MB</value></data>
   <data name="SectionUpload" xml:space="preserve"><value>选择图片</value></data>
   <data name="LabelPickImage" xml:space="preserve"><value>上传文件</value></data>
   <data name="OriginalSize" xml:space="preserve"><value>原始尺寸：{0} × {1} 像素</value></data>

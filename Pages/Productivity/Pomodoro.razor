@@ -7,18 +7,19 @@
 @inject IJSRuntime JS
 @implements IAsyncDisposable
 
-<div class="tool-page">
-    <h2>番茄钟</h2>
-    <p class="tool-lead">设定专注时长与备注，开始计时；完成后记录会保存在本机浏览器中，可在下方日历查看。</p>
+<div class="tool-page it-page pomodoro-page">
+    <header class="it-hero">
+        <h1>番茄钟</h1>
+        <p>设定专注时长与备注，开始计时；完成后记录会保存在本机浏览器中，可在下方日历查看。</p>
+    </header>
 
-    <div class="tool-section">
-        <div class="tool-section-title">计时设置</div>
-        <div class="row g-3 align-items-end">
-            <div class="col-12 col-sm-6 col-md-4">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">分钟（1–120）</span>
+    <div class="it-studio">
+        <div class="it-toolbar">
+            <div class="it-toolbar-fields pomodoro-fields">
+                <div class="it-field">
+                    <span class="it-field-label">分钟（1–120）</span>
                     <input type="number"
-                           class="form-control"
+                           class="form-control form-control-sm"
                            min="1"
                            max="120"
                            step="1"
@@ -26,20 +27,29 @@
                            @bind:event="onchange"
                            disabled="@IsSessionActive" />
                 </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-8">
-                <div class="tool-field-col">
-                    <span class="tool-form-label">备注</span>
+                <div class="it-field" style="flex:1 1 12rem;">
+                    <span class="it-field-label">备注</span>
                     <input type="text"
-                           class="form-control"
+                           class="form-control form-control-sm"
                            placeholder="本次专注要做什么？"
                            @bind="Remark"
                            @bind:event="oninput" />
                 </div>
             </div>
+            <div class="it-toolbar-actions">
+                @if (m_StartOrEndText == "开始")
+                {
+                    <button type="button" class="it-btn it-btn-primary" @onclick="StartOrEndAsync">开始</button>
+                }
+                else
+                {
+                    <button type="button" class="it-btn it-btn-outline" style="border-color:#dc3545;color:#dc3545;" @onclick="StartOrEndAsync">结束</button>
+                    <button type="button" class="it-btn it-btn-outline" @onclick="PauseOrResume">@m_PauseOrResumeText</button>
+                }
+            </div>
         </div>
 
-        <div class="pomodoro-timer-wrap mt-4">
+        <div class="pomodoro-timer-wrap">
             <div class="pomodoro-timer" aria-live="polite">@TimeLeft</div>
             @if (AllCount > 0)
             {
@@ -50,28 +60,14 @@
             }
         </div>
 
-        <div class="tool-btn-row mt-section">
-            @if (m_StartOrEndText == "开始")
-            {
-                <button type="button" class="btn btn-primary" @onclick="StartOrEndAsync">开始</button>
-            }
-            else
-            {
-                <button type="button" class="btn btn-danger" @onclick="StartOrEndAsync">结束</button>
-                <button type="button" class="btn btn-outline-secondary" @onclick="PauseOrResume">
-                    @m_PauseOrResumeText
-                </button>
-            }
-        </div>
-
         @if (!string.IsNullOrEmpty(StatusMessage))
         {
-            <div class="tool-message @StatusMessageClass mt-3" role="status">@StatusMessage</div>
+            <div class="it-message @(StatusMessageClass == "tool-message--success" ? "it-message--busy" : StatusMessageClass == "tool-message--error" ? "it-message--error" : "it-message--busy") mt-2" role="status">@StatusMessage</div>
         }
     </div>
 
-    <div class="tool-section">
-        <div class="tool-section-title">专注记录</div>
+    <div class="it-studio">
+        <p class="it-studio-title" style="font-size:0.9375rem;font-weight:600;margin:0 0 0.85rem;padding-bottom:0.5rem;border-bottom:1px solid #eee;">专注记录</p>
         <div class="pomodoro-heatmap-wrap">
             <table class="pomodoro-heatmap-labels" aria-hidden="true">
                 <tr><td></td></tr>
@@ -105,7 +101,7 @@
                 }
             </table>
         </div>
-        <p class="tool-note mt-2 mb-0">点击色块查看当天记录；颜色越深表示当天完成的番茄越多。</p>
+        <p class="it-note mt-2 mb-0">点击色块查看当天记录；颜色越深表示当天完成的番茄越多。</p>
 
         @if (m_toDayPomodoreRecords is { Count: > 0 })
         {
@@ -125,7 +121,9 @@
         }
     </div>
 
-    <Description DescFileName="Productivity/Pomodoro.md"></Description>
+    <section class="it-features">
+        <Description DescFileName="Productivity/Pomodoro.md" EmbedOnly="true" />
+    </section>
 </div>
 
 @code {

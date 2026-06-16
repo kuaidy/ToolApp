@@ -3,22 +3,41 @@
 @{
     ViewData["Title"] = "视频嵌入代码";
 }
-<div class="text-left">
-    <h3>@ViewData["Title"]</h3>
-    <div class="color-content">
-        <strong>生成网页嵌套代码</strong>
-        <div class="div-input" style="display:flex;flex-direction: column;width: 200px;">
-            <span>视频地址</span>
-            <input type="text" name="" placeholder="视频地址" id="VideoUrl">
-            <span>宽度</span>
-            <input type="text" name="" placeholder="宽度" id="Width" value="100%">
-            <span>高度</span>
-            <input type="text" name="" placeholder="高度" id="Height" value="500">
-            <button onclick="CodeGeneration()" style="width:50px;margin-top:10px;">生成</button>
+<div class="tool-page it-page ct-page">
+    <header class="it-hero">
+        <h1>@ViewData["Title"]</h1>
+        <p>根据视频地址与尺寸生成 iframe 嵌入代码。</p>
+    </header>
+
+    <div class="it-studio">
+        <div class="it-toolbar">
+            <div class="it-toolbar-fields">
+                <span class="it-meta mb-0">填写视频页面 URL 与宽高，生成可直接粘贴的 HTML。</span>
+            </div>
+            <div class="it-toolbar-actions">
+                <button type="button" class="it-btn it-btn-primary" onclick="CodeGeneration()">生成</button>
+                <button type="button" class="it-btn it-btn-outline" onclick="ClearCode()">清空</button>
+            </div>
         </div>
-        <strong>生成结果</strong>
-        <div class="div-output">
-            <textarea id="OutCode"></textarea>
+
+        <div class="ct-create-grid ct-create-grid--narrow">
+            <div class="ct-field">
+                <label class="ct-field-label" for="VideoUrl">视频地址</label>
+                <input type="text" class="form-control" id="VideoUrl" placeholder="https://..." />
+            </div>
+            <div class="ct-field">
+                <label class="ct-field-label" for="Width">宽度</label>
+                <input type="text" class="form-control" id="Width" value="100%" />
+            </div>
+            <div class="ct-field">
+                <label class="ct-field-label" for="Height">高度</label>
+                <input type="text" class="form-control" id="Height" value="500" />
+            </div>
+        </div>
+
+        <div class="ct-output" style="margin-top:0.85rem;">
+            <span class="ct-field-label">生成结果</span>
+            <textarea id="OutCode" readonly placeholder="点击「生成」后在此显示 iframe 代码"></textarea>
         </div>
     </div>
 </div>
@@ -29,5 +48,11 @@
         var width=$("#Width").val();
         var height=$("#Height").val();
         $("#OutCode").val('<iframe src="'+videoUrl+'" width="'+width+'" height="'+height+'"></iframe>');
+    }
+    function ClearCode() {
+        $("#VideoUrl").val("");
+        $("#Width").val("100%");
+        $("#Height").val("500");
+        $("#OutCode").val("");
     }
 </script>
