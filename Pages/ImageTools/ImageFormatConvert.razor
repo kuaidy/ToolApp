@@ -1,0 +1,355 @@
+@page "/imagetools/imageformatconvert"
+@using Microsoft.AspNetCore.Components
+@inject IJSRuntime JS
+@inject IStringLocalizer<ImageFormatConvert> L
+
+<div class="tool-page it-page">
+    <header class="it-hero">
+        <h1>@L["PageTitle"]</h1>
+        <p>@L["LeadShort"]</p>
+    </header>
+
+    <div class="it-studio">
+        @if (!HasImage)
+        {
+            <label class="it-dropzone it-dropzone--in-studio @(Busy ? "it-dropzone--disabled" : "")">
+                <span class="it-dropzone-icon" aria-hidden="true">+</span>
+                <span class="it-dropzone-title">@L["PageTitle"]</span>
+                <span class="it-dropzone-hint">@L["DropzoneHint"]</span>
+                <input type="file" accept="image/*" class="it-dropzone-input" @ref="_fileInput" disabled="@Busy" @onchange="OnFileSelectedAsync" />
+            </label>
+        }
+        else
+        {
+            <div class="it-toolbar">
+                <div class="it-toolbar-fields">
+                    <div class="it-field">
+                        <span class="it-field-label">@L["LabelInputFormat"]</span>
+                        <span class="it-meta mb-0">@InputFormatLabel</span>
+                    </div>
+                    <div class="it-field">
+                        <span class="it-field-label">@L["LabelOutputFormat"]</span>
+                        <select class="form-select form-select-sm" value="@OutputMime" @onchange="OnOutputMimeChange" disabled="@Busy">
+                            <option value="image/png">PNG</option>
+                            <option value="image/jpeg">JPEG</option>
+                            <option value="image/webp">WebP</option>
+                            <option value="image/bmp">BMP</option>
+                            <option value="@IcoMime">ICO</option>
+                        </select>
+                    </div>
+                    @if (ShowFillWhiteOption)
+                    {
+                        <label class="form-check">
+                            <InputCheckbox @bind-Value="FillWhiteBackground" class="form-check-input" disabled="@Busy" />
+                            <span class="form-check-label">@L["LabelFillWhite"]</span>
+                        </label>
+                    }
+                </div>
+                <div class="it-toolbar-actions">
+                    <button type="button" class="it-btn it-btn-primary"
+                            @onclick="ConvertAsync"
+                            disabled="@Busy">@L["BtnConvert"]</button>
+                    <button type="button" class="it-btn it-btn-outline"
+                            @onclick="RestorePreviewAsync"
+                            disabled="@Busy">@L["BtnRestorePreview"]</button>
+                    <button type="button" class="it-btn it-btn-outline"
+                            @onclick="DownloadAsync"
+                            disabled="@(Busy || !HasConvertedPreview)">@L["BtnDownload"]</button>
+                    <button type="button" class="it-btn it-btn-outline"
+                            @onclick="ClearAllAsync">@L["BtnClear"]</button>
+                </div>
+            </div>
+
+            @if (OrigW > 0)
+            {
+                <p class="it-meta mb-2">@L["OriginalInfo", OrigW, OrigH, InputFormatLabel, FormatSize(OriginalBytes)]</p>
+            }
+            @if (HasConvertedPreview && ConvertedBytes.HasValue)
+            {
+                <p class="it-meta mb-2">@L["ResultStats", OutputFormatLabel, FormatSize(ConvertedBytes.Value)]</p>
+            }
+            @if (Busy)
+            {
+                <div class="it-message it-message--busy" role="status">@L["Busy"]</div>
+            }
+            @if (!string.IsNullOrEmpty(StatusMessage))
+            {
+                <div class="it-message it-message--error" role="alert">@StatusMessage</div>
+            }
+            @if (ShowFillWhiteOption)
+            {
+                <p class="it-note mb-2">@L["NoteLossyAlpha"]</p>
+            }
+            @if (IsIcoOutput)
+            {
+                <p class="it-note mb-2">@L["NoteIco"]</p>
+            }
+        }
+
+        <div class="it-viewport it-viewport--checker @(HasImage ? "" : "it-viewport--hidden")">
+            <div class="it-viewport-canvas">
+                <canvas id="@CanvasId"></canvas>
+            </div>
+            @if (Busy && HasImage)
+            {
+                <div class="it-viewport-overlay it-viewport-overlay--light">@L["Busy"]</div>
+            }
+        </div>
+    </div>
+
+</div>
+
+@code {
+    private const string CanvasId = "image-format-convert-canvas";
+    private const string IcoMime = "image/x-icon";
+
+    private ElementReference _fileInput;
+    private bool Busy { get; set; }
+    private bool HasImage { get; set; }
+    private bool HasConvertedPreview { get; set; }
+    private string StatusMessage { get; set; } = "";
+    private string LastContentType { get; set; } = "image/png";
+    private int OrigW { get; set; }
+    private int OrigH { get; set; }
+    private int OriginalBytes { get; set; }
+    private string OutputMime { get; set; } = "image/jpeg";
+    private bool FillWhiteBackground { get; set; } = true;
+    private long? ConvertedBytes { get; set; }
+
+    private bool IsPngOutput => string.Equals(OutputMime, "image/png", StringComparison.OrdinalIgnoreCase);
+    private bool IsIcoOutput => IsIcoMime(OutputMime);
+    private bool ShowFillWhiteOption => !IsPngOutput && !IsIcoOutput;
+    private string InputFormatLabel => MimeToLabel(LastContentType);
+    private string OutputFormatLabel => MimeToLabel(OutputMime);
+
+    private static bool IsIcoMime(string mime) =>
+        mime.Equals(IcoMime, StringComparison.OrdinalIgnoreCase)
+        || mime.Equals("image/vnd.microsoft.icon", StringComparison.OrdinalIgnoreCase);
+
+    private static string MimeToLabel(string mime)
+    {
+        if (string.IsNullOrWhiteSpace(mime))
+        {
+            return "—";
+        }
+
+        if (IsIcoMime(mime))
+        {
+            return "ICO";
+        }
+
+        if (mime.Contains("jpeg", StringComparison.OrdinalIgnoreCase) || mime.Contains("jpg", StringComparison.OrdinalIgnoreCase))
+        {
+            return "JPEG";
+        }
+
+        if (mime.Contains("png", StringComparison.OrdinalIgnoreCase))
+        {
+            return "PNG";
+        }
+
+        if (mime.Contains("webp", StringComparison.OrdinalIgnoreCase))
+        {
+            return "WebP";
+        }
+
+        if (mime.Contains("bmp", StringComparison.OrdinalIgnoreCase))
+        {
+            return "BMP";
+        }
+
+        if (mime.Contains("gif", StringComparison.OrdinalIgnoreCase))
+        {
+            return "GIF";
+        }
+
+        return mime;
+    }
+
+    private static string FormatSize(long bytes)
+    {
+        if (bytes < 1024)
+        {
+            return $"{bytes} B";
+        }
+
+        if (bytes < 1024 * 1024)
+        {
+            return $"{bytes / 1024.0:0.##} KB";
+        }
+
+        return $"{bytes / (1024.0 * 1024):0.##} MB";
+    }
+
+    private void OnOutputMimeChange(ChangeEventArgs e)
+    {
+        OutputMime = e.Value?.ToString() ?? "image/jpeg";
+        HasConvertedPreview = false;
+        ConvertedBytes = null;
+    }
+
+    private async Task OnFileSelectedAsync(ChangeEventArgs _)
+    {
+        StatusMessage = "";
+        HasConvertedPreview = false;
+        ConvertedBytes = null;
+        Busy = true;
+        try
+        {
+            var result = await JS.InvokeAsync<LoadResult>("imageFormatConvert.loadFromInput", _fileInput, CanvasId);
+            if (result == null || result.width < 1 || result.height < 1)
+            {
+                StatusMessage = L["ErrLoad"];
+                HasImage = false;
+                OrigW = OrigH = 0;
+                OriginalBytes = 0;
+                return;
+            }
+
+            OrigW = result.width;
+            OrigH = result.height;
+            LastContentType = string.IsNullOrEmpty(result.mime) ? "image/png" : result.mime;
+            OriginalBytes = result.size;
+            HasImage = true;
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrReadImage", ex.Message];
+            HasImage = false;
+            OrigW = OrigH = 0;
+            OriginalBytes = 0;
+        }
+        finally
+        {
+            await JS.InvokeVoidAsync("imageFormatConvert.clearInput", _fileInput);
+            Busy = false;
+        }
+    }
+
+    private async Task ConvertAsync()
+    {
+        if (!HasImage)
+        {
+            return;
+        }
+
+        StatusMessage = "";
+        Busy = true;
+        try
+        {
+            var outputMime = string.IsNullOrWhiteSpace(OutputMime) ? "image/jpeg" : OutputMime.Trim();
+            var result = await JS.InvokeAsync<ConvertResult>(
+                "imageFormatConvert.convert",
+                CanvasId,
+                outputMime,
+                FillWhiteBackground);
+
+            if (result == null || !result.ok)
+            {
+                StatusMessage = string.IsNullOrWhiteSpace(result?.error)
+                    ? L["ErrConvert"]
+                    : L["ErrConvertDetail", result!.error!];
+                HasConvertedPreview = false;
+                ConvertedBytes = null;
+                return;
+            }
+
+            ConvertedBytes = result.byteLength;
+            HasConvertedPreview = true;
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrConvertDetail", ex.Message];
+            HasConvertedPreview = false;
+            ConvertedBytes = null;
+        }
+        finally
+        {
+            Busy = false;
+        }
+    }
+
+    private async Task RestorePreviewAsync()
+    {
+        StatusMessage = "";
+        Busy = true;
+        try
+        {
+            var res = await JS.InvokeAsync<OkResult>("imageFormatConvert.restoreOriginal", CanvasId);
+            if (res == null || !res.ok)
+            {
+                StatusMessage = L["ErrRestore"];
+                return;
+            }
+
+            HasConvertedPreview = false;
+            ConvertedBytes = null;
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrRestoreDetail", ex.Message];
+        }
+        finally
+        {
+            Busy = false;
+        }
+    }
+
+    private async Task DownloadAsync()
+    {
+        StatusMessage = "";
+        try
+        {
+            var ext = OutputMime switch
+            {
+                "image/jpeg" => ".jpg",
+                "image/webp" => ".webp",
+                "image/bmp" => ".bmp",
+                var m when IsIcoMime(m) => ".ico",
+                _ => ".png"
+            };
+            var name = $"converted-{DateTime.Now:yyyyMMdd-HHmmss}{ext}";
+            var res = await JS.InvokeAsync<OkResult>("imageFormatConvert.download", CanvasId, name, OutputMime);
+            if (res == null || !res.ok)
+            {
+                StatusMessage = L["ErrDownload", L["ErrConvert"]];
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrDownload", ex.Message];
+        }
+    }
+
+    private async Task ClearAllAsync()
+    {
+        StatusMessage = "";
+        HasImage = false;
+        HasConvertedPreview = false;
+        ConvertedBytes = null;
+        OrigW = OrigH = 0;
+        OriginalBytes = 0;
+        await JS.InvokeVoidAsync("imageFormatConvert.reset", CanvasId);
+        await JS.InvokeVoidAsync("imageFormatConvert.clearInput", _fileInput);
+    }
+
+    private sealed class LoadResult
+    {
+        public int width { get; set; }
+        public int height { get; set; }
+        public string mime { get; set; } = "";
+        public int size { get; set; }
+    }
+
+    private sealed class ConvertResult
+    {
+        public bool ok { get; set; }
+        public long byteLength { get; set; }
+        public string error { get; set; } = "";
+    }
+
+    private sealed class OkResult
+    {
+        public bool ok { get; set; }
+    }
+}

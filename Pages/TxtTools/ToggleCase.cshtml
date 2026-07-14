@@ -1,7 +1,16 @@
 @page
 @model ToggleCaseModel
-<div class="text-left">
-    <div id="content_view">      
-        <textarea id="content_editor" style="display:none;">@ViewData["Content"]</textarea>
+@{
+    ViewData["Title"] = "大小写转换";
+}
+<div class="tool-page it-page tt-page">
+    <header class="it-hero">
+        <h1>@ViewData["Title"]</h1>
+        <p>快速转换英文大小写：全大写、全小写、首字母大写等。</p>
+    </header>
+    <div class="it-studio">
+        <div id="content_view">
+            <textarea id="content_editor" style="display:none;">@ViewData["Content"]</textarea>
+        </div>
     </div>
 </div>

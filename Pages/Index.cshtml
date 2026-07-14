@@ -6,7 +6,11 @@
 @inject IViewLocalizer ViewLocalizer;
 
 @{
-    ViewData["Title"] = ViewLocalizer["ToolOnline"];
+    ViewData["Title"] = ViewLocalizer["ToolOnline"].Value;
+    if (string.IsNullOrWhiteSpace(ViewData["Title"] as string))
+    {
+        ViewData["Title"] = "在线工具箱";
+    }
     ViewData["MetaDescription"] = ViewLocalizer["SeoHomeMetaDescription"].Value;
 }
 
@@ -52,6 +56,12 @@
                 <a href="./imagetools/imagecompress" class="a_tool">
                     <img class="icon" src="~/images/compress.svg" asp-append-version="true" alt="" />
                     <span class="sp_toolname">@ViewLocalizer["Image compress"]</span>
+                </a>
+            </li>
+            <li class="li_tool">
+                <a href="./imagetools/imageformatconvert" class="a_tool">
+                    <img class="icon" src="~/images/format-convert.svg" asp-append-version="true" alt="" />
+                    <span class="sp_toolname">@ViewLocalizer["Image format convert"]</span>
                 </a>
             </li>
             <li class="li_tool">
@@ -320,33 +330,6 @@
             </li>
         
         </ul>
-    </section>
-
-    <section class="home-benefits" aria-labelledby="benefits-heading">
-        <h2 id="benefits-heading" class="home-benefits-title">@ViewLocalizer["HomeBenefitsTitle"]</h2>
-        <p class="home-benefits-lead">@ViewLocalizer["HomeBenefitsLead"]</p>
-        <div class="home-benefits-grid">
-            <article class="home-benefit-card">
-                <div class="home-benefit-icon" aria-hidden="true">①</div>
-                <h3>@ViewLocalizer["HomeBenefitEasy"]</h3>
-                <p>@ViewLocalizer["HomeBenefitEasyDesc"]</p>
-            </article>
-            <article class="home-benefit-card">
-                <div class="home-benefit-icon" aria-hidden="true">②</div>
-                <h3>@ViewLocalizer["HomeBenefitFree"]</h3>
-                <p>@ViewLocalizer["HomeBenefitFreeDesc"]</p>
-            </article>
-            <article class="home-benefit-card">
-                <div class="home-benefit-icon" aria-hidden="true">③</div>
-                <h3>@ViewLocalizer["HomeBenefitBrowser"]</h3>
-                <p>@ViewLocalizer["HomeBenefitBrowserDesc"]</p>
-            </article>
-            <article class="home-benefit-card">
-                <div class="home-benefit-icon" aria-hidden="true">④</div>
-                <h3>@ViewLocalizer["HomeBenefitLang"]</h3>
-                <p>@ViewLocalizer["HomeBenefitLangDesc"]</p>
-            </article>
-        </div>
     </section>
     </main>
 </div>

@@ -1,4 +1,21 @@
-## 工具说明
-使用开源工具`jsoneditor`进行格式转换。
+## JSON 格式化说明
+
+在线校验与美化 JSON：左侧编辑、右侧树形预览，快速定位语法错误。本页使用开源组件 **jsoneditor**。
+
+### 使用步骤
+
+1. 粘贴或输入 JSON 文本
+2. 查看格式化结果与树形结构
+3. 根据错误提示修复后，复制结果
+
+### 常见问题
+
+**无效 JSON 会提示吗？**  
+会校验语法并提示错误，便于修复后继续编辑。
+
+**适合大文件吗？**  
+超大 JSON 可能受浏览器内存限制，建议先拆分或抽样。
+
 ### 依赖
-* [jsoneditor](https://github.com/josdejong/jsoneditor)
+
+- [jsoneditor](https://github.com/josdejong/jsoneditor)

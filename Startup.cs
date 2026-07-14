@@ -17,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.FluentUI.AspNetCore.Components;
+using ToolApp.Seo;
 
 namespace ToolApp
 {
@@ -99,8 +100,12 @@ namespace ToolApp
                     var sb = new StringBuilder();
                     sb.AppendLine("User-agent: *");
                     sb.AppendLine("Allow: /");
+                    sb.AppendLine("Allow: /llms.txt");
                     if (!string.IsNullOrEmpty(baseUrl))
+                    {
                         sb.AppendLine($"Sitemap: {baseUrl}/sitemap.xml");
+                        sb.AppendLine($"# LLM-friendly site summary: {baseUrl}/llms.txt");
+                    }
                     context.Response.ContentType = "text/plain; charset=utf-8";
                     await context.Response.WriteAsync(sb.ToString());
                 });
@@ -113,16 +118,30 @@ namespace ToolApp
                         context.Response.StatusCode = 404;
                         return;
                     }
-                    var paths = seo.SitemapPaths != null && seo.SitemapPaths.Length > 0
-                        ? seo.SitemapPaths
-                        : new[] { "/", "/About", "/Donation", "/Weiapp" };
+
+                    // Prefer catalog (all tools). Optional Seo:SitemapPaths appends extras only.
+                    var paths = ToolSeoCatalog.SitemapPaths.ToList();
+                    if (seo.SitemapPaths != null)
+                    {
+                        foreach (var extra in seo.SitemapPaths)
+                        {
+                            if (string.IsNullOrWhiteSpace(extra)) continue;
+                            var p = extra.StartsWith("/", StringComparison.Ordinal) ? extra : "/" + extra;
+                            if (!paths.Contains(p, StringComparer.OrdinalIgnoreCase))
+                                paths.Add(p);
+                        }
+                    }
+
                     XNamespace ns = "http://www.sitemaps.org/schemas/sitemap/0.9";
                     var urlset = new XElement(ns + "urlset",
                         paths.Distinct(StringComparer.OrdinalIgnoreCase).Select(p =>
                         {
                             var path = p.StartsWith("/", StringComparison.Ordinal) ? p : "/" + p;
+                            var loc = path == "/" ? baseUrl + "/" : baseUrl + path;
                             return new XElement(ns + "url",
-                                new XElement(ns + "loc", baseUrl + path));
+                                new XElement(ns + "loc", loc),
+                                new XElement(ns + "changefreq", path == "/" ? "daily" : "weekly"),
+                                new XElement(ns + "priority", path == "/" ? "1.0" : "0.8"));
                         }));
                     context.Response.ContentType = "application/xml; charset=utf-8";
                     await context.Response.WriteAsync(

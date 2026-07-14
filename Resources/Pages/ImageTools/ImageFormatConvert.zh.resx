@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PageTitle" xml:space="preserve"><value>图片格式转换</value></data>
+  <data name="Lead" xml:space="preserve"><value>在浏览器本地将图片转换为 PNG、JPEG、WebP、BMP 或 ICO，保持原始尺寸（ICO 会生成 16–256 多尺寸图标）。图片不会上传到服务器，适合处理含隐私内容的图片。</value></data>
+  <data name="LeadShort" xml:space="preserve"><value>本地转换图片格式，支持 PNG / JPEG / WebP / BMP / ICO，不上传服务器。</value></data>
+  <data name="DropzoneHint" xml:space="preserve"><value>* 支持 JPG、PNG、WebP、BMP、GIF 等常见格式，单张最大 20MB</value></data>
+  <data name="LabelInputFormat" xml:space="preserve"><value>当前格式</value></data>
+  <data name="LabelOutputFormat" xml:space="preserve"><value>输出格式</value></data>
+  <data name="LabelFillWhite" xml:space="preserve"><value>JPEG/WebP/BMP 导出前铺白底（保留透明区域观感）</value></data>
+  <data name="OriginalInfo" xml:space="preserve"><value>原始：{0} × {1} 像素，{2}，约 {3}</value></data>
+  <data name="ResultStats" xml:space="preserve"><value>转换后：{0}，约 {1}</value></data>
+  <data name="BtnConvert" xml:space="preserve"><value>开始转换</value></data>
+  <data name="BtnRestorePreview" xml:space="preserve"><value>恢复原图预览</value></data>
+  <data name="BtnDownload" xml:space="preserve"><value>下载</value></data>
+  <data name="BtnClear" xml:space="preserve"><value>清空</value></data>
+  <data name="Busy" xml:space="preserve"><value>处理中…</value></data>
+  <data name="NoteLossyAlpha" xml:space="preserve"><value>JPEG / WebP / BMP 不支持透明通道，透明区域在铺白底后可能与原图观感不同。</value></data>
+  <data name="NoteIco" xml:space="preserve"><value>ICO 将自动生成 16、32、48、64、128、256 像素多尺寸图标，预览显示 256px 参考图，下载文件为 .ico。</value></data>
+  <data name="ErrReadImage" xml:space="preserve"><value>读取图片失败：{0}</value></data>
+  <data name="ErrLoad" xml:space="preserve"><value>无法读取图片，请换一张图重试。</value></data>
+  <data name="ErrConvert" xml:space="preserve"><value>转换失败，请重试或更换格式。</value></data>
+  <data name="ErrConvertDetail" xml:space="preserve"><value>转换失败：{0}</value></data>
+  <data name="ErrRestore" xml:space="preserve"><value>无法恢复原图预览。</value></data>
+  <data name="ErrRestoreDetail" xml:space="preserve"><value>恢复失败：{0}</value></data>
+  <data name="ErrDownload" xml:space="preserve"><value>下载失败：{0}</value></data>
+</root>

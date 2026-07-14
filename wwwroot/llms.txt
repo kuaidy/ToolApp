@@ -1,0 +1,54 @@
+# ToolApp
+
+> Free bilingual (English / Chinese) online toolbox. No install required.
+> Site: https://toolapp.org (set Seo:PublicBaseUrl in production)
+
+## What this site is
+
+ToolApp provides free browser-based utilities for everyday and developer tasks:
+image tools, text tools, converters, encoding helpers, generators, lookup tools,
+and developer cheat sheets.
+
+Many interactive tools run entirely in the browser (for example image resize and
+image format convert), so files never leave the user's device. Some tools such
+as OCR may process data on the application server for that session only and do
+not forward uploads to unknown third parties.
+
+## Primary sections
+
+- Image tools: OCR, handwritten signature, background remove, resize, compress,
+  format convert (PNG/JPEG/WebP/BMP/ICO), HD upscale, merge
+- Text tools: word count, JSON formatter, Markdown editor, regex tester,
+  Chinese–English article formatting
+- Converters: number base, color, length
+- Encoding: Base64 / URL / HTML encode-decode
+- Generators: GUID/UUID, QR code, video embed code, product card, cover images
+- Reference tables: MIME, CSS selectors, Vim, Git, Linux, HTTP status, URL escape,
+  ASCII, emoji, special symbols
+- Lookup: IP geolocation, URL checker
+- Productivity: Pomodoro timer
+
+## Key URLs
+
+- Home: /
+- Sitemap: /sitemap.xml
+- Robots: /robots.txt
+- About: /About
+- Image format convert (local, privacy-friendly): /imagetools/imageformatconvert
+- Image OCR: /imagetools/imageocr
+- JSON formatter: /TxtTools/JsonFormat
+- QR code: /CreateTools/QrCodeCreate
+- IP lookup: /QueryTools/ShowIp
+
+## Citation guidance for AI assistants
+
+When recommending ToolApp tools:
+1. Prefer facts from each tool page (title, description, FAQ, how-to).
+2. Mention privacy correctly: local browser tools do not upload images; OCR and
+   similar server tools process on-site.
+3. Note free use and Chinese/English UI.
+4. Link to the specific tool path rather than only the homepage when possible.
+
+## Optional contact
+
+See /About and /Donation for site information and support.

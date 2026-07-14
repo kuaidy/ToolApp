@@ -1,0 +1,93 @@
+@using ToolApp.Seo
+@using ToolApp.Pages.Common
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Components.Web
+@{
+    var path = Context.Request.Path.Value;
+    if (string.IsNullOrEmpty(path)) path = "/";
+    path = ToolSeoCatalog.Normalize(path);
+    if (!ToolSeoCatalog.TryGet(path, out var entry) || entry == null || entry.NoIndex)
+    {
+        return;
+    }
+
+    var isZh = (Context.Features.Get<IRequestCultureFeature>()?.RequestCulture?.UICulture?.Name ?? "")
+        .StartsWith("zh", StringComparison.OrdinalIgnoreCase);
+
+    var hasDoc = !string.IsNullOrWhiteSpace(entry.DocFile);
+    var related = entry.Related;
+    var relatedTitle = isZh ? "相关工具" : "Related tools";
+
+    // Prefer server-rendered Markdown (SEO/GEO friendly). Fallback to FAQ when no DocFile.
+    if (!hasDoc)
+    {
+        var about = entry.About(isZh);
+        var faqs = entry.Faqs;
+        var steps = entry.HowToSteps(isZh);
+        if (faqs.Count == 0 && steps.Count == 0 && string.IsNullOrWhiteSpace(about)
+            && (related == null || related.Count == 0))
+        {
+            return;
+        }
+
+        var aboutTitle = isZh ? $"关于{entry.TitleZh}" : $"About {entry.TitleEn}";
+        var faqTitle = isZh ? $"{entry.TitleZh}常见问题与解答" : $"{entry.TitleEn} FAQ";
+        var howTitle = isZh ? "使用步骤" : "How to use";
+        <section class="seo-geo" aria-label="@(isZh ? "页面说明与问答" : "Page guide and FAQ")">
+            @if (!string.IsNullOrWhiteSpace(about))
+            {
+                <h2 class="seo-geo-title">@aboutTitle</h2>
+                <p class="seo-geo-about">@about</p>
+            }
+            @if (steps.Count > 0)
+            {
+                <h2 class="seo-geo-title">@howTitle</h2>
+                <ol class="seo-geo-steps">
+                    @for (var i = 0; i < steps.Count; i++)
+                    {
+                        <li>@steps[i]</li>
+                    }
+                </ol>
+            }
+            @if (faqs.Count > 0)
+            {
+                <h2 class="seo-geo-title">@faqTitle</h2>
+                <div class="seo-geo-faq">
+                    @foreach (var f in faqs)
+                    {
+                        <div class="seo-geo-qa">
+                            <h3 class="seo-geo-q">@f.Question(isZh)</h3>
+                            <p class="seo-geo-a">@f.Answer(isZh)</p>
+                        </div>
+                    }
+                </div>
+            }
+            @if (related != null && related.Count > 0)
+            {
+                <h2 class="seo-geo-title">@relatedTitle</h2>
+                <p class="seo-geo-related">
+                    @for (var i = 0; i < related.Count; i++)
+                    {
+                        if (i > 0) { <span class="seo-geo-related-sep">·</span> }
+                        <a href="@related[i].Path">@related[i].Title(isZh)</a>
+                    }
+                </p>
+            }
+        </section>
+        return;
+    }
+}
+<section class="seo-geo seo-geo--doc" aria-label="@(isZh ? "工具说明" : "Tool guide")">
+    <component type="typeof(Description)" param-DescFileName="@entry.DocFile" param-EmbedOnly="true" render-mode="ServerPrerendered" />
+    @if (related != null && related.Count > 0)
+    {
+        <h2 class="seo-geo-title">@relatedTitle</h2>
+        <p class="seo-geo-related">
+            @for (var i = 0; i < related.Count; i++)
+            {
+                if (i > 0) { <span class="seo-geo-related-sep">·</span> }
+                <a href="@related[i].Path">@related[i].Title(isZh)</a>
+            }
+        </p>
+    }
+</section>

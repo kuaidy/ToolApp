@@ -1,0 +1,57 @@
+@using System.Globalization
+@using Microsoft.AspNetCore.Components.Web
+@using ToolApp.Seo
+@inject NavigationManager Nav
+@implements IDisposable
+
+<PageTitle>@_documentTitle</PageTitle>
+
+@code {
+    private string _documentTitle = "ToolApp";
+    private string _lastPath = "";
+
+    protected override void OnInitialized()
+    {
+        Nav.LocationChanged += OnLocationChanged;
+        ApplyFromUri(Nav.Uri);
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e) => ApplyFromUri(e.Location);
+
+    private void ApplyFromUri(string uri)
+    {
+        string path;
+        try
+        {
+            path = new Uri(uri).AbsolutePath;
+        }
+        catch
+        {
+            path = "/";
+        }
+
+        if (string.Equals(path, _lastPath, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        _lastPath = path;
+        var isZh = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.Equals("zh", StringComparison.OrdinalIgnoreCase)
+            || CultureInfo.CurrentUICulture.Name.StartsWith("zh", StringComparison.OrdinalIgnoreCase);
+        path = ToolSeoCatalog.Normalize(path);
+        if (ToolSeoCatalog.TryGet(path, out var entry) && entry != null)
+        {
+            _documentTitle = path == "/"
+                ? $"ToolApp - {entry.Title(isZh)}"
+                : $"{entry.Title(isZh)} - ToolApp";
+        }
+        else
+        {
+            _documentTitle = "ToolApp";
+        }
+
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose() => Nav.LocationChanged -= OnLocationChanged;
+}

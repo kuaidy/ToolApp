@@ -1,12 +1,10 @@
-﻿@using System.Collections.Generic
-@using Microsoft.AspNetCore.Builder
+﻿@using Microsoft.AspNetCore.Builder
 @using Microsoft.AspNetCore.Components.Web;
 @using Microsoft.AspNetCore.Http.Features
 @using Microsoft.AspNetCore.Localization
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.Extensions.Options
-@using System.Text.Encodings.Web
-@using System.Text.Json
+@using ToolApp.Seo
 
 @inject IViewLocalizer ViewLocalizer;
 @inject IOptions<SeoOptions> SeoOptionsAccessor
@@ -15,8 +13,9 @@
     var seo = SeoOptionsAccessor.Value;
     var requestCultureFeature = Context.Features.Get<IRequestCultureFeature>();
     var uiName = requestCultureFeature?.RequestCulture?.UICulture?.Name ?? "en";
-    var htmlLang = string.Equals(uiName, "zh", StringComparison.OrdinalIgnoreCase) ? "zh-CN" : "en";
-    var ogLocale = htmlLang.StartsWith("zh", StringComparison.OrdinalIgnoreCase) ? "zh_CN" : "en_US";
+    var isZh = uiName.StartsWith("zh", StringComparison.OrdinalIgnoreCase);
+    var htmlLang = isZh ? "zh-CN" : "en";
+    var ogLocale = isZh ? "zh_CN" : "en_US";
 
     var baseUrl = !string.IsNullOrWhiteSpace(seo.PublicBaseUrl)
         ? seo.PublicBaseUrl.TrimEnd('/')
@@ -24,16 +23,48 @@
 
     var path = Context.Request.Path.Value;
     if (string.IsNullOrEmpty(path)) path = "/";
-    var canonicalUrl = $"{baseUrl}{path}";
+    // Razor Pages home is served as "/" and "/Index"
+    if (string.Equals(path, "/Index", StringComparison.OrdinalIgnoreCase))
+        path = "/";
+    var canonicalUrl = path == "/" ? baseUrl + "/" : $"{baseUrl}{path}";
 
-    var pageTitlePart = ViewData["Title"]?.ToString();
-    var documentTitle = string.IsNullOrEmpty(pageTitlePart) ? "ToolApp" : $"{pageTitlePart} - ToolApp";
+    ToolSeoCatalog.TryGet(path, out var seoEntry);
+
+    var pageTitlePart = ViewData["Title"]?.ToString()?.Trim();
+    if (string.IsNullOrWhiteSpace(pageTitlePart) && seoEntry != null)
+        pageTitlePart = seoEntry.Title(isZh);
+    // Prefer catalog for English UI (many .cshtml pages hardcode Chinese titles)
+    else if (seoEntry != null && !isZh && path != "/")
+        pageTitlePart = seoEntry.Title(false);
+    // Home: always use catalog title when available (ViewData ToolOnline may be empty in default resx)
+    if (path == "/" && seoEntry != null)
+        pageTitlePart = seoEntry.Title(isZh);
+
+    var documentTitle = string.IsNullOrWhiteSpace(pageTitlePart)
+        ? "ToolApp"
+        : (path == "/" ? $"ToolApp - {pageTitlePart}" : $"{pageTitlePart} - ToolApp");
 
     var metaDesc = ViewData["MetaDescription"] as string;
+    if (string.IsNullOrWhiteSpace(metaDesc) && seoEntry != null)
+        metaDesc = seoEntry.Description(isZh);
+    // Index sets localized MetaDescription — keep it. For EN UI on other pages, prefer catalog
+    // when ViewData description is missing (already handled) or is clearly Chinese-only leftover.
+    if (seoEntry != null && !isZh && path != "/" && string.IsNullOrWhiteSpace(ViewData["MetaDescription"] as string))
+        metaDesc = seoEntry.Description(false);
     if (string.IsNullOrWhiteSpace(metaDesc))
-        metaDesc = seo.DefaultMetaDescription;
+        metaDesc = isZh
+            ? "ToolApp 免费在线工具：图片、文本、编码、转换与开发对照表，支持中英文。"
+            : seo.DefaultMetaDescription;
 
-    var robots = ViewData["Robots"] as string ?? "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
+    var metaKeywords = ViewData["MetaKeywords"] as string;
+    if (string.IsNullOrWhiteSpace(metaKeywords) && seoEntry != null)
+        metaKeywords = seoEntry.Keywords(isZh);
+
+    var robots = ViewData["Robots"] as string;
+    if (string.IsNullOrWhiteSpace(robots))
+        robots = seoEntry?.NoIndex == true
+            ? "noindex, nofollow"
+            : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
 
     var ogImagePath = ViewData["OgImage"] as string ?? seo.DefaultOgImagePath;
     var ogImageUrl = "";
@@ -44,51 +75,7 @@
             : baseUrl + (ogImagePath.StartsWith("/") ? ogImagePath : "/" + ogImagePath);
     }
 
-    var ldPayload = new Dictionary<string, object>
-    {
-        ["@context"] = "https://schema.org",
-        ["@graph"] = new object[]
-        {
-            new Dictionary<string, object>
-            {
-                ["@type"] = "WebSite",
-                ["@id"] = $"{baseUrl}/#website",
-                ["name"] = "ToolApp",
-                ["url"] = baseUrl,
-                ["description"] = metaDesc,
-                ["inLanguage"] = new[] { "en", "zh-CN" },
-                ["publisher"] = new Dictionary<string, object> { ["@id"] = $"{baseUrl}/#organization" }
-            },
-            new Dictionary<string, object>
-            {
-                ["@type"] = "Organization",
-                ["@id"] = $"{baseUrl}/#organization",
-                ["name"] = "ToolApp",
-                ["url"] = baseUrl
-            },
-            new Dictionary<string, object>
-            {
-                ["@type"] = "WebApplication",
-                ["name"] = "ToolApp",
-                ["url"] = baseUrl,
-                ["description"] = metaDesc,
-                ["applicationCategory"] = "UtilitiesApplication",
-                ["operatingSystem"] = "Any",
-                ["browserRequirements"] = "Requires JavaScript. Runs in the browser for interactive tools.",
-                ["inLanguage"] = new[] { "en", "zh-CN" },
-                ["offers"] = new Dictionary<string, object>
-                {
-                    ["@type"] = "Offer",
-                    ["price"] = "0",
-                    ["priceCurrency"] = "USD"
-                }
-            }
-        }
-    };
-    var jsonLd = JsonSerializer.Serialize(ldPayload, new JsonSerializerOptions
-    {
-        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-    });
+    var jsonLd = SeoJsonLdBuilder.Build(baseUrl, canonicalUrl, documentTitle, metaDesc, isZh, seoEntry);
 }
 
 <!DOCTYPE html>
@@ -98,14 +85,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@documentTitle</title>
     <meta name="description" content="@metaDesc" />
+    @if (!string.IsNullOrWhiteSpace(metaKeywords))
+    {
+        <meta name="keywords" content="@metaKeywords" />
+    }
     <meta name="robots" content="@robots" />
+    <meta name="author" content="ToolApp" />
     <link rel="canonical" href="@canonicalUrl" />
+    <link rel="alternate" hreflang="zh-CN" href="@canonicalUrl" />
+    <link rel="alternate" hreflang="en" href="@canonicalUrl" />
+    <link rel="alternate" hreflang="x-default" href="@canonicalUrl" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="@documentTitle" />
     <meta property="og:description" content="@metaDesc" />
     <meta property="og:url" content="@canonicalUrl" />
     <meta property="og:site_name" content="ToolApp" />
     <meta property="og:locale" content="@ogLocale" />
+    <meta property="og:locale:alternate" content="@(isZh ? "en_US" : "zh_CN")" />
     @if (!string.IsNullOrEmpty(ogImageUrl))
     {
         <meta property="og:image" content="@ogImageUrl" />
@@ -127,6 +123,7 @@
     <link rel="stylesheet" href="~/css/text-tools.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/convert-tools.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/image-merge.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/seo-geo.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/lib/jsoneditor/jsoneditor.min.css" rel="stylesheet" type="text/css" />
@@ -141,6 +138,7 @@
     <script src="~/js/imageBackgroundRemove.js" asp-append-version="true"></script>
     <script src="~/js/imageResize.js" asp-append-version="true"></script>
     <script src="~/js/imageCompress.js" asp-append-version="true"></script>
+    <script src="~/js/imageFormatConvert.js" asp-append-version="true"></script>
     <script src="~/js/imageHd.js" asp-append-version="true"></script>
     <script src="~/js/imageMerge.js" asp-append-version="true"></script>
     <script src="~/js/MyIndexDB.js" asp-append-version="true"></script>
@@ -184,11 +182,15 @@
     </header>
     <div class="container">
         @RenderBody()
+        @await Html.PartialAsync("_SeoGeoContent")
     </div>
     <div id="components-reconnect-modal" style="display:none;"></div>
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy;2021 - ToolApp - <a href="/Weiapp">@ViewLocalizer["MiniProgram"]</a> - <a href="/About">@ViewLocalizer["About"]</a> - <a href="/Donation">@ViewLocalizer["Donation"]</a>
+            · <a href="/robots.txt">robots</a>
+            · <a href="/sitemap.xml">sitemap</a>
+            · <a href="/llms.txt">llms.txt</a>
         </div>
     </footer>
 </body>

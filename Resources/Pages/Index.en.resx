@@ -202,7 +202,7 @@
     <value>Text Tool</value>
   </data>
   <data name="ToolOnline" xml:space="preserve">
-    <value>ToolOnline</value>
+    <value>Online toolbox</value>
   </data>
   <data name="Url Escape Character" xml:space="preserve">
     <value>Url Escape Character</value>
@@ -245,6 +245,9 @@
   </data>
   <data name="Image compress" xml:space="preserve">
     <value>Image compress</value>
+  </data>
+  <data name="Image format convert" xml:space="preserve">
+    <value>Image format convert</value>
   </data>
   <data name="Image HD upscale" xml:space="preserve">
     <value>Image upscale (HD)</value>
@@ -349,6 +352,6 @@
     <value>IP lookup, link checker</value>
   </data>
   <data name="SeoHomeMetaDescription" xml:space="preserve">
-    <value>ToolApp — free online tools: image OCR, compression, QR codes, JSON/Markdown, encoding, color and base conversion, reference tables (HTTP, Git, Vim, emoji), and more. English and Chinese.</value>
+    <value>ToolApp — free online tools: image OCR, compress, format convert, QR &amp; GUID, JSON/Markdown, encoding, color and base converters, plus HTTP/Git/Vim/emoji cheat sheets. English &amp; Chinese; some tools process locally for privacy.</value>
   </data>
 </root>

@@ -20,14 +20,9 @@ namespace ToolApp
         public string DefaultOgImagePath { get; set; } = string.Empty;
 
         /// <summary>
-        /// Paths to include in sitemap.xml (leading slash).
+        /// Optional extra paths merged into sitemap.xml (leading slash).
+        /// Primary paths come from <see cref="ToolApp.Seo.ToolSeoCatalog"/>.
         /// </summary>
-        public string[] SitemapPaths { get; set; } =
-        {
-            "/",
-            "/About",
-            "/Donation",
-            "/Weiapp"
-        };
+        public string[] SitemapPaths { get; set; } = System.Array.Empty<string>();
     }
 }
