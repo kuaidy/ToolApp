@@ -1,4 +1,6 @@
-﻿@using Markdig;
+﻿@using System.Globalization
+@using Markdig
+@using ToolApp.Common
 
 @if (EmbedOnly)
 {
@@ -45,11 +47,18 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        string filePath = $"{System.IO.Directory.GetCurrentDirectory()}/Content/{DescFileName}";
-        string strContent = await FileHelp.GetFile(filePath);
+        var relative = ContentDoc.ResolveRelative(DescFileName);
+        if (string.IsNullOrEmpty(relative))
+        {
+            Result = "";
+            return;
+        }
+
+        var filePath = ContentDoc.ToAbsolute(relative);
+        var strContent = await FileHelp.GetFile(filePath);
         var pipeline = new MarkdownPipelineBuilder()
             .UseAdvancedExtensions()
             .Build();
-        Result = Markdig.Markdown.ToHtml(strContent, pipeline);
+        Result = Markdig.Markdown.ToHtml(strContent ?? "", pipeline);
     }
 }
