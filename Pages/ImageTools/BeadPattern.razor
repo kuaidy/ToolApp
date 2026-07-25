@@ -1,0 +1,323 @@
+@page "/imagetools/beadpattern"
+@using Microsoft.AspNetCore.Components
+@inject IJSRuntime JS
+@inject IStringLocalizer<BeadPattern> L
+
+<div class="tool-page it-page">
+    <header class="it-hero">
+        <h1>@L["PageTitle"]</h1>
+        <p>@L["LeadShort"]</p>
+    </header>
+
+    <div class="it-studio">
+        @if (!HasImage)
+        {
+            <label class="it-dropzone it-dropzone--in-studio @(Busy ? "it-dropzone--disabled" : "")">
+                <span class="it-dropzone-icon" aria-hidden="true">+</span>
+                <span class="it-dropzone-title">@L["PageTitle"]</span>
+                <span class="it-dropzone-hint">@L["DropzoneHint"]</span>
+                <input type="file" accept="image/*" class="it-dropzone-input" @ref="_fileInput" disabled="@Busy" @onchange="OnFileSelectedAsync" />
+            </label>
+        }
+        else
+        {
+            <div class="it-toolbar">
+                <div class="it-toolbar-fields">
+                    <div class="it-field it-field--narrow">
+                        <span class="it-field-label">@L["LabelGridWidth"]</span>
+                        <input type="number" class="form-control form-control-sm" min="8" max="200" step="1"
+                               @bind="GridWidth" @bind:event="oninput" disabled="@Busy" />
+                    </div>
+                    <div class="it-field it-field--narrow">
+                        <span class="it-field-label">@L["LabelMaxColors"]</span>
+                        <input type="number" class="form-control form-control-sm" min="0" max="64" step="1"
+                               @bind="MaxColors" @bind:event="oninput" disabled="@Busy" />
+                    </div>
+                    <div class="it-field it-field--narrow">
+                        <span class="it-field-label">@L["LabelBeadSize"]</span>
+                        <input type="number" class="form-control form-control-sm" min="6" max="40" step="1"
+                               @bind="BeadSize" @bind:event="oninput" disabled="@Busy" />
+                    </div>
+                    <label class="form-check">
+                        <InputCheckbox @bind-Value="ShowGrid" class="form-check-input" disabled="@Busy" />
+                        <span class="form-check-label">@L["LabelShowGrid"]</span>
+                    </label>
+                    <label class="form-check">
+                        <InputCheckbox @bind-Value="ShowHole" class="form-check-input" disabled="@Busy" />
+                        <span class="form-check-label">@L["LabelShowHole"]</span>
+                    </label>
+                </div>
+                <div class="it-toolbar-actions">
+                    <button type="button" class="it-btn it-btn-primary"
+                            @onclick="GenerateAsync"
+                            disabled="@Busy">@L["BtnGenerate"]</button>
+                    <button type="button" class="it-btn it-btn-outline"
+                            @onclick="RestorePreviewAsync"
+                            disabled="@Busy">@L["BtnRestorePreview"]</button>
+                    <button type="button" class="it-btn it-btn-outline"
+                            @onclick="DownloadAsync"
+                            disabled="@(Busy || !HasPattern)">@L["BtnDownload"]</button>
+                    <button type="button" class="it-btn it-btn-outline"
+                            @onclick="ClearAllAsync">@L["BtnClear"]</button>
+                </div>
+            </div>
+
+            <p class="it-note mb-2">@L["NoteMaxColors"]</p>
+            <div class="it-scale-presets mb-2">
+                @foreach (var w in GridPresets)
+                {
+                    var preset = w;
+                    <button type="button" class="it-btn it-btn-outline it-btn-sm"
+                            @onclick="@(() => ApplyGridPresetAsync(preset))"
+                            disabled="@Busy">@preset</button>
+                }
+            </div>
+
+            @if (OrigW > 0)
+            {
+                <p class="it-meta mb-2">@L["OriginalInfo", OrigW, OrigH]</p>
+            }
+            @if (HasPattern)
+            {
+                <p class="it-meta mb-2">@L["ResultStats", PatternCols, PatternRows, BeadCount, ColorCount]</p>
+            }
+            @if (Busy)
+            {
+                <div class="it-message it-message--busy" role="status">@L["Busy"]</div>
+            }
+            @if (!string.IsNullOrEmpty(StatusMessage))
+            {
+                <div class="it-message it-message--error" role="alert">@StatusMessage</div>
+            }
+
+            @if (Palette.Count > 0)
+            {
+                <div class="bead-legend" aria-label="@L["LegendTitle"]">
+                    <p class="it-meta mb-2">@L["LegendTitle"]</p>
+                    <ul class="bead-legend-list">
+                        @foreach (var c in Palette)
+                        {
+                            <li class="bead-legend-item">
+                                <span class="bead-swatch" style="background:@c.hex"></span>
+                                <span class="bead-hex">@c.hex</span>
+                                <span class="bead-count">× @c.count</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        }
+
+        <div class="it-viewport it-viewport--checker @(HasImage ? "" : "it-viewport--hidden")">
+            <div class="it-viewport-canvas">
+                <canvas id="@CanvasId"></canvas>
+            </div>
+            @if (Busy && HasImage)
+            {
+                <div class="it-viewport-overlay it-viewport-overlay--light">@L["Busy"]</div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private const string CanvasId = "bead-pattern-canvas";
+    private static readonly int[] GridPresets = [29, 40, 50, 58, 80, 100];
+
+    private ElementReference _fileInput;
+    private bool Busy { get; set; }
+    private bool HasImage { get; set; }
+    private bool HasPattern { get; set; }
+    private string StatusMessage { get; set; } = "";
+    private int OrigW { get; set; }
+    private int OrigH { get; set; }
+    private int GridWidth { get; set; } = 50;
+    private int MaxColors { get; set; } = 24;
+    private int BeadSize { get; set; } = 14;
+    private bool ShowGrid { get; set; } = true;
+    private bool ShowHole { get; set; } = true;
+    private int PatternCols { get; set; }
+    private int PatternRows { get; set; }
+    private int BeadCount { get; set; }
+    private int ColorCount { get; set; }
+    private List<PaletteColor> Palette { get; set; } = new();
+
+    private async Task OnFileSelectedAsync(ChangeEventArgs _)
+    {
+        StatusMessage = "";
+        HasPattern = false;
+        Palette = new();
+        Busy = true;
+        try
+        {
+            var result = await JS.InvokeAsync<LoadResult>("beadPattern.loadFromInput", _fileInput, CanvasId);
+            if (result == null || result.width < 1 || result.height < 1)
+            {
+                StatusMessage = L["ErrLoad"];
+                HasImage = false;
+                OrigW = OrigH = 0;
+                return;
+            }
+
+            OrigW = result.width;
+            OrigH = result.height;
+            HasImage = true;
+            await GenerateAsync();
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrReadImage", ex.Message];
+            HasImage = false;
+            OrigW = OrigH = 0;
+        }
+        finally
+        {
+            await JS.InvokeVoidAsync("beadPattern.clearInput", _fileInput);
+            Busy = false;
+        }
+    }
+
+    private async Task ApplyGridPresetAsync(int width)
+    {
+        GridWidth = width;
+        await GenerateAsync();
+    }
+
+    private async Task GenerateAsync()
+    {
+        if (!HasImage)
+        {
+            return;
+        }
+
+        StatusMessage = "";
+        Busy = true;
+        try
+        {
+            var result = await JS.InvokeAsync<GenerateResult>("beadPattern.generate", CanvasId, new
+            {
+                gridWidth = GridWidth,
+                maxColors = MaxColors,
+                beadSize = BeadSize,
+                showGrid = ShowGrid,
+                showHole = ShowHole,
+                alphaThreshold = 40
+            });
+
+            if (result == null || !result.ok)
+            {
+                StatusMessage = string.IsNullOrWhiteSpace(result?.error)
+                    ? L["ErrGenerate"]
+                    : L["ErrGenerateDetail", result!.error!];
+                HasPattern = false;
+                Palette = new();
+                return;
+            }
+
+            PatternCols = result.cols;
+            PatternRows = result.rows;
+            BeadCount = result.beadCount;
+            ColorCount = result.colorCount;
+            Palette = result.colors?.ToList() ?? new List<PaletteColor>();
+            HasPattern = true;
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrGenerateDetail", ex.Message];
+            HasPattern = false;
+            Palette = new();
+        }
+        finally
+        {
+            Busy = false;
+        }
+    }
+
+    private async Task RestorePreviewAsync()
+    {
+        StatusMessage = "";
+        Busy = true;
+        try
+        {
+            var res = await JS.InvokeAsync<OkResult>("beadPattern.restoreOriginal", CanvasId);
+            if (res == null || !res.ok)
+            {
+                StatusMessage = L["ErrRestore"];
+                return;
+            }
+
+            HasPattern = false;
+            Palette = new();
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrRestoreDetail", ex.Message];
+        }
+        finally
+        {
+            Busy = false;
+        }
+    }
+
+    private async Task DownloadAsync()
+    {
+        StatusMessage = "";
+        try
+        {
+            var name = $"bead-pattern-{PatternCols}x{PatternRows}-{DateTime.Now:yyyyMMdd-HHmmss}.png";
+            var res = await JS.InvokeAsync<OkResult>("beadPattern.download", CanvasId, name);
+            if (res == null || !res.ok)
+            {
+                StatusMessage = L["ErrDownload", L["ErrGenerate"]];
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrDownload", ex.Message];
+        }
+    }
+
+    private async Task ClearAllAsync()
+    {
+        StatusMessage = "";
+        HasImage = false;
+        HasPattern = false;
+        OrigW = OrigH = 0;
+        Palette = new();
+        await JS.InvokeVoidAsync("beadPattern.reset", CanvasId);
+        await JS.InvokeVoidAsync("beadPattern.clearInput", _fileInput);
+    }
+
+    private sealed class LoadResult
+    {
+        public int width { get; set; }
+        public int height { get; set; }
+        public string mime { get; set; } = "";
+        public int size { get; set; }
+    }
+
+    private sealed class GenerateResult
+    {
+        public bool ok { get; set; }
+        public int cols { get; set; }
+        public int rows { get; set; }
+        public int beadCount { get; set; }
+        public int colorCount { get; set; }
+        public string? error { get; set; }
+        public List<PaletteColor>? colors { get; set; }
+    }
+
+    private sealed class PaletteColor
+    {
+        public string hex { get; set; } = "";
+        public int count { get; set; }
+        public int r { get; set; }
+        public int g { get; set; }
+        public int b { get; set; }
+    }
+
+    private sealed class OkResult
+    {
+        public bool ok { get; set; }
+    }
+}

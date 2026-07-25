@@ -76,13 +76,14 @@ public static class ToolSeoCatalog
         // Reference / full-document pages omit DocFile to avoid duplicating page body.
         var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
-            ["/"] = "Home.md",
             ["/imagetools/imageocr"] = "ImageTools/ImageOcr.md",
             ["/imagetools/handwrittensignature"] = "ImageTools/HandwrittenSignature.md",
             ["/imagetools/bgremove"] = "ImageTools/BackgroundRemove.md",
             ["/imagetools/imageresize"] = "ImageTools/ImageResize.md",
             ["/imagetools/imagecompress"] = "ImageTools/ImageCompress.md",
             ["/imagetools/imageformatconvert"] = "ImageTools/ImageFormatConvert.md",
+            ["/imagetools/beadpattern"] = "ImageTools/BeadPattern.md",
+            ["/imagetools/imagepixelate"] = "ImageTools/ImagePixelate.md",
             ["/imagetools/imagehd"] = "ImageTools/ImageHd.md",
             ["/imagetools/imagemerge"] = "ImageTools/ImageMerge.md",
             ["/TxtTools/WordCount"] = "TxtTools/WordCount.md",
@@ -363,7 +364,51 @@ public static class ToolSeoCatalog
             ],
             ["选择本地图片", "选择输出格式", "点击转换", "下载结果文件"],
             ["Choose a local image", "Pick an output format", "Convert", "Download"],
-            ["/imagetools/imageresize", "/imagetools/imagecompress", "/imagetools/bgremove"]);
+            ["/imagetools/imageresize", "/imagetools/imagecompress", "/imagetools/beadpattern"]);
+
+        yield return Img("/imagetools/beadpattern",
+            "拼豆生成器", "Bead pattern generator",
+            "上传图片，在浏览器本地生成拼豆（像素珠）图纸与用色统计，不上传服务器。",
+            "Upload an image to generate a perler / fuse-bead pattern and color counts locally in your browser—no upload.",
+            "拼豆生成器,拼豆图纸,像素珠,融合珠,图纸生成", "bead pattern, perler beads, fuse beads, pixel pattern, craft pattern",
+            "按横向粒数采样图片，可限制颜色数量，预览网格与珠孔，并导出 PNG 图纸与配色清单，适合手工备料。",
+            "Sample your image by grid width, optionally limit colors, preview grid and bead holes, then export a PNG pattern and palette list for crafting.",
+            [
+                Faq("图片会上传到服务器吗？", "Are images uploaded to the server?",
+                    "不会。读取、生成与下载全在浏览器本地完成。",
+                    "No. Reading, generation, and download all happen locally."),
+                Faq("横向粒数怎么选？", "How do I choose grid width?",
+                    "常用底板约 29、40、50、58 等；粒数越大细节越多，但手工耗时也更长。",
+                    "Common boards are about 29, 40, 50, or 58. Larger grids keep more detail but take longer to assemble."),
+                Faq("最多颜色填多少？", "What should max colors be?",
+                    "填 0 表示不限色；填 8–32 更接近常见拼豆色板，便于备料采购。",
+                    "Use 0 for unlimited colors; 8–32 better matches common bead palettes for shopping.")
+            ],
+            ["选择本地图片", "设置横向粒数与颜色上限", "生成图纸并查看用色", "下载 PNG 图纸"],
+            ["Choose a local image", "Set grid width and max colors", "Generate and review the palette", "Download the PNG pattern"],
+            ["/imagetools/imageformatconvert", "/imagetools/imagepixelate", "/imagetools/imageresize"]);
+
+        yield return Img("/imagetools/imagepixelate",
+            "图片像素化", "Image pixelate",
+            "上传图片，在浏览器本地生成马赛克 / 像素风效果，不上传服务器；可调像素块大小并下载 PNG。",
+            "Upload an image to create a mosaic / pixel-art effect locally in your browser—no upload; adjust block size and download PNG.",
+            "图片像素化,马赛克,像素风,打码,本地处理", "image pixelate, mosaic, pixel art, blur blocks, local process",
+            "将图片缩小再按最近邻放大，形成清晰的块状像素效果，输出尺寸与原图一致，适合封面装饰与趣味处理。",
+            "Downsample then nearest-neighbor upscale for clean blocky pixels at the original size—handy for covers and playful edits.",
+            [
+                Faq("图片会上传到服务器吗？", "Are images uploaded to the server?",
+                    "不会。读取、处理与下载全在浏览器本地完成。",
+                    "No. Reading, processing, and download all happen locally."),
+                Faq("像素块大小怎么选？", "How do I choose block size?",
+                    "数值越大格子越粗；一般先试 8–16，再按效果微调。",
+                    "Larger values make coarser blocks; try 8–16 first, then fine-tune."),
+                Faq("输出尺寸会变吗？", "Does output size change?",
+                    "不会。宽高与原图一致，仅改变像素块观感。",
+                    "No. Width and height stay the same; only the look becomes blocky.")
+            ],
+            ["选择本地图片", "设置像素块大小", "应用像素化", "下载 PNG"],
+            ["Choose a local image", "Set block size", "Apply pixelation", "Download PNG"],
+            ["/imagetools/beadpattern", "/imagetools/imageformatconvert", "/imagetools/imageresize"]);
 
         yield return Img("/imagetools/imagehd",
             "图片高清放大", "Image HD upscale",
@@ -1014,7 +1059,26 @@ public static class ToolSeoCatalog
             ],
             ["阅读关于说明", "从首页选择需要的工具"],
             ["Read the about notes", "Pick a tool from the home page"],
-            ["/", "/Donation", "/Weiapp"]);
+            ["/", "/Changelog", "/Donation", "/Weiapp"]);
+
+        yield return Tool("/Changelog", "其他", "Other",
+            "更新日志", "Changelog",
+            "查看 ToolApp 功能与体验更新记录，按日期倒序排列。",
+            "Browse ToolApp product and UX changes, newest first.",
+            "更新日志,版本记录,ToolApp更新", "changelog, release notes, ToolApp updates",
+            "按日期记录新工具、交互优化与站点改动，便于了解近期变化。",
+            "Dated notes on new tools, UX improvements, and site changes.",
+            [
+                Faq("更新日志多久更新？", "How often is the changelog updated?",
+                    "有较明显的功能或体验变更时会补充条目。",
+                    "Entries are added when there are notable product or UX changes."),
+                Faq("和关于页有什么区别？", "How is this different from About?",
+                    "关于页介绍站点与技术栈；本页专注版本变更记录。",
+                    "About covers the site and stack; this page focuses on change history.")
+            ],
+            ["打开更新日志", "按日期浏览变更"],
+            ["Open the changelog", "Browse changes by date"],
+            ["/About", "/"]);
 
         yield return Tool("/Donation", "其他", "Other",
             "捐助支持", "Donation",

@@ -1,7 +1,8 @@
 # ToolApp
 
 > Free bilingual (English / Chinese) online toolbox. No install required.
-> Site: https://toolapp.org (set Seo:PublicBaseUrl in production)
+> Site: https://toolapp.org
+> Configure Seo:PublicBaseUrl in appsettings.json (already set to https://toolapp.org).
 
 ## What this site is
 
@@ -17,7 +18,8 @@ not forward uploads to unknown third parties.
 ## Primary sections
 
 - Image tools: OCR, handwritten signature, background remove, resize, compress,
-  format convert (PNG/JPEG/WebP/BMP/ICO), HD upscale, merge
+  format convert (PNG/JPEG/WebP/BMP/ICO), bead pattern generator (local),
+  image pixelate (local), HD upscale, merge
 - Text tools: word count, JSON formatter, Markdown editor, regex tester,
   Chinese–English article formatting
 - Converters: number base, color, length
@@ -34,7 +36,10 @@ not forward uploads to unknown third parties.
 - Sitemap: /sitemap.xml
 - Robots: /robots.txt
 - About: /About
+- Changelog: /Changelog
 - Image format convert (local, privacy-friendly): /imagetools/imageformatconvert
+- Bead pattern generator (local, privacy-friendly): /imagetools/beadpattern
+- Image pixelate (local, privacy-friendly): /imagetools/imagepixelate
 - Image OCR: /imagetools/imageocr
 - JSON formatter: /TxtTools/JsonFormat
 - QR code: /CreateTools/QrCodeCreate

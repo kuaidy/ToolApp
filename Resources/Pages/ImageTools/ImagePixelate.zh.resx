@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PageTitle" xml:space="preserve"><value>图片像素化</value></data>
+  <data name="LeadShort" xml:space="preserve"><value>上传图片，本地生成马赛克 / 像素风效果，不上传服务器。</value></data>
+  <data name="DropzoneHint" xml:space="preserve"><value>* 支持 JPG、PNG、WebP 等，单张最大 20MB</value></data>
+  <data name="LabelBlockSize" xml:space="preserve"><value>像素块大小</value></data>
+  <data name="NoteBlockSize" xml:space="preserve"><value>数值越大，格子越粗、细节越少；输出尺寸与原图一致。</value></data>
+  <data name="OriginalInfo" xml:space="preserve"><value>原图：{0} × {1} 像素</value></data>
+  <data name="ResultStats" xml:space="preserve"><value>块大小 {0}，网格约 {1} × {2}</value></data>
+  <data name="BtnApply" xml:space="preserve"><value>应用像素化</value></data>
+  <data name="BtnRestorePreview" xml:space="preserve"><value>恢复原图</value></data>
+  <data name="BtnDownload" xml:space="preserve"><value>下载 PNG</value></data>
+  <data name="BtnClear" xml:space="preserve"><value>清空</value></data>
+  <data name="Busy" xml:space="preserve"><value>处理中…</value></data>
+  <data name="ErrReadImage" xml:space="preserve"><value>读取图片失败：{0}</value></data>
+  <data name="ErrLoad" xml:space="preserve"><value>无法读取图片，请换一张图重试。</value></data>
+  <data name="ErrApply" xml:space="preserve"><value>像素化失败，请重试。</value></data>
+  <data name="ErrApplyDetail" xml:space="preserve"><value>像素化失败：{0}</value></data>
+  <data name="ErrRestore" xml:space="preserve"><value>无法恢复原图预览。</value></data>
+  <data name="ErrRestoreDetail" xml:space="preserve"><value>恢复失败：{0}</value></data>
+  <data name="ErrDownload" xml:space="preserve"><value>下载失败：{0}</value></data>
+</root>

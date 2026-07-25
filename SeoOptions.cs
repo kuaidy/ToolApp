@@ -3,10 +3,11 @@ namespace ToolApp
     public class SeoOptions
     {
         /// <summary>
-        /// Production site URL, e.g. https://example.com (no trailing slash).
-        /// If empty, canonical and sitemap use the current request host.
+        /// Canonical public site URL (no trailing slash), e.g. https://toolapp.org.
+        /// Used by robots.txt, sitemap.xml, Open Graph and JSON-LD.
+        /// Do not leave empty in production — otherwise loopback/proxy hostnames leak into sitemap.
         /// </summary>
-        public string PublicBaseUrl { get; set; } = string.Empty;
+        public string PublicBaseUrl { get; set; } = "https://toolapp.org";
 
         /// <summary>
         /// Fallback meta description when a page does not set ViewData["MetaDescription"].

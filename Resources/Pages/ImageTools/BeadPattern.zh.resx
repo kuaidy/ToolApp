@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PageTitle" xml:space="preserve"><value>拼豆生成器</value></data>
+  <data name="LeadShort" xml:space="preserve"><value>上传图片，本地生成拼豆图纸与用色统计，不上传服务器。</value></data>
+  <data name="DropzoneHint" xml:space="preserve"><value>* 支持 JPG、PNG、WebP 等，单张最大 20MB</value></data>
+  <data name="LabelGridWidth" xml:space="preserve"><value>横向粒数</value></data>
+  <data name="LabelMaxColors" xml:space="preserve"><value>最多颜色</value></data>
+  <data name="LabelBeadSize" xml:space="preserve"><value>预览珠径</value></data>
+  <data name="LabelShowGrid" xml:space="preserve"><value>显示网格</value></data>
+  <data name="LabelShowHole" xml:space="preserve"><value>显示珠孔</value></data>
+  <data name="NoteMaxColors" xml:space="preserve"><value>「最多颜色」填 0 表示不限色；填 8–32 更接近常见拼豆色板，便于备料。</value></data>
+  <data name="OriginalInfo" xml:space="preserve"><value>原图：{0} × {1} 像素</value></data>
+  <data name="ResultStats" xml:space="preserve"><value>图纸：{0} × {1}，共 {2} 颗珠，{3} 种颜色</value></data>
+  <data name="LegendTitle" xml:space="preserve"><value>用色统计</value></data>
+  <data name="BtnGenerate" xml:space="preserve"><value>生成图纸</value></data>
+  <data name="BtnRestorePreview" xml:space="preserve"><value>恢复原图</value></data>
+  <data name="BtnDownload" xml:space="preserve"><value>下载图纸</value></data>
+  <data name="BtnClear" xml:space="preserve"><value>清空</value></data>
+  <data name="Busy" xml:space="preserve"><value>处理中…</value></data>
+  <data name="ErrReadImage" xml:space="preserve"><value>读取图片失败：{0}</value></data>
+  <data name="ErrLoad" xml:space="preserve"><value>无法读取图片，请换一张图重试。</value></data>
+  <data name="ErrGenerate" xml:space="preserve"><value>生成失败，请重试。</value></data>
+  <data name="ErrGenerateDetail" xml:space="preserve"><value>生成失败：{0}</value></data>
+  <data name="ErrRestore" xml:space="preserve"><value>无法恢复原图预览。</value></data>
+  <data name="ErrRestoreDetail" xml:space="preserve"><value>恢复失败：{0}</value></data>
+  <data name="ErrDownload" xml:space="preserve"><value>下载失败：{0}</value></data>
+</root>

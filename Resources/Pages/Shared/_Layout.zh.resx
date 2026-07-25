@@ -120,6 +120,9 @@
   <data name="About" xml:space="preserve">
     <value>关于</value>
   </data>
+  <data name="Changelog" xml:space="preserve">
+    <value>更新日志</value>
+  </data>
   <data name="Donation" xml:space="preserve">
     <value>赞赏</value>
   </data>

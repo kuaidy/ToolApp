@@ -160,7 +160,27 @@ namespace ToolApp
         {
             if (!string.IsNullOrWhiteSpace(seo.PublicBaseUrl))
                 return seo.PublicBaseUrl.TrimEnd('/');
+
+            var host = context.Request.Host.Host;
+            // Never advertise localhost / 127.0.0.1 in robots or sitemap.
+            if (IsNonPublicHost(host))
+                return "https://toolapp.org";
+
             return $"{context.Request.Scheme}://{context.Request.Host.Value}{context.Request.PathBase}".TrimEnd('/');
+        }
+
+        private static bool IsNonPublicHost(string? host)
+        {
+            if (string.IsNullOrWhiteSpace(host))
+                return true;
+            if (host.Equals("localhost", StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (host.EndsWith(".local", StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (System.Net.IPAddress.TryParse(host, out var ip)
+                && (System.Net.IPAddress.IsLoopback(ip) || ip.IsIPv6LinkLocal))
+                return true;
+            return false;
         }
     }
 }

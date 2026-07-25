@@ -20,6 +20,15 @@
     var baseUrl = !string.IsNullOrWhiteSpace(seo.PublicBaseUrl)
         ? seo.PublicBaseUrl.TrimEnd('/')
         : $"{Context.Request.Scheme}://{Context.Request.Host.Value}{Context.Request.PathBase}".TrimEnd('/');
+    // Avoid publishing loopback hosts into canonical / OG when PublicBaseUrl is unset.
+    var requestHost = Context.Request.Host.Host;
+    if (string.IsNullOrWhiteSpace(seo.PublicBaseUrl)
+        && (string.Equals(requestHost, "localhost", StringComparison.OrdinalIgnoreCase)
+            || requestHost.StartsWith("127.", StringComparison.Ordinal)
+            || requestHost == "::1"))
+    {
+        baseUrl = "https://toolapp.org";
+    }
 
     var path = Context.Request.Path.Value;
     if (string.IsNullOrEmpty(path)) path = "/";
@@ -139,6 +148,8 @@
     <script src="~/js/imageResize.js" asp-append-version="true"></script>
     <script src="~/js/imageCompress.js" asp-append-version="true"></script>
     <script src="~/js/imageFormatConvert.js" asp-append-version="true"></script>
+    <script src="~/js/beadPattern.js" asp-append-version="true"></script>
+    <script src="~/js/imagePixelate.js" asp-append-version="true"></script>
     <script src="~/js/imageHd.js" asp-append-version="true"></script>
     <script src="~/js/imageMerge.js" asp-append-version="true"></script>
     <script src="~/js/MyIndexDB.js" asp-append-version="true"></script>
@@ -187,7 +198,7 @@
     <div id="components-reconnect-modal" style="display:none;"></div>
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy;2021 - ToolApp - <a href="/Weiapp">@ViewLocalizer["MiniProgram"]</a> - <a href="/About">@ViewLocalizer["About"]</a> - <a href="/Donation">@ViewLocalizer["Donation"]</a>
+            &copy;2021 - ToolApp - <a href="/Weiapp">@ViewLocalizer["MiniProgram"]</a> - <a href="/About">@ViewLocalizer["About"]</a> - <a href="/Changelog">@ViewLocalizer["Changelog"]</a> - <a href="/Donation">@ViewLocalizer["Donation"]</a>
             · <a href="/robots.txt">robots</a>
             · <a href="/sitemap.xml">sitemap</a>
             · <a href="/llms.txt">llms.txt</a>

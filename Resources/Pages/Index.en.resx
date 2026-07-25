@@ -249,6 +249,12 @@
   <data name="Image format convert" xml:space="preserve">
     <value>Image format convert</value>
   </data>
+  <data name="Bead pattern" xml:space="preserve">
+    <value>Bead pattern generator</value>
+  </data>
+  <data name="Image pixelate" xml:space="preserve">
+    <value>Image pixelate</value>
+  </data>
   <data name="Image HD upscale" xml:space="preserve">
     <value>Image upscale (HD)</value>
   </data>

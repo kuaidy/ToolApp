@@ -1,0 +1,261 @@
+@page "/imagetools/imagepixelate"
+@using Microsoft.AspNetCore.Components
+@inject IJSRuntime JS
+@inject IStringLocalizer<ImagePixelate> L
+
+<div class="tool-page it-page">
+    <header class="it-hero">
+        <h1>@L["PageTitle"]</h1>
+        <p>@L["LeadShort"]</p>
+    </header>
+
+    <div class="it-studio">
+        @if (!HasImage)
+        {
+            <label class="it-dropzone it-dropzone--in-studio @(Busy ? "it-dropzone--disabled" : "")">
+                <span class="it-dropzone-icon" aria-hidden="true">+</span>
+                <span class="it-dropzone-title">@L["PageTitle"]</span>
+                <span class="it-dropzone-hint">@L["DropzoneHint"]</span>
+                <input type="file" accept="image/*" class="it-dropzone-input" @ref="_fileInput" disabled="@Busy" @onchange="OnFileSelectedAsync" />
+            </label>
+        }
+        else
+        {
+            <div class="it-toolbar">
+                <div class="it-toolbar-fields">
+                    <div class="it-field it-field--narrow">
+                        <span class="it-field-label">@L["LabelBlockSize"]</span>
+                        <input type="number" class="form-control form-control-sm" min="2" max="128" step="1"
+                               @bind="BlockSize" @bind:event="oninput" disabled="@Busy" />
+                    </div>
+                </div>
+                <div class="it-toolbar-actions">
+                    <button type="button" class="it-btn it-btn-primary"
+                            @onclick="PixelateAsync"
+                            disabled="@Busy">@L["BtnApply"]</button>
+                    <button type="button" class="it-btn it-btn-outline"
+                            @onclick="RestorePreviewAsync"
+                            disabled="@Busy">@L["BtnRestorePreview"]</button>
+                    <button type="button" class="it-btn it-btn-outline"
+                            @onclick="DownloadAsync"
+                            disabled="@(Busy || !HasResult)">@L["BtnDownload"]</button>
+                    <button type="button" class="it-btn it-btn-outline"
+                            @onclick="ClearAllAsync">@L["BtnClear"]</button>
+                </div>
+            </div>
+
+            <p class="it-note mb-2">@L["NoteBlockSize"]</p>
+            <div class="it-scale-presets mb-2">
+                @foreach (var s in BlockPresets)
+                {
+                    var preset = s;
+                    <button type="button" class="it-btn it-btn-outline it-btn-sm"
+                            @onclick="@(() => ApplyPresetAsync(preset))"
+                            disabled="@Busy">@preset</button>
+                }
+            </div>
+
+            @if (OrigW > 0)
+            {
+                <p class="it-meta mb-2">@L["OriginalInfo", OrigW, OrigH]</p>
+            }
+            @if (HasResult)
+            {
+                <p class="it-meta mb-2">@L["ResultStats", AppliedBlock, GridW, GridH]</p>
+            }
+            @if (Busy)
+            {
+                <div class="it-message it-message--busy" role="status">@L["Busy"]</div>
+            }
+            @if (!string.IsNullOrEmpty(StatusMessage))
+            {
+                <div class="it-message it-message--error" role="alert">@StatusMessage</div>
+            }
+        }
+
+        <div class="it-viewport it-viewport--checker @(HasImage ? "" : "it-viewport--hidden")">
+            <div class="it-viewport-canvas">
+                <canvas id="@CanvasId"></canvas>
+            </div>
+            @if (Busy && HasImage)
+            {
+                <div class="it-viewport-overlay it-viewport-overlay--light">@L["Busy"]</div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private const string CanvasId = "image-pixelate-canvas";
+    private static readonly int[] BlockPresets = [4, 8, 12, 16, 24, 32, 48];
+
+    private ElementReference _fileInput;
+    private bool Busy { get; set; }
+    private bool HasImage { get; set; }
+    private bool HasResult { get; set; }
+    private string StatusMessage { get; set; } = "";
+    private int OrigW { get; set; }
+    private int OrigH { get; set; }
+    private int BlockSize { get; set; } = 12;
+    private int AppliedBlock { get; set; }
+    private int GridW { get; set; }
+    private int GridH { get; set; }
+
+    private async Task OnFileSelectedAsync(ChangeEventArgs _)
+    {
+        StatusMessage = "";
+        HasResult = false;
+        Busy = true;
+        try
+        {
+            var result = await JS.InvokeAsync<LoadResult>("imagePixelate.loadFromInput", _fileInput, CanvasId);
+            if (result == null || result.width < 1 || result.height < 1)
+            {
+                StatusMessage = L["ErrLoad"];
+                HasImage = false;
+                OrigW = OrigH = 0;
+                return;
+            }
+
+            OrigW = result.width;
+            OrigH = result.height;
+            HasImage = true;
+            await PixelateAsync();
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrReadImage", ex.Message];
+            HasImage = false;
+            OrigW = OrigH = 0;
+        }
+        finally
+        {
+            await JS.InvokeVoidAsync("imagePixelate.clearInput", _fileInput);
+            Busy = false;
+        }
+    }
+
+    private async Task ApplyPresetAsync(int size)
+    {
+        BlockSize = size;
+        await PixelateAsync();
+    }
+
+    private async Task PixelateAsync()
+    {
+        if (!HasImage)
+        {
+            return;
+        }
+
+        StatusMessage = "";
+        Busy = true;
+        try
+        {
+            var result = await JS.InvokeAsync<PixelateResult>("imagePixelate.pixelate", CanvasId, new
+            {
+                blockSize = BlockSize
+            });
+
+            if (result == null || !result.ok)
+            {
+                StatusMessage = string.IsNullOrWhiteSpace(result?.error)
+                    ? L["ErrApply"]
+                    : L["ErrApplyDetail", result!.error!];
+                HasResult = false;
+                return;
+            }
+
+            AppliedBlock = result.blockSize;
+            GridW = result.gridW;
+            GridH = result.gridH;
+            HasResult = true;
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrApplyDetail", ex.Message];
+            HasResult = false;
+        }
+        finally
+        {
+            Busy = false;
+        }
+    }
+
+    private async Task RestorePreviewAsync()
+    {
+        StatusMessage = "";
+        Busy = true;
+        try
+        {
+            var res = await JS.InvokeAsync<OkResult>("imagePixelate.restoreOriginal", CanvasId);
+            if (res == null || !res.ok)
+            {
+                StatusMessage = L["ErrRestore"];
+                return;
+            }
+
+            HasResult = false;
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrRestoreDetail", ex.Message];
+        }
+        finally
+        {
+            Busy = false;
+        }
+    }
+
+    private async Task DownloadAsync()
+    {
+        StatusMessage = "";
+        try
+        {
+            var name = $"pixelate-{AppliedBlock}px-{DateTime.Now:yyyyMMdd-HHmmss}.png";
+            var res = await JS.InvokeAsync<OkResult>("imagePixelate.download", CanvasId, name);
+            if (res == null || !res.ok)
+            {
+                StatusMessage = L["ErrDownload", L["ErrApply"]];
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L["ErrDownload", ex.Message];
+        }
+    }
+
+    private async Task ClearAllAsync()
+    {
+        StatusMessage = "";
+        HasImage = false;
+        HasResult = false;
+        OrigW = OrigH = 0;
+        await JS.InvokeVoidAsync("imagePixelate.reset", CanvasId);
+        await JS.InvokeVoidAsync("imagePixelate.clearInput", _fileInput);
+    }
+
+    private sealed class LoadResult
+    {
+        public int width { get; set; }
+        public int height { get; set; }
+        public string mime { get; set; } = "";
+        public int size { get; set; }
+    }
+
+    private sealed class PixelateResult
+    {
+        public bool ok { get; set; }
+        public int width { get; set; }
+        public int height { get; set; }
+        public int blockSize { get; set; }
+        public int gridW { get; set; }
+        public int gridH { get; set; }
+        public string? error { get; set; }
+    }
+
+    private sealed class OkResult
+    {
+        public bool ok { get; set; }
+    }
+}

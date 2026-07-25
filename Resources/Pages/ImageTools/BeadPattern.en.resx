@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PageTitle" xml:space="preserve"><value>Perler bead pattern</value></data>
+  <data name="LeadShort" xml:space="preserve"><value>Upload an image to generate a bead pattern and color counts locally—no server upload.</value></data>
+  <data name="DropzoneHint" xml:space="preserve"><value>* JPG, PNG, WebP, etc. Max 20MB per file</value></data>
+  <data name="LabelGridWidth" xml:space="preserve"><value>Beads wide</value></data>
+  <data name="LabelMaxColors" xml:space="preserve"><value>Max colors</value></data>
+  <data name="LabelBeadSize" xml:space="preserve"><value>Preview size</value></data>
+  <data name="LabelShowGrid" xml:space="preserve"><value>Show grid</value></data>
+  <data name="LabelShowHole" xml:space="preserve"><value>Show holes</value></data>
+  <data name="NoteMaxColors" xml:space="preserve"><value>Set “Max colors” to 0 for unlimited colors; 8–32 is closer to a craft bead palette.</value></data>
+  <data name="OriginalInfo" xml:space="preserve"><value>Original: {0} × {1} px</value></data>
+  <data name="ResultStats" xml:space="preserve"><value>Pattern: {0} × {1}, {2} beads, {3} colors</value></data>
+  <data name="LegendTitle" xml:space="preserve"><value>Color legend</value></data>
+  <data name="BtnGenerate" xml:space="preserve"><value>Generate</value></data>
+  <data name="BtnRestorePreview" xml:space="preserve"><value>Restore original</value></data>
+  <data name="BtnDownload" xml:space="preserve"><value>Download</value></data>
+  <data name="BtnClear" xml:space="preserve"><value>Clear</value></data>
+  <data name="Busy" xml:space="preserve"><value>Processing…</value></data>
+  <data name="ErrReadImage" xml:space="preserve"><value>Failed to read image: {0}</value></data>
+  <data name="ErrLoad" xml:space="preserve"><value>Could not read the image. Try another file.</value></data>
+  <data name="ErrGenerate" xml:space="preserve"><value>Generation failed. Please try again.</value></data>
+  <data name="ErrGenerateDetail" xml:space="preserve"><value>Generation failed: {0}</value></data>
+  <data name="ErrRestore" xml:space="preserve"><value>Could not restore the original preview.</value></data>
+  <data name="ErrRestoreDetail" xml:space="preserve"><value>Restore failed: {0}</value></data>
+  <data name="ErrDownload" xml:space="preserve"><value>Download failed: {0}</value></data>
+</root>
