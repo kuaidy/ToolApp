@@ -223,8 +223,14 @@
   <data name="Productivity Tools" xml:space="preserve">
     <value>效率工具</value>
   </data>
+  <data name="Games" xml:space="preserve">
+    <value>游戏</value>
+  </data>
   <data name="Pomodoro" xml:space="preserve">
     <value>番茄钟</value>
+  </data>
+  <data name="Bamboo cicada" xml:space="preserve">
+    <value>在线竹知了</value>
   </data>
   <data name="Article Formatting" xml:space="preserve">
     <value>文章格式化</value>

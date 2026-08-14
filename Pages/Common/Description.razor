@@ -45,9 +45,18 @@ else
 
     public string Result { get; set; } = "";
 
-    protected override async Task OnInitializedAsync()
+    private string _loadedKey = "";
+
+    protected override async Task OnParametersSetAsync()
     {
         var relative = ContentDoc.ResolveRelative(DescFileName);
+        var key = $"{relative}|{EmbedOnly}|{PageTitle}|{Lead}";
+        if (string.Equals(key, _loadedKey, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        _loadedKey = key;
         if (string.IsNullOrEmpty(relative))
         {
             Result = "";

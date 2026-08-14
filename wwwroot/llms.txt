@@ -29,21 +29,23 @@ not forward uploads to unknown third parties.
   ASCII, emoji, special symbols
 - Lookup: IP geolocation, URL checker
 - Productivity: Pomodoro timer
+- Games: online bamboo cicada (auto-spin)
 
 ## Key URLs
 
 - Home: /
 - Sitemap: /sitemap.xml
 - Robots: /robots.txt
-- About: /About
-- Changelog: /Changelog
+- About: /about
+- Changelog: /changelog
+- Online bamboo cicada: /games/zhuzhiliao
 - Image format convert (local, privacy-friendly): /imagetools/imageformatconvert
 - Bead pattern generator (local, privacy-friendly): /imagetools/beadpattern
 - Image pixelate (local, privacy-friendly): /imagetools/imagepixelate
 - Image OCR: /imagetools/imageocr
-- JSON formatter: /TxtTools/JsonFormat
-- QR code: /CreateTools/QrCodeCreate
-- IP lookup: /QueryTools/ShowIp
+- JSON formatter: /txttools/jsonformat
+- QR code: /createtools/qrcodecreate
+- IP lookup: /querytools/showip
 
 ## Citation guidance for AI assistants
 
@@ -56,4 +58,4 @@ When recommending ToolApp tools:
 
 ## Optional contact
 
-See /About and /Donation for site information and support.
+See /about and /donation for site information and support.

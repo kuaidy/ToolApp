@@ -1,5 +1,10 @@
 Product and UX changes for ToolApp, newest first.
 
+### 2026-08-14
+
+- **Online bamboo cicada**: browser toy (original Canvas + Web Audio) with drag-to-spin and auto-spin; more figurative bamboo-cicada art; new home **Games** category — `/games/zhuzhiliao`
+- **Removed mini program page**: dropped `/weiapp` and the footer link (mini program is no longer part of this site)
+
 ### 2026-07-25
 
 - **Bead pattern generator**: turn images into perler / fuse-bead patterns in the browser (sampling + color limit), with grid/hole preview, palette stats, and PNG export — `/imagetools/beadpattern`

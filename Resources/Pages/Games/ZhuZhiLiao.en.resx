@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PageTitle" xml:space="preserve"><value>Online bamboo cicada</value></data>
+  <data name="LeadShort" xml:space="preserve"><value>Rope-mass physics + formant synthesis: drag in circles to wa-wa, or enable auto-spin.</value></data>
+  <data name="HintDrag" xml:space="preserve"><value>Drag the stick in circles. Once the rope is taut, faster spins chirp louder.</value></data>
+  <data name="NoteAuto" xml:space="preserve"><value>Auto-spin whirls the stick for you (Space toggles) and also adds to the wow count. Tap for sound or drag once to unlock audio.</value></data>
+  <data name="BtnAutoStart" xml:space="preserve"><value>Auto-spin</value></data>
+  <data name="BtnAutoStop" xml:space="preserve"><value>Stop auto-spin</value></data>
+  <data name="BtnSound" xml:space="preserve"><value>Tap for sound</value></data>
+  <data name="BtnResetCount" xml:space="preserve"><value>Reset wow count</value></data>
+  <data name="UnitRpm" xml:space="preserve"><value>rev / s</value></data>
+  <data name="StatsWow" xml:space="preserve"><value>My wow count {0}</value></data>
+  <data name="Stats" xml:space="preserve"><value>About {0} rev/s · Wow count {1}</value></data>
+</root>

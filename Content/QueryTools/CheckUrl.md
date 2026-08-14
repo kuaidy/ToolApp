@@ -10,4 +10,4 @@
 
 ### 相关参考
 
-检测到状态码后，可结合站内 [HTTP 状态码](/TableTools/HttpStatusCode) 对照表理解含义。
+检测到状态码后，可结合站内 [HTTP 状态码](/tabletools/httpstatuscode) 对照表理解含义。

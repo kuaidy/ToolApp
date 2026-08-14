@@ -3,8 +3,8 @@
 [ToolApp](https://toolapp.org) — 浏览器中的在线工具箱：图片处理、文本工具、格式转换、对照表与效率小工具。
 
 - **技术栈**：ASP.NET Core 9、Blazor Server、ImageSharp、Tesseract
-- **关于**：站内 [/About](/About)，见 [Content/Other/About.md](Content/Other/About.md)
-- **更新日志**：站内 [/Changelog](/Changelog)，见 [Content/Other/Changelog.md](Content/Other/Changelog.md)
+- **关于**：站内 [/about](/about)，见 [Content/Other/About.md](Content/Other/About.md)
+- **更新日志**：站内 [/changelog](/changelog)，见 [Content/Other/Changelog.md](Content/Other/Changelog.md)
 - **开源**：https://github.com/kuaidy/ToolApp
 
 ## 本地运行

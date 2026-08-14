@@ -47,7 +47,26 @@ namespace ToolApp
             {
                 o.MultipartBodyLengthLimit = 22 * 1024 * 1024;
             });
-            services.AddRazorPages();
+            services.Configure<Microsoft.AspNetCore.Routing.RouteOptions>(options =>
+            {
+                options.LowercaseUrls = true;
+                options.LowercaseQueryStrings = true;
+            });
+            services.AddRazorPages(options =>
+            {
+                // Register Razor Page endpoints with lowercase templates (e.g. /txttools/wordcount).
+                options.Conventions.AddFolderRouteModelConvention("/", model =>
+                {
+                    foreach (var selector in model.Selectors)
+                    {
+                        var route = selector.AttributeRouteModel;
+                        if (route?.Template != null)
+                        {
+                            route.Template = route.Template.ToLowerInvariant();
+                        }
+                    }
+                });
+            });
             services.Configure<SeoOptions>(Configuration.GetSection("Seo"));
             //?????????
             services.AddLocalization(t => {

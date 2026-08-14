@@ -1,0 +1,166 @@
+@using System.Globalization
+@using ToolApp.Seo
+@inject NavigationManager Nav
+@implements IDisposable
+
+@if (_show)
+{
+    @if (_hasDoc)
+    {
+        <section class="seo-geo seo-geo--doc" aria-label="@(_isZh ? "工具说明" : "Tool guide")">
+            <Description @key="_docFile" DescFileName="@_docFile" EmbedOnly="true" />
+            @if (_related is { Count: > 0 })
+            {
+                <h2 class="seo-geo-title">@_relatedTitle</h2>
+                <p class="seo-geo-related">
+                    @for (var i = 0; i < _related.Count; i++)
+                    {
+                        if (i > 0)
+                        {
+                            <span class="seo-geo-related-sep">·</span>
+                        }
+                        <a href="@_related[i].Path">@_related[i].Title(_isZh)</a>
+                    }
+                </p>
+            }
+        </section>
+    }
+    else
+    {
+        <section class="seo-geo" aria-label="@(_isZh ? "页面说明与问答" : "Page guide and FAQ")">
+            @if (!string.IsNullOrWhiteSpace(_about))
+            {
+                <h2 class="seo-geo-title">@_aboutTitle</h2>
+                <p class="seo-geo-about">@_about</p>
+            }
+            @if (_steps.Count > 0)
+            {
+                <h2 class="seo-geo-title">@_howTitle</h2>
+                <ol class="seo-geo-steps">
+                    @foreach (var step in _steps)
+                    {
+                        <li>@step</li>
+                    }
+                </ol>
+            }
+            @if (_faqs.Count > 0)
+            {
+                <h2 class="seo-geo-title">@_faqTitle</h2>
+                <div class="seo-geo-faq">
+                    @foreach (var f in _faqs)
+                    {
+                        <div class="seo-geo-qa">
+                            <h3 class="seo-geo-q">@f.Question(_isZh)</h3>
+                            <p class="seo-geo-a">@f.Answer(_isZh)</p>
+                        </div>
+                    }
+                </div>
+            }
+            @if (_related is { Count: > 0 })
+            {
+                <h2 class="seo-geo-title">@_relatedTitle</h2>
+                <p class="seo-geo-related">
+                    @for (var i = 0; i < _related.Count; i++)
+                    {
+                        if (i > 0)
+                        {
+                            <span class="seo-geo-related-sep">·</span>
+                        }
+                        <a href="@_related[i].Path">@_related[i].Title(_isZh)</a>
+                    }
+                </p>
+            }
+        </section>
+    }
+}
+
+@code {
+    private string _lastPath = "";
+    private bool _show;
+    private bool _hasDoc;
+    private bool _isZh;
+    private string _docFile = "";
+    private string _about = "";
+    private string _aboutTitle = "";
+    private string _faqTitle = "";
+    private string _howTitle = "";
+    private string _relatedTitle = "";
+    private IReadOnlyList<string> _steps = [];
+    private IReadOnlyList<ToolSeoFaq> _faqs = [];
+    private IReadOnlyList<ToolSeoRelated>? _related;
+
+    protected override void OnInitialized()
+    {
+        Nav.LocationChanged += OnLocationChanged;
+        ApplyFromUri(Nav.Uri);
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e) =>
+        _ = InvokeAsync(() =>
+        {
+            ApplyFromUri(e.Location);
+            StateHasChanged();
+        });
+
+    private void ApplyFromUri(string uri)
+    {
+        string path;
+        try
+        {
+            path = new Uri(uri).AbsolutePath;
+        }
+        catch
+        {
+            path = "/";
+        }
+
+        path = ToolSeoCatalog.Normalize(path);
+        if (string.Equals(path, _lastPath, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        _lastPath = path;
+        _isZh = CultureInfo.CurrentUICulture.Name.StartsWith("zh", StringComparison.OrdinalIgnoreCase)
+            || CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.Equals("zh", StringComparison.OrdinalIgnoreCase);
+
+        if (path is "/" or "/about" or "/donation" or "/changelog"
+            || !ToolSeoCatalog.TryGet(path, out var entry) || entry == null || entry.NoIndex)
+        {
+            _show = false;
+            _hasDoc = false;
+            _docFile = "";
+            _related = null;
+            return;
+        }
+
+        _related = entry.Related;
+        _relatedTitle = _isZh ? "相关工具" : "Related tools";
+        _hasDoc = !string.IsNullOrWhiteSpace(entry.DocFile);
+
+        if (_hasDoc)
+        {
+            _docFile = entry.DocFile;
+            _show = true;
+            return;
+        }
+
+        _about = entry.About(_isZh);
+        _faqs = entry.Faqs;
+        _steps = entry.HowToSteps(_isZh);
+        if (_faqs.Count == 0 && _steps.Count == 0 && string.IsNullOrWhiteSpace(_about)
+            && (_related == null || _related.Count == 0))
+        {
+            _show = false;
+            return;
+        }
+
+        _aboutTitle = _isZh ? $"关于{entry.TitleZh}" : $"About {entry.TitleEn}";
+        _faqTitle = _isZh ? $"{entry.TitleZh}常见问题与解答" : $"{entry.TitleEn} FAQ";
+        _howTitle = _isZh ? "使用步骤" : "How to use";
+        _docFile = "";
+        _show = true;
+    }
+
+    public void Dispose() => Nav.LocationChanged -= OnLocationChanged;
+}

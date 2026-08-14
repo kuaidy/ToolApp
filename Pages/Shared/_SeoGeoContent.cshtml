@@ -6,8 +6,8 @@
     var path = Context.Request.Path.Value;
     if (string.IsNullOrEmpty(path)) path = "/";
     path = ToolSeoCatalog.Normalize(path);
-    // Home is a tool directory; About / Donation / Weiapp already render their own markdown body.
-    if (path is "/" or "/About" or "/Donation" or "/Weiapp" or "/Changelog")
+    // Home is a tool directory; About / Donation / Changelog already render their own markdown body.
+    if (path is "/" or "/about" or "/donation" or "/changelog")
     {
         return;
     }

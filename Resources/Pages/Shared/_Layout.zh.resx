@@ -126,7 +126,4 @@
   <data name="Donation" xml:space="preserve">
     <value>赞赏</value>
   </data>
-  <data name="MiniProgram" xml:space="preserve">
-    <value>小程序</value>
-  </data>
 </root>

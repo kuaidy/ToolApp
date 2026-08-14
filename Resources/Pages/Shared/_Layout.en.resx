@@ -126,7 +126,4 @@
   <data name="Donation" xml:space="preserve">
     <value>Donation</value>
   </data>
-  <data name="MiniProgram" xml:space="preserve">
-    <value>MiniProgram</value>
-  </data>
 </root>

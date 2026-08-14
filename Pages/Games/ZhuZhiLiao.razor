@@ -1,0 +1,114 @@
+@page "/games/zhuzhiliao"
+@page "/lifetools/zhuzhiliao"
+@using Microsoft.AspNetCore.Components
+@inject IJSRuntime JS
+@inject IStringLocalizer<ZhuZhiLiao> L
+@implements IAsyncDisposable
+
+<div class="tool-page it-page zzl-page">
+    <header class="it-hero">
+        <h1>@L["PageTitle"]</h1>
+        <p>@L["LeadShort"]</p>
+    </header>
+
+    <div class="it-studio">
+        <div class="zzl-hud">
+            <div class="zzl-hud-rpm" aria-live="polite">
+                <span class="zzl-hud-value">@RpmText</span>
+                <span class="zzl-hud-unit">@L["UnitRpm"]</span>
+            </div>
+            <div class="zzl-hud-wow">@L["StatsWow", WowCount]</div>
+        </div>
+
+        <div class="it-toolbar">
+            <div class="it-toolbar-fields">
+                <p class="it-meta mb-0">@L["HintDrag"]</p>
+            </div>
+            <div class="it-toolbar-actions">
+                <button type="button" class="it-btn @(AutoOn ? "it-btn-primary" : "it-btn-outline")"
+                        @onclick="ToggleAutoAsync">@(AutoOn ? L["BtnAutoStop"] : L["BtnAutoStart"])</button>
+                <button type="button" class="it-btn it-btn-outline"
+                        @onclick="UnlockAudioAsync">@L["BtnSound"]</button>
+                <button type="button" class="it-btn it-btn-outline"
+                        @onclick="ResetCountAsync">@L["BtnResetCount"]</button>
+            </div>
+        </div>
+
+        <div class="zzl-stage">
+            <canvas id="@CanvasId" class="zzl-canvas" aria-label="@L["PageTitle"]"></canvas>
+        </div>
+    </div>
+</div>
+
+@code {
+    private const string CanvasId = "zhu-zhiliao-canvas";
+    private DotNetObjectReference<ZhuZhiLiao>? _self;
+    private bool _mounted;
+    private bool AutoOn { get; set; }
+    private double Rpm { get; set; }
+    private int WowCount { get; set; }
+    private string RpmText => Rpm.ToString("0.0");
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender || _mounted)
+        {
+            return;
+        }
+
+        _mounted = true;
+        _self = DotNetObjectReference.Create(this);
+        await JS.InvokeAsync<object>("zhuZhiLiao.mount", CanvasId);
+        await JS.InvokeVoidAsync("zhuZhiLiao.setStatsCallback", CanvasId, _self);
+    }
+
+    private async Task ToggleAutoAsync()
+    {
+        var res = await JS.InvokeAsync<AutoResult>("zhuZhiLiao.toggleAuto", CanvasId);
+        AutoOn = res?.auto ?? !AutoOn;
+    }
+
+    private async Task UnlockAudioAsync()
+    {
+        await JS.InvokeVoidAsync("zhuZhiLiao.unlockAudio", CanvasId);
+    }
+
+    private async Task ResetCountAsync()
+    {
+        await JS.InvokeVoidAsync("zhuZhiLiao.resetCount", CanvasId);
+        WowCount = 0;
+    }
+
+    [JSInvokable]
+    public void OnZhuStats(double rpm, int wow, bool auto)
+    {
+        var changed = Math.Abs(Rpm - rpm) > 0.05 || WowCount != wow || AutoOn != auto;
+        Rpm = rpm;
+        WowCount = wow;
+        AutoOn = auto;
+        if (changed)
+        {
+            _ = InvokeAsync(StateHasChanged);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("zhuZhiLiao.destroy", CanvasId);
+        }
+        catch
+        {
+            // ignore dispose races
+        }
+
+        _self?.Dispose();
+    }
+
+    private sealed class AutoResult
+    {
+        public bool ok { get; set; }
+        public bool auto { get; set; }
+    }
+}

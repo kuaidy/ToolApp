@@ -10,4 +10,4 @@ Check whether a URL is reachable and inspect the response—useful for finding b
 
 ### Related reference
 
-After you see a status code, use the on-site [HTTP status codes](/TableTools/HttpStatusCode) reference to interpret it.
+After you see a status code, use the on-site [HTTP status codes](/tabletools/httpstatuscode) reference to interpret it.

@@ -150,6 +150,7 @@
     <script src="~/js/imageFormatConvert.js" asp-append-version="true"></script>
     <script src="~/js/beadPattern.js" asp-append-version="true"></script>
     <script src="~/js/imagePixelate.js" asp-append-version="true"></script>
+    <script src="~/js/zhuZhiLiao.js" asp-append-version="true"></script>
     <script src="~/js/imageHd.js" asp-append-version="true"></script>
     <script src="~/js/imageMerge.js" asp-append-version="true"></script>
     <script src="~/js/MyIndexDB.js" asp-append-version="true"></script>
@@ -193,12 +194,16 @@
     </header>
     <div class="container">
         @RenderBody()
-        @await Html.PartialAsync("_SeoGeoContent")
+        @* Blazor host pages render SeoGeoPanel inside App so docs follow client-side route changes. *@
+        @if (ViewData["SeoGeoInBlazor"] as bool? != true)
+        {
+            @await Html.PartialAsync("_SeoGeoContent")
+        }
     </div>
     <div id="components-reconnect-modal" style="display:none;"></div>
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy;2021 - ToolApp - <a href="/Weiapp">@ViewLocalizer["MiniProgram"]</a> - <a href="/About">@ViewLocalizer["About"]</a> - <a href="/Changelog">@ViewLocalizer["Changelog"]</a> - <a href="/Donation">@ViewLocalizer["Donation"]</a>
+            &copy;2021 - ToolApp - <a href="/about">@ViewLocalizer["About"]</a> - <a href="/changelog">@ViewLocalizer["Changelog"]</a> - <a href="/donation">@ViewLocalizer["Donation"]</a>
             · <a href="/robots.txt">robots</a>
             · <a href="/sitemap.xml">sitemap</a>
             · <a href="/llms.txt">llms.txt</a>
@@ -206,5 +211,5 @@
     </footer>
 </body>
 <script src="_content/Microsoft.FluentUI.AspNetCore.Components/Microsoft.FluentUI.AspNetCore.Components.lib.module.js" type="module" async></script>
-<script src ="~/_framework/blazor.server.js"></script>
+<script src="~/_framework/blazor.server.js"></script>
 </html>

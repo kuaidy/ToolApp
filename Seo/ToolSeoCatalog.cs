@@ -62,12 +62,13 @@ public static class ToolSeoCatalog
             path = path.TrimEnd('/');
         }
 
-        if (string.Equals(path, "/Index", StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(path, "/index", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(path, "/index", StringComparison.OrdinalIgnoreCase))
         {
             return "/";
         }
 
-        return path;
+        return path.ToLowerInvariant();
     }
 
     private static void ApplyDocFiles(List<ToolSeoEntry> list)
@@ -86,25 +87,27 @@ public static class ToolSeoCatalog
             ["/imagetools/imagepixelate"] = "ImageTools/ImagePixelate.md",
             ["/imagetools/imagehd"] = "ImageTools/ImageHd.md",
             ["/imagetools/imagemerge"] = "ImageTools/ImageMerge.md",
-            ["/TxtTools/WordCount"] = "TxtTools/WordCount.md",
-            ["/TxtTools/JsonFormat"] = "json格式化.md",
-            ["/TxtTools/MarkdownEdit"] = "markdown编辑器.md",
-            ["/TxtTools/Regular"] = "RegexTest.md",
+            ["/txttools/wordcount"] = "TxtTools/WordCount.md",
+            ["/txttools/jsonformat"] = "json格式化.md",
+            ["/txttools/markdownedit"] = "markdown编辑器.md",
+            ["/txttools/regular"] = "RegexTest.md",
             ["/txttools/articleformat"] = "TxtTools/ArticleFormat.md",
-            ["/TxtTools/ToggleCase"] = "TxtTools/ToggleCase.md",
-            ["/ConvertTools/BinaryConvert"] = "ConvertTools/BinaryConvert.md",
-            ["/ConvertTools/ColorConvert"] = "ConvertTools/ColorConvert.md",
-            ["/ConvertTools/LengthConvert"] = "ConvertTools/LengthConvert.md",
-            ["/CodeTools/EncodeDecode"] = "CodeTools/EncodeDecode.md",
-            ["/CreateTools/GuidCreate"] = "CreateTools/GuidCreate.md",
-            ["/CreateTools/QrCodeCreate"] = "二维码.md",
-            ["/CreateTools/CodeGeneration"] = "CreateTools/CodeGeneration.md",
-            ["/CreateTools/GoodGeneration"] = "CreateTools/GoodGeneration.md",
-            ["/BackImg/index.html"] = "CreateTools/BackImg.md",
-            ["/QueryTools/ShowIp"] = "QueryTools/ShowIp.md",
-            ["/QueryTools/CheckUrl"] = "QueryTools/CheckUrl.md",
-            ["/ProductiviryTools/Pomodoro"] = "Productivity/Pomodoro.md",
-            ["/LifeTools/Constellation"] = "LifeTools/Constellation.md",
+            ["/txttools/togglecase"] = "TxtTools/ToggleCase.md",
+            ["/converttools/binaryconvert"] = "ConvertTools/BinaryConvert.md",
+            ["/converttools/colorconvert"] = "ConvertTools/ColorConvert.md",
+            ["/converttools/lengthconvert"] = "ConvertTools/LengthConvert.md",
+            ["/codetools/encodedecode"] = "CodeTools/EncodeDecode.md",
+            ["/createtools/guidcreate"] = "CreateTools/GuidCreate.md",
+            ["/createtools/qrcodecreate"] = "二维码.md",
+            ["/createtools/codegeneration"] = "CreateTools/CodeGeneration.md",
+            ["/createtools/goodgeneration"] = "CreateTools/GoodGeneration.md",
+            ["/backimg/index.html"] = "CreateTools/BackImg.md",
+            ["/querytools/showip"] = "QueryTools/ShowIp.md",
+            ["/querytools/checkurl"] = "QueryTools/CheckUrl.md",
+            ["/productivirytools/pomodoro"] = "Productivity/Pomodoro.md",
+            ["/lifetools/constellation"] = "LifeTools/Constellation.md",
+            ["/games/zhuzhiliao"] = "Games/ZhuZhiLiao.md",
+            ["/lifetools/zhuzhiliao"] = "Games/ZhuZhiLiao.md",
         };
 
         foreach (var e in list)
@@ -455,7 +458,7 @@ public static class ToolSeoCatalog
             ["/imagetools/bgremove", "/imagetools/imageresize", "/imagetools/imageformatconvert"]);
 
         // —— Text ——
-        yield return Tool("/TxtTools/WordCount", "文本工具", "Text tools",
+        yield return Tool("/txttools/wordcount", "文本工具", "Text tools",
             "字数统计", "Word count",
             "在线统计中英文字数、字符数、行数与段落，粘贴即算，无需安装。",
             "Count Chinese/English words, characters, lines, and paragraphs online—paste and get stats instantly.",
@@ -475,9 +478,9 @@ public static class ToolSeoCatalog
             ],
             ["粘贴或输入文本", "查看右侧实时统计", "按需复制结果"],
             ["Paste or type text", "Read live stats", "Copy results if needed"],
-            ["/txttools/articleformat", "/TxtTools/JsonFormat", "/TxtTools/MarkdownEdit"]);
+            ["/txttools/articleformat", "/txttools/jsonformat", "/txttools/markdownedit"]);
 
-        yield return Tool("/TxtTools/JsonFormat", "文本工具", "Text tools",
+        yield return Tool("/txttools/jsonformat", "文本工具", "Text tools",
             "JSON 格式化", "JSON formatter",
             "在线校验与美化 JSON，左侧编辑、右侧树形预览，快速定位语法错误。",
             "Validate and beautify JSON online with an editor and tree preview—spot syntax errors quickly.",
@@ -497,9 +500,9 @@ public static class ToolSeoCatalog
             ],
             ["粘贴 JSON", "查看格式化与树预览", "修复错误后复制结果"],
             ["Paste JSON", "Review formatted output and tree", "Fix errors and copy"],
-            ["/CodeTools/EncodeDecode", "/TxtTools/Regular", "/TxtTools/MarkdownEdit"]);
+            ["/codetools/encodedecode", "/txttools/regular", "/txttools/markdownedit"]);
 
-        yield return Tool("/TxtTools/MarkdownEdit", "文本工具", "Text tools",
+        yield return Tool("/txttools/markdownedit", "文本工具", "Text tools",
             "Markdown 编辑", "Markdown editor",
             "在线 Markdown 编辑与预览，支持公式与流程图等扩展，适合写文档与 README。",
             "Edit and preview Markdown online with extras like formulas and diagrams—great for docs and READMEs.",
@@ -519,9 +522,9 @@ public static class ToolSeoCatalog
             ],
             ["打开编辑器", "编写或粘贴 Markdown", "查看预览", "复制或保存内容"],
             ["Open the editor", "Write or paste Markdown", "Check the preview", "Copy or save"],
-            ["/TxtTools/JsonFormat", "/txttools/articleformat", "/TxtTools/WordCount"]);
+            ["/txttools/jsonformat", "/txttools/articleformat", "/txttools/wordcount"]);
 
-        yield return Tool("/TxtTools/Regular", "文本工具", "Text tools",
+        yield return Tool("/txttools/regular", "文本工具", "Text tools",
             "正则表达式测试", "Regex tester",
             "在线测试正则表达式匹配、分组捕获与替换，实时查看结果。",
             "Test regular expressions online with matches, capture groups, and replace—see results live.",
@@ -541,7 +544,7 @@ public static class ToolSeoCatalog
             ],
             ["输入正则与测试文本", "查看匹配与分组", "按需尝试替换并复制结果"],
             ["Enter pattern and sample text", "Inspect matches and groups", "Try replace and copy"],
-            ["/TxtTools/JsonFormat", "/CodeTools/EncodeDecode", "/TableTools/Ascii"]);
+            ["/txttools/jsonformat", "/codetools/encodedecode", "/tabletools/ascii"]);
 
         yield return Tool("/txttools/articleformat", "文本工具", "Text tools",
             "中英文排版", "Article format",
@@ -563,9 +566,9 @@ public static class ToolSeoCatalog
             ],
             ["粘贴原文", "一键格式化", "对比预览后复制结果"],
             ["Paste the original text", "Format", "Review and copy"],
-            ["/TxtTools/WordCount", "/TxtTools/MarkdownEdit", "/TxtTools/ToggleCase"]);
+            ["/txttools/wordcount", "/txttools/markdownedit", "/txttools/togglecase"]);
 
-        yield return Tool("/TxtTools/ToggleCase", "文本工具", "Text tools",
+        yield return Tool("/txttools/togglecase", "文本工具", "Text tools",
             "大小写转换", "Toggle case",
             "在线转换英文大小写：全部大写、小写、首字母大写等，粘贴即转。",
             "Convert English letter case online: upper, lower, title case, and more—paste and transform.",
@@ -582,10 +585,10 @@ public static class ToolSeoCatalog
             ],
             ["粘贴文本", "选择大小写模式", "复制转换结果"],
             ["Paste text", "Choose a case mode", "Copy the result"],
-            ["/txttools/articleformat", "/TxtTools/WordCount", "/CodeTools/EncodeDecode"]);
+            ["/txttools/articleformat", "/txttools/wordcount", "/codetools/encodedecode"]);
 
         // —— Convert ——
-        yield return Tool("/ConvertTools/BinaryConvert", "转换工具", "Converters",
+        yield return Tool("/converttools/binaryconvert", "转换工具", "Converters",
             "进制转换", "Base converter",
             "在线进制转换：二进制、八进制、十进制、十六进制互转，适合开发与学习。",
             "Convert between binary, octal, decimal, and hexadecimal online—handy for development and learning.",
@@ -605,9 +608,9 @@ public static class ToolSeoCatalog
             ],
             ["选择源进制与目标进制", "输入数值", "查看转换结果并复制"],
             ["Pick source and target bases", "Enter a value", "Copy the result"],
-            ["/ConvertTools/ColorConvert", "/ConvertTools/LengthConvert", "/CodeTools/EncodeDecode"]);
+            ["/converttools/colorconvert", "/converttools/lengthconvert", "/codetools/encodedecode"]);
 
-        yield return Tool("/ConvertTools/ColorConvert", "转换工具", "Converters",
+        yield return Tool("/converttools/colorconvert", "转换工具", "Converters",
             "颜色值转换", "Color converter",
             "在线颜色转换：HEX、RGB、HSL 等互转，可视化选色。",
             "Convert HEX, RGB, HSL and more online with a visual color picker.",
@@ -627,9 +630,9 @@ public static class ToolSeoCatalog
             ],
             ["输入色值或使用取色器", "切换目标格式", "复制结果码"],
             ["Enter a color or use the picker", "Switch target format", "Copy the code"],
-            ["/ConvertTools/BinaryConvert", "/CreateTools/GoodGeneration", "/BackImg/index.html"]);
+            ["/converttools/binaryconvert", "/createtools/goodgeneration", "/backimg/index.html"]);
 
-        yield return Tool("/ConvertTools/LengthConvert", "转换工具", "Converters",
+        yield return Tool("/converttools/lengthconvert", "转换工具", "Converters",
             "长度转换", "Length converter",
             "常用长度单位在线换算：米、厘米、英寸、英尺等。",
             "Convert common length units online: meters, centimeters, inches, feet, and more.",
@@ -646,10 +649,10 @@ public static class ToolSeoCatalog
             ],
             ["选择单位并输入数值", "查看换算结果", "复制结果"],
             ["Choose units and enter a value", "Read the result", "Copy if needed"],
-            ["/ConvertTools/BinaryConvert", "/ConvertTools/ColorConvert"]);
+            ["/converttools/binaryconvert", "/converttools/colorconvert"]);
 
         // —— Encoding ——
-        yield return Tool("/CodeTools/EncodeDecode", "编码工具", "Encoding",
+        yield return Tool("/codetools/encodedecode", "编码工具", "Encoding",
             "编码解码", "Encode / decode",
             "在线 Base64、URL、HTML 等编码解码，开发调试常用。",
             "Encode and decode Base64, URL, HTML and more online—useful for development and debugging.",
@@ -669,10 +672,10 @@ public static class ToolSeoCatalog
             ],
             ["选择编码类型", "粘贴原文或密文", "执行编码或解码并复制"],
             ["Choose a codec", "Paste input", "Encode or decode, then copy"],
-            ["/TxtTools/JsonFormat", "/TxtTools/Regular", "/TableTools/UrlEscapeCode"]);
+            ["/txttools/jsonformat", "/txttools/regular", "/tabletools/urlescapecode"]);
 
         // —— Generators ——
-        yield return Tool("/CreateTools/GuidCreate", "生成工具", "Generators",
+        yield return Tool("/createtools/guidcreate", "生成工具", "Generators",
             "GUID 生成", "GUID generator",
             "一键批量生成 GUID/UUID，支持复制，适合开发与测试。",
             "Generate GUID/UUID values in bulk and copy them—handy for development and testing.",
@@ -692,9 +695,9 @@ public static class ToolSeoCatalog
             ],
             ["设置生成数量", "一键生成", "复制全部或部分 GUID"],
             ["Set how many to create", "Generate", "Copy one or all"],
-            ["/CreateTools/QrCodeCreate", "/CodeTools/EncodeDecode", "/TxtTools/JsonFormat"]);
+            ["/createtools/qrcodecreate", "/codetools/encodedecode", "/txttools/jsonformat"]);
 
-        yield return Tool("/CreateTools/QrCodeCreate", "生成工具", "Generators",
+        yield return Tool("/createtools/qrcodecreate", "生成工具", "Generators",
             "二维码生成", "QR code generator",
             "输入文本或链接生成二维码，下载图片用于分享、菜单与活动。",
             "Create a QR code from text or a URL and download the image for sharing, menus, or events.",
@@ -714,9 +717,9 @@ public static class ToolSeoCatalog
             ],
             ["输入内容或链接", "生成二维码", "下载图片"],
             ["Enter text or URL", "Generate", "Download"],
-            ["/CreateTools/GuidCreate", "/CreateTools/CodeGeneration", "/QueryTools/CheckUrl"]);
+            ["/createtools/guidcreate", "/createtools/codegeneration", "/querytools/checkurl"]);
 
-        yield return Tool("/CreateTools/CodeGeneration", "生成工具", "Generators",
+        yield return Tool("/createtools/codegeneration", "生成工具", "Generators",
             "视频嵌入代码", "Video embed code",
             "根据视频页面地址生成可粘贴的 HTML 嵌入代码。",
             "Generate paste-ready HTML embed code from a video page URL.",
@@ -733,9 +736,9 @@ public static class ToolSeoCatalog
             ],
             ["填写视频 URL 与尺寸", "生成嵌入代码", "复制到目标页面"],
             ["Enter video URL and size", "Generate embed code", "Paste into your page"],
-            ["/CreateTools/QrCodeCreate", "/CreateTools/GoodGeneration"]);
+            ["/createtools/qrcodecreate", "/createtools/goodgeneration"]);
 
-        yield return Tool("/CreateTools/GoodGeneration", "生成工具", "Generators",
+        yield return Tool("/createtools/goodgeneration", "生成工具", "Generators",
             "商品卡片生成", "Product card generator",
             "填写商品信息生成预览卡片与分享素材。",
             "Fill in product fields to generate a preview card and shareable asset.",
@@ -752,11 +755,11 @@ public static class ToolSeoCatalog
             ],
             ["填写商品字段", "预览卡片效果", "导出或复制素材"],
             ["Fill product fields", "Preview the card", "Export or copy"],
-            ["/BackImg/index.html", "/CreateTools/CodeGeneration", "/imagetools/imagemerge"]);
+            ["/backimg/index.html", "/createtools/codegeneration", "/imagetools/imagemerge"]);
 
         yield return new ToolSeoEntry
         {
-            Path = "/BackImg/index.html",
+            Path = "/backimg/index.html",
             TitleZh = "主图 / 背景图生成",
             TitleEn = "Cover / background image maker",
             DescriptionZh = "在线编辑封面与背景图，适合文章主图与分享图制作。",
@@ -781,11 +784,11 @@ public static class ToolSeoCatalog
             ],
             HowToStepsZh = ["打开主图编辑器", "选择模板或上传素材", "编辑文字与样式", "导出图片"],
             HowToStepsEn = ["Open the cover editor", "Pick a template or upload assets", "Edit text and style", "Export the image"],
-            RelatedPaths = ["/CreateTools/GoodGeneration", "/imagetools/imagemerge", "/imagetools/imageformatconvert"]
+            RelatedPaths = ["/createtools/goodgeneration", "/imagetools/imagemerge", "/imagetools/imageformatconvert"]
         };
 
         // —— Reference tables ——
-        yield return Ref("/TableTools/MimiType", "MIME 类型对照表", "MIME type reference",
+        yield return Ref("/tabletools/mimitype", "MIME 类型对照表", "MIME type reference",
             "常用文件扩展名与 MIME Content-Type 对照，开发与排查接口时快速查询。",
             "Lookup common file extensions and MIME Content-Types for development and API debugging.",
             "MIME类型,Content-Type,文件类型", "MIME types, Content-Type, file extension",
@@ -800,7 +803,7 @@ public static class ToolSeoCatalog
                     "Tables follow conventions; sniff real file content when security matters.")
             ]);
 
-        yield return Ref("/TableTools/CssSelectors", "CSS 选择器参考表", "CSS selectors cheat sheet",
+        yield return Ref("/tabletools/cssselectors", "CSS 选择器参考表", "CSS selectors cheat sheet",
             "常用 CSS 选择器语法与示例速查。",
             "Quick reference for common CSS selector syntax and examples.",
             "CSS选择器,选择器语法", "CSS selectors, selector syntax",
@@ -815,7 +818,7 @@ public static class ToolSeoCatalog
                     "Yes—look up a pattern and verify it in DevTools.")
             ]);
 
-        yield return Ref("/TableTools/VimCommand", "Vim 命令参考表", "Vim command reference",
+        yield return Ref("/tabletools/vimcommand", "Vim 命令参考表", "Vim command reference",
             "常用 Vim 编辑与移动命令速查。",
             "Cheat sheet of common Vim editing and motion commands.",
             "Vim命令,Vim速查", "Vim commands, Vim cheat sheet",
@@ -830,7 +833,7 @@ public static class ToolSeoCatalog
                     "Most basics transfer to Neovim as a quick reference.")
             ]);
 
-        yield return Ref("/TableTools/GitCommand", "Git 命令参考表", "Git command reference",
+        yield return Ref("/tabletools/gitcommand", "Git 命令参考表", "Git command reference",
             "常用 Git 命令与说明，版本管理工作流速查。",
             "Common Git commands with notes for everyday version-control workflows.",
             "Git命令,Git速查", "Git commands, Git cheat sheet",
@@ -845,7 +848,7 @@ public static class ToolSeoCatalog
                     "Yes—handy before interviews or when you forget a flag.")
             ]);
 
-        yield return Ref("/TableTools/Emoji", "Emoji 表情符号", "Emoji symbols",
+        yield return Ref("/tabletools/emoji", "Emoji 表情符号", "Emoji symbols",
             "常用 Emoji 字符对照与复制。",
             "Browse and copy common emoji characters.",
             "Emoji表情,表情符号复制", "emoji list, copy emoji",
@@ -860,7 +863,7 @@ public static class ToolSeoCatalog
                     "Glyphs vary by OS/font; meaning is usually shared.")
             ]);
 
-        yield return Ref("/TableTools/Linux", "常用 Linux 命令", "Linux commands",
+        yield return Ref("/tabletools/linux", "常用 Linux 命令", "Linux commands",
             "Linux 终端常用命令参考。",
             "Reference for common Linux terminal commands.",
             "Linux命令,Shell命令", "Linux commands, shell cheat sheet",
@@ -875,7 +878,7 @@ public static class ToolSeoCatalog
                     "Yes—practice carefully and avoid risky ops on production.")
             ]);
 
-        yield return Ref("/TableTools/SpecialSymbols", "特殊符号", "Special symbols",
+        yield return Ref("/tabletools/specialsymbols", "特殊符号", "Special symbols",
             "常用特殊符号与字符对照，方便复制。",
             "Common special symbols and characters ready to copy.",
             "特殊符号,特殊字符,标点符号", "special symbols, special characters",
@@ -890,7 +893,7 @@ public static class ToolSeoCatalog
                     "Ensure the target editor supports Unicode.")
             ]);
 
-        yield return Ref("/TableTools/HttpStatusCode", "HTTP 状态码", "HTTP status codes",
+        yield return Ref("/tabletools/httpstatuscode", "HTTP 状态码", "HTTP status codes",
             "常见 HTTP 响应状态码含义说明。",
             "Meanings of common HTTP response status codes.",
             "HTTP状态码,404,500,403", "HTTP status codes, 404, 500, 403",
@@ -905,7 +908,7 @@ public static class ToolSeoCatalog
                     "Server error—check server logs and dependencies.")
             ]);
 
-        yield return Ref("/TableTools/UrlEscapeCode", "URL 转义字符", "URL escape codes",
+        yield return Ref("/tabletools/urlescapecode", "URL 转义字符", "URL escape codes",
             "URL 编码常用转义字符对照。",
             "Reference for common URL percent-encoding escape codes.",
             "URL编码,百分号编码,转义字符", "URL encoding, percent encoding, escape codes",
@@ -919,9 +922,9 @@ public static class ToolSeoCatalog
                     "对照表用于查阅；实际批量转换可用编码解码工具。",
                     "Use the table to look up; use Encode/Decode for batch transforms.")
             ],
-            ["/CodeTools/EncodeDecode", "/TableTools/Ascii"]);
+            ["/codetools/encodedecode", "/tabletools/ascii"]);
 
-        yield return Ref("/TableTools/UsualNumber", "常用电话列表", "Common phone numbers",
+        yield return Ref("/tabletools/usualnumber", "常用电话列表", "Common phone numbers",
             "国内常用服务电话号码速查。",
             "Quick list of commonly used service phone numbers in China.",
             "服务电话,常用号码,客服电话", "service numbers, hotlines, China phone list",
@@ -936,7 +939,7 @@ public static class ToolSeoCatalog
                     "Focuses on common national hotlines; local numbers may be incomplete.")
             ]);
 
-        yield return Ref("/TableTools/Ascii", "ASCII 字符对照表", "ASCII table",
+        yield return Ref("/tabletools/ascii", "ASCII 字符对照表", "ASCII table",
             "ASCII 码与字符对照参考。",
             "ASCII code to character reference table.",
             "ASCII表,ASCII码", "ASCII table, ASCII codes",
@@ -950,10 +953,10 @@ public static class ToolSeoCatalog
                     "ASCII 是 Unicode 的前 128 个码位兼容集。",
                     "ASCII is the first 128 compatible code points of Unicode.")
             ],
-            ["/TableTools/UrlEscapeCode", "/CodeTools/EncodeDecode"]);
+            ["/tabletools/urlescapecode", "/codetools/encodedecode"]);
 
         // —— Query ——
-        yield return Tool("/QueryTools/ShowIp", "查询工具", "Lookup",
+        yield return Tool("/querytools/showip", "查询工具", "Lookup",
             "IP 归属地查询", "IP geolocation",
             "查询 IP 地址归属地、运营商与地理位置信息；也可查看当前公网 IP。",
             "Look up IP geolocation, ISP, and location details—or check your public IP.",
@@ -973,9 +976,9 @@ public static class ToolSeoCatalog
             ],
             ["输入 IP 或留空查本机公网", "发起查询", "查看归属地与运营商信息"],
             ["Enter an IP or leave blank", "Run the lookup", "Read location and ISP"],
-            ["/QueryTools/CheckUrl", "/About"]);
+            ["/querytools/checkurl", "/about"]);
 
-        yield return Tool("/QueryTools/CheckUrl", "查询工具", "Lookup",
+        yield return Tool("/querytools/checkurl", "查询工具", "Lookup",
             "网站链接检测", "URL checker",
             "检测网址可访问性与响应情况，排查失效链接。",
             "Check whether a URL is reachable and review the response—useful for broken-link checks.",
@@ -995,10 +998,10 @@ public static class ToolSeoCatalog
             ],
             ["粘贴要检测的 URL", "开始检测", "查看响应结果"],
             ["Paste the URL", "Run the check", "Review the response"],
-            ["/QueryTools/ShowIp", "/TableTools/HttpStatusCode", "/CreateTools/QrCodeCreate"]);
+            ["/querytools/showip", "/tabletools/httpstatuscode", "/createtools/qrcodecreate"]);
 
         // —— Productivity / life / other ——
-        yield return Tool("/ProductiviryTools/Pomodoro", "效率工具", "Productivity",
+        yield return Tool("/productivirytools/pomodoro", "效率工具", "Productivity",
             "番茄钟", "Pomodoro timer",
             "在线番茄工作法计时器：专注与休息交替，提升效率。",
             "Online Pomodoro timer for focused work intervals and breaks.",
@@ -1018,9 +1021,9 @@ public static class ToolSeoCatalog
             ],
             ["设定专注与休息时长", "开始计时", "按提示休息并循环"],
             ["Set work and break lengths", "Start the timer", "Take breaks and repeat"],
-            ["/TxtTools/WordCount", "/About"]);
+            ["/txttools/wordcount", "/about"]);
 
-        yield return Tool("/LifeTools/Constellation", "生活工具", "Lifestyle",
+        yield return Tool("/lifetools/constellation", "生活工具", "Lifestyle",
             "星座查询", "Constellation",
             "星座相关查询与趣味参考。",
             "Constellation lookup and light reference content.",
@@ -1037,9 +1040,48 @@ public static class ToolSeoCatalog
             ],
             ["选择或输入星座相关条件", "查看结果"],
             ["Choose constellation options", "View the result"],
-            ["/About"]);
+            ["/games/zhuzhiliao", "/about"]);
 
-        yield return Tool("/About", "其他", "Other",
+        yield return Tool("/games/zhuzhiliao", "游戏", "Games",
+            "在线竹知了", "Online bamboo cicada",
+            "浏览器模拟竹蝉玩具：按住画圈甩动发声，支持一键自动转，本地运行不上传。",
+            "Simulate the bamboo cicada toy in your browser—drag to spin and chirp, with one-tap auto-spin. Runs locally.",
+            "竹知了,竹蝉,在线玩具,自动转,哇哇叫,小游戏", "bamboo cicada, zhuzhiliao, online toy, auto spin, mini game",
+            "趣味还原“一转就哇哇叫”的玩法：手动画圈或自动转，转速越快叫声越急；声音为浏览器合成。玩法参考经典竹蝉玩具体验。",
+            "A playful take on the classic whirling cicada toy: drag circles or auto-spin; faster spins chirp faster. Synthetic browser audio. Inspired by the classic toy experience.",
+            [
+                Faq("支持自动转吗？", "Does it support auto-spin?",
+                    "支持。点「自动转」或按空格即可开关。",
+                    "Yes—use Auto-spin or press Space to toggle."),
+                Faq("为什么没声音？", "Why is there no sound?",
+                    "请先点「开启声音」或拖动一下画面，以解锁浏览器音频。",
+                    "Tap Enable sound or drag once to unlock browser audio."),
+                Faq("会上传数据吗？", "Are any data uploaded?",
+                    "不会。动画与声音均在浏览器本地完成。",
+                    "No. Animation and audio stay in the browser.")
+            ],
+            ["打开页面并解锁声音", "画圈甩动或开启自动转", "查看转速与哇数"],
+            ["Open the page and unlock sound", "Drag to spin or enable auto-spin", "Watch RPM and wow count"],
+            ["/productivirytools/pomodoro", "/about"]);
+
+        // Legacy aliases (mixed-case / old folder) for bookmarks.
+        yield return Tool("/lifetools/zhuzhiliao", "游戏", "Games",
+            "在线竹知了", "Online bamboo cicada",
+            "浏览器模拟竹蝉玩具：按住画圈甩动发声，支持一键自动转，本地运行不上传。",
+            "Simulate the bamboo cicada toy in your browser—drag to spin and chirp, with one-tap auto-spin. Runs locally.",
+            "竹知了,竹蝉,在线玩具,自动转", "bamboo cicada, zhuzhiliao, online toy, auto spin",
+            "趣味还原“一转就哇哇叫”的玩法（旧路径，建议使用 /games/zhuzhiliao）。",
+            "Classic bamboo cicada toy simulation (legacy path; prefer /games/zhuzhiliao).",
+            [
+                Faq("支持自动转吗？", "Does it support auto-spin?",
+                    "支持。点「自动转」或按空格即可开关。",
+                    "Yes—use Auto-spin or press Space to toggle.")
+            ],
+            ["打开页面并解锁声音", "画圈甩动或开启自动转"],
+            ["Open the page and unlock sound", "Drag to spin or enable auto-spin"],
+            ["/games/zhuzhiliao"]);
+
+        yield return Tool("/about", "其他", "Other",
             "关于本站", "About",
             "了解 ToolApp：免费在线工具箱，图片、文本、编码、对照表与查询工具，支持中英文。",
             "About ToolApp: a free online toolbox for images, text, encoding, cheat sheets, and lookups—English and Chinese.",
@@ -1059,9 +1101,9 @@ public static class ToolSeoCatalog
             ],
             ["阅读关于说明", "从首页选择需要的工具"],
             ["Read the about notes", "Pick a tool from the home page"],
-            ["/", "/Changelog", "/Donation", "/Weiapp"]);
+            ["/", "/changelog", "/donation"]);
 
-        yield return Tool("/Changelog", "其他", "Other",
+        yield return Tool("/changelog", "其他", "Other",
             "更新日志", "Changelog",
             "查看 ToolApp 功能与体验更新记录，按日期倒序排列。",
             "Browse ToolApp product and UX changes, newest first.",
@@ -1078,9 +1120,9 @@ public static class ToolSeoCatalog
             ],
             ["打开更新日志", "按日期浏览变更"],
             ["Open the changelog", "Browse changes by date"],
-            ["/About", "/"]);
+            ["/about", "/"]);
 
-        yield return Tool("/Donation", "其他", "Other",
+        yield return Tool("/donation", "其他", "Other",
             "捐助支持", "Donation",
             "支持 ToolApp 继续维护与开发在线工具。",
             "Support ToolApp so we can keep maintaining free online tools.",
@@ -1097,26 +1139,7 @@ public static class ToolSeoCatalog
             ],
             ["打开捐助页", "按页面说明完成支持"],
             ["Open the donation page", "Follow the on-page instructions"],
-            ["/About", "/"]);
-
-        yield return Tool("/Weiapp", "其他", "Other",
-            "微信小程序", "WeChat mini program",
-            "ToolApp 微信小程序入口与说明。",
-            "WeChat mini program entry and notes for ToolApp.",
-            "微信小程序,ToolApp小程序", "WeChat mini program, ToolApp mini program",
-            "在微信内便捷访问部分工具能力的小程序入口说明。",
-            "Notes for accessing selected ToolApp capabilities inside WeChat.",
-            [
-                Faq("和小程序网页版一样吗？", "Same as the website?",
-                    "能力可能子集化，以小程序实际页面为准。",
-                    "Features may be a subset—follow the mini program UI."),
-                Faq("如何打开？", "How do I open it?",
-                    "按本页提供的名称/码或搜索指引进入。",
-                    "Use the name/QR or search instructions on this page.")
-            ],
-            ["查看小程序说明", "按指引在微信中打开"],
-            ["Read the mini program notes", "Open it in WeChat as instructed"],
-            ["/About", "/"]);
+            ["/about", "/"]);
     }
 
     private static ToolSeoEntry Home() => new()
@@ -1146,7 +1169,7 @@ public static class ToolSeoCatalog
         ],
         HowToStepsZh = ["打开首页", "按分类选择工具", "按页面说明完成操作"],
         HowToStepsEn = ["Open the home page", "Pick a tool by category", "Follow the on-page steps"],
-        RelatedPaths = ["/imagetools/imageformatconvert", "/imagetools/imageocr", "/TxtTools/JsonFormat", "/CreateTools/QrCodeCreate"]
+        RelatedPaths = ["/imagetools/imageformatconvert", "/imagetools/imageocr", "/txttools/jsonformat", "/createtools/qrcodecreate"]
     };
 
     private static ToolSeoEntry Img(

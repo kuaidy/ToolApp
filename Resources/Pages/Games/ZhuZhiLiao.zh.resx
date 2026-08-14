@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PageTitle" xml:space="preserve"><value>在线竹知了</value></data>
+  <data name="LeadShort" xml:space="preserve"><value>绳系质点物理 + 膜腔共鸣合成：按住画圈甩起来就哇哇叫，也可一键自动甩。</value></data>
+  <data name="HintDrag" xml:space="preserve"><value>按住画面拖动甩杆画圈；绳张紧后转得越快叫得越响。</value></data>
+  <data name="NoteAuto" xml:space="preserve"><value>「自动甩」会让甩杆自己画圈（空格开关），同样会计入哇数。首次请点「点一下开声」或拖动解锁音频。</value></data>
+  <data name="BtnAutoStart" xml:space="preserve"><value>自动甩</value></data>
+  <data name="BtnAutoStop" xml:space="preserve"><value>停止自动甩</value></data>
+  <data name="BtnSound" xml:space="preserve"><value>点一下开声</value></data>
+  <data name="BtnResetCount" xml:space="preserve"><value>清零哇数</value></data>
+  <data name="UnitRpm" xml:space="preserve"><value>圈 / 秒</value></data>
+  <data name="StatsWow" xml:space="preserve"><value>我的哇数 {0}</value></data>
+  <data name="Stats" xml:space="preserve"><value>转速约 {0} 圈/秒 · 哇数 {1}</value></data>
+</root>

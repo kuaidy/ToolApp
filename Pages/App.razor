@@ -1,9 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Components.Routing
+@using ToolApp.Pages.Common
 
 <Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" />
         <ToolSeoHead />
+        <SeoGeoPanel />
     </Found>
     <NotFound>
         <PageTitle>Not found</PageTitle>

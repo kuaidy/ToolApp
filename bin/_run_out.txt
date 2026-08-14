@@ -1,0 +1,61 @@
+从 c:\MyProject\ToolApp\Properties\launchSettings.json 使用启动设置...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5233
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: c:\MyProject\ToolApp
+fail: Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.InvalidOperationException: The following routes are ambiguous:
+      'games/zhuzhiliao' in 'ToolApp.Pages.Games.ZhuZhiLiao'
+      'Games/ZhuZhiLiao' in 'ToolApp.Pages.Games.ZhuZhiLiao'
+      
+         at Microsoft.AspNetCore.Components.RouteTableFactory.DetectAmbiguousRoutes(TreeRouteBuilder builder)
+         at Microsoft.AspNetCore.Components.RouteTableFactory.Create(Dictionary`2 templatesByHandler, IServiceProvider serviceProvider)
+         at Microsoft.AspNetCore.Components.RouteTableFactory.Create(List`1 componentTypes, IServiceProvider serviceProvider)
+         at Microsoft.AspNetCore.Components.RouteTableFactory.Create(RouteKey routeKey, IServiceProvider serviceProvider)
+         at Microsoft.AspNetCore.Components.Routing.Router.RefreshRouteTable()
+         at Microsoft.AspNetCore.Components.Routing.Router.Refresh(Boolean isNavigationIntercepted)
+         at Microsoft.AspNetCore.Components.Routing.Router.RunOnNavigateAsync(String path, Boolean isNavigationIntercepted)
+         at Microsoft.AspNetCore.Components.Rendering.ComponentState.RenderIntoBatch(RenderBatchBuilder batchBuilder, RenderFragment renderFragment, Exception& renderFragmentException)
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Components.RenderTree.Renderer.ProcessRenderQueue()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Components.RenderTree.Renderer.ProcessRenderQueue()
+         at Microsoft.AspNetCore.Components.RenderTree.Renderer.AddToRenderQueue(Int32 componentId, RenderFragment renderFragment)
+         at Microsoft.AspNetCore.Components.Endpoints.SSRRenderModeBoundary.SetParametersAsync(ParameterView parameters)
+         at Microsoft.AspNetCore.Components.Rendering.ComponentState.SupplyCombinedParameters(ParameterView directAndCascadingParameters)
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Components.Rendering.ComponentState.SetDirectParameters(ParameterView parameters)
+         at Microsoft.AspNetCore.Components.RenderTree.Renderer.RenderRootComponentAsync(Int32 componentId, ParameterView initialParameters)
+         at Microsoft.AspNetCore.Components.HtmlRendering.Infrastructure.StaticHtmlRenderer.BeginRenderingComponent(IComponent component, ParameterView initialParameters)
+         at Microsoft.AspNetCore.Components.Endpoints.EndpointHtmlRenderer.<>c__DisplayClass40_0.<PrerenderComponentAsync>b__0()
+         at Microsoft.AspNetCore.Components.Rendering.RendererSynchronizationContext.<InvokeAsync>g__Execute|9_0[TResult](ValueTuple`3 state)
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Components.Endpoints.EndpointHtmlRenderer.PrerenderComponentAsync(HttpContext httpContext, Type componentType, IComponentRenderMode prerenderMode, ParameterView parameters, Boolean waitForQuiescence)
+         at Microsoft.AspNetCore.Mvc.TagHelpers.ComponentTagHelper.ProcessAsync(TagHelperContext context, TagHelperOutput output)
+         at Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperRunner.<RunAsync>g__Awaited|0_0(Task task, TagHelperExecutionContext executionContext, Int32 i, Int32 count)
+         at ToolApp.Pages.Pages__Host.ExecuteAsync()
+         at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+         at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+         at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+         at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+         at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+         at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
