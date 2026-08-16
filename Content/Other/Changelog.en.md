@@ -2,8 +2,7 @@ Product and UX changes for ToolApp, newest first.
 
 ### 2026-08-14
 
-- **Online bamboo cicada**: browser toy (original Canvas + Web Audio) with drag-to-spin and auto-spin; more figurative bamboo-cicada art; new home **Games** category — `/games/zhuzhiliao`
-- **Removed mini program page**: dropped `/weiapp` and the footer link (mini program is no longer part of this site)
+- **Online bamboo cicada**: browser toy with drag-to-spin and auto-spin; more figurative bamboo-cicada art; new home **Games** category — `/games/zhuzhiliao`
 
 ### 2026-07-25
 
